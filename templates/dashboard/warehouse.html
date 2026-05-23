@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-header animate-in">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+      <h1 class="page-title">Warehouse Overview</h1>
+      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><a href="{% url 'dashboard' %}">Dashboard</a><span class="breadcrumb-sep">/</span><span>Warehouse</span></div>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn-wms ghost"><i class="fas fa-map-location-dot"></i> Floor Plan</button>
+      <button class="btn-wms primary" onclick="showToast('Zone added','success')"><i class="fas fa-plus"></i> Add Zone</button>
+    </div>
+  </div>
+</div>
+
+<!-- Stats -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-2 col-md-4 col-6 animate-in animate-in-delay-1">
+    <div class="stat-card primary">
+      <div class="stat-card-header"><div class="stat-icon primary" style="width:38px;height:38px;font-size:17px"><i class="fas fa-building"></i></div></div>
+      <div class="stat-value" style="font-size:22px"><span class="counter-value" data-target="6">6</span></div>
+      <div class="stat-label">Total Zones</div>
+    </div>
+  </div>
+  <div class="col-xl-2 col-md-4 col-6 animate-in animate-in-delay-2">
+    <div class="stat-card success">
+      <div class="stat-card-header"><div class="stat-icon success" style="width:38px;height:38px;font-size:17px"><i class="fas fa-ruler-combined"></i></div></div>
+      <div class="stat-value" style="font-size:22px">60K</div>
+      <div class="stat-label">Total sq ft</div>
+    </div>
+  </div>
+  <div class="col-xl-2 col-md-4 col-6 animate-in animate-in-delay-3">
+    <div class="stat-card warning">
+      <div class="stat-card-header"><div class="stat-icon warning" style="width:38px;height:38px;font-size:17px"><i class="fas fa-percent"></i></div></div>
+      <div class="stat-value" style="font-size:22px">76%</div>
+      <div class="stat-label">Utilization</div>
+    </div>
+  </div>
+  <div class="col-xl-2 col-md-4 col-6 animate-in animate-in-delay-4">
+    <div class="stat-card info">
+      <div class="stat-card-header"><div class="stat-icon info" style="width:38px;height:38px;font-size:17px"><i class="fas fa-pallet"></i></div></div>
+      <div class="stat-value" style="font-size:22px"><span class="counter-value" data-target="1240">1,240</span></div>
+      <div class="stat-label">Pallets</div>
+    </div>
+  </div>
+  <div class="col-xl-2 col-md-4 col-6 animate-in animate-in-delay-5">
+    <div class="stat-card cyan">
+      <div class="stat-card-header"><div class="stat-icon cyan" style="width:38px;height:38px;font-size:17px"><i class="fas fa-users"></i></div></div>
+      <div class="stat-value" style="font-size:22px"><span class="counter-value" data-target="42">42</span></div>
+      <div class="stat-label">Staff On-Site</div>
+    </div>
+  </div>
+  <div class="col-xl-2 col-md-4 col-6 animate-in animate-in-delay-6">
+    <div class="stat-card danger">
+      <div class="stat-card-header"><div class="stat-icon danger" style="width:38px;height:38px;font-size:17px"><i class="fas fa-triangle-exclamation"></i></div></div>
+      <div class="stat-value" style="font-size:22px"><span class="counter-value" data-target="3">3</span></div>
+      <div class="stat-label">Alerts</div>
+    </div>
+  </div>
+</div>
+
+<!-- Zone Cards -->
+<div class="row g-3 mb-4">
+
+  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-1">
+    <div class="zone-card">
+      <div class="zone-header"><div class="zone-name"><i class="fas fa-map-pin me-2" style="color:#4f46e5"></i>Zone A — Electronics</div><span class="badge-wms success"><span class="badge-dot"></span>Active</span></div>
+      <div class="row g-3 mb-3"><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Capacity Used</div><div class="zone-capacity">78%</div></div><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Area</div><div class="zone-capacity" style="font-size:18px">10,000</div><div class="zone-sub">sq ft</div></div></div>
+      <div class="progress-wms mb-2"><div class="progress-bar-wms primary" style="width:78%"></div></div>
+      <div class="d-flex justify-content-between mb-3" style="font-size:12px;color:#64748b"><span>780 pallets used</span><span>220 available</span></div>
+      <div class="d-flex gap-2"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Zone A details loaded','info')"><i class="fas fa-eye me-1"></i>Details</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Managing Zone A','info')"><i class="fas fa-pen me-1"></i>Manage</button></div>
+    </div>
+  </div>
+
+  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-2">
+    <div class="zone-card">
+      <div class="zone-header"><div class="zone-name"><i class="fas fa-map-pin me-2" style="color:#4f46e5"></i>Zone B — Furniture</div><span class="badge-wms success"><span class="badge-dot"></span>Active</span></div>
+      <div class="row g-3 mb-3"><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Capacity Used</div><div class="zone-capacity">65%</div></div><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Area</div><div class="zone-capacity" style="font-size:18px">8,500</div><div class="zone-sub">sq ft</div></div></div>
+      <div class="progress-wms mb-2"><div class="progress-bar-wms success" style="width:65%"></div></div>
+      <div class="d-flex justify-content-between mb-3" style="font-size:12px;color:#64748b"><span>552 pallets used</span><span>298 available</span></div>
+      <div class="d-flex gap-2"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Zone B details loaded','info')"><i class="fas fa-eye me-1"></i>Details</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Managing Zone B','info')"><i class="fas fa-pen me-1"></i>Manage</button></div>
+    </div>
+  </div>
+
+  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-3">
+    <div class="zone-card">
+      <div class="zone-header"><div class="zone-name"><i class="fas fa-map-pin me-2" style="color:#4f46e5"></i>Zone C — Apparel</div><span class="badge-wms warning"><span class="badge-dot"></span>Near Full</span></div>
+      <div class="row g-3 mb-3"><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Capacity Used</div><div class="zone-capacity">92%</div></div><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Area</div><div class="zone-capacity" style="font-size:18px">12,000</div><div class="zone-sub">sq ft</div></div></div>
+      <div class="progress-wms mb-2"><div class="progress-bar-wms warning" style="width:92%"></div></div>
+      <div class="d-flex justify-content-between mb-3" style="font-size:12px;color:#64748b"><span>1,104 pallets used</span><span>96 available</span></div>
+      <div class="d-flex gap-2"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Zone C details loaded','info')"><i class="fas fa-eye me-1"></i>Details</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Managing Zone C','info')"><i class="fas fa-pen me-1"></i>Manage</button></div>
+    </div>
+  </div>
+
+  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-4">
+    <div class="zone-card">
+      <div class="zone-header"><div class="zone-name"><i class="fas fa-map-pin me-2" style="color:#4f46e5"></i>Zone D — Hardware</div><span class="badge-wms success"><span class="badge-dot"></span>Active</span></div>
+      <div class="row g-3 mb-3"><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Capacity Used</div><div class="zone-capacity">54%</div></div><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Area</div><div class="zone-capacity" style="font-size:18px">9,200</div><div class="zone-sub">sq ft</div></div></div>
+      <div class="progress-wms mb-2"><div class="progress-bar-wms info" style="width:54%"></div></div>
+      <div class="d-flex justify-content-between mb-3" style="font-size:12px;color:#64748b"><span>432 pallets used</span><span>368 available</span></div>
+      <div class="d-flex gap-2"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Zone D details loaded','info')"><i class="fas fa-eye me-1"></i>Details</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Managing Zone D','info')"><i class="fas fa-pen me-1"></i>Manage</button></div>
+    </div>
+  </div>
+
+  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-5">
+    <div class="zone-card">
+      <div class="zone-header"><div class="zone-name"><i class="fas fa-map-pin me-2" style="color:#4f46e5"></i>Zone E — Food &amp; Bev</div><span class="badge-wms danger"><span class="badge-dot"></span>Full</span></div>
+      <div class="row g-3 mb-3"><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Capacity Used</div><div class="zone-capacity">98%</div></div><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Area</div><div class="zone-capacity" style="font-size:18px">11,500</div><div class="zone-sub">sq ft</div></div></div>
+      <div class="progress-wms mb-2"><div class="progress-bar-wms danger" style="width:98%"></div></div>
+      <div class="d-flex justify-content-between mb-3" style="font-size:12px;color:#64748b"><span>1,127 pallets used</span><span>23 available</span></div>
+      <div class="d-flex gap-2"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Zone E details loaded','info')"><i class="fas fa-eye me-1"></i>Details</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Managing Zone E','info')"><i class="fas fa-pen me-1"></i>Manage</button></div>
+    </div>
+  </div>
+
+  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-6">
+    <div class="zone-card">
+      <div class="zone-header"><div class="zone-name"><i class="fas fa-map-pin me-2" style="color:#4f46e5"></i>Zone F — Mixed</div><span class="badge-wms info"><span class="badge-dot"></span>Active</span></div>
+      <div class="row g-3 mb-3"><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Capacity Used</div><div class="zone-capacity">71%</div></div><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Area</div><div class="zone-capacity" style="font-size:18px">8,800</div><div class="zone-sub">sq ft</div></div></div>
+      <div class="progress-wms mb-2"><div class="progress-bar-wms cyan" style="width:71%"></div></div>
+      <div class="d-flex justify-content-between mb-3" style="font-size:12px;color:#64748b"><span>625 pallets used</span><span>255 available</span></div>
+      <div class="d-flex gap-2"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Zone F details loaded','info')"><i class="fas fa-eye me-1"></i>Details</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Managing Zone F','info')"><i class="fas fa-pen me-1"></i>Manage</button></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Utilization + Temperature Map -->
+<div class="row g-3">
+  <div class="col-xl-8 animate-in animate-in-delay-2">
+    <div class="wms-card">
+      <div class="card-header-wms">
+        <div class="card-title-wms"><i class="fas fa-chart-bar"></i> Zone Utilization (Monthly)</div>
+      </div>
+      <div class="card-body-wms">
+        <div id="warehouseChart"></div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-4 animate-in animate-in-delay-3">
+    <div class="wms-card h-100">
+      <div class="card-header-wms">
+        <div class="card-title-wms"><i class="fas fa-thermometer-half"></i> Conditions</div>
+      </div>
+      <div class="card-body-wms">
+        <div class="d-flex align-items-center justify-content-between mb-3 p-2 rounded-3" style="background:#f8fafc"><div style="font-weight:600;font-size:13px">Zone A</div><div class="d-flex gap-3"><span style="font-size:12px;color:#64748b"><i class="fas fa-temperature-half me-1" style="color:#ef4444"></i>18°C</span><span style="font-size:12px;color:#64748b"><i class="fas fa-droplet me-1" style="color:#3b82f6"></i>45%</span><span class="badge-wms success">OK</span></div></div>
+        <div class="d-flex align-items-center justify-content-between mb-3 p-2 rounded-3" style="background:#f8fafc"><div style="font-weight:600;font-size:13px">Zone B</div><div class="d-flex gap-3"><span style="font-size:12px;color:#64748b"><i class="fas fa-temperature-half me-1" style="color:#ef4444"></i>20°C</span><span style="font-size:12px;color:#64748b"><i class="fas fa-droplet me-1" style="color:#3b82f6"></i>52%</span><span class="badge-wms success">OK</span></div></div>
+        <div class="d-flex align-items-center justify-content-between mb-3 p-2 rounded-3" style="background:#f8fafc"><div style="font-weight:600;font-size:13px">Zone C</div><div class="d-flex gap-3"><span style="font-size:12px;color:#64748b"><i class="fas fa-temperature-half me-1" style="color:#ef4444"></i>22°C</span><span style="font-size:12px;color:#64748b"><i class="fas fa-droplet me-1" style="color:#3b82f6"></i>48%</span><span class="badge-wms success">OK</span></div></div>
+        <div class="d-flex align-items-center justify-content-between mb-3 p-2 rounded-3" style="background:#f8fafc"><div style="font-weight:600;font-size:13px">Zone D</div><div class="d-flex gap-3"><span style="font-size:12px;color:#64748b"><i class="fas fa-temperature-half me-1" style="color:#ef4444"></i>15°C</span><span style="font-size:12px;color:#64748b"><i class="fas fa-droplet me-1" style="color:#3b82f6"></i>40%</span><span class="badge-wms warning">High Hum</span></div></div>
+        <div class="d-flex align-items-center justify-content-between mb-3 p-2 rounded-3" style="background:#f8fafc"><div style="font-weight:600;font-size:13px">Zone E</div><div class="d-flex gap-3"><span style="font-size:12px;color:#64748b"><i class="fas fa-temperature-half me-1" style="color:#ef4444"></i>21°C</span><span style="font-size:12px;color:#64748b"><i class="fas fa-droplet me-1" style="color:#3b82f6"></i>55%</span><span class="badge-wms success">OK</span></div></div>
+        <div class="d-flex align-items-center justify-content-between p-2 rounded-3" style="background:#f8fafc"><div style="font-weight:600;font-size:13px">Zone F</div><div class="d-flex gap-3"><span style="font-size:12px;color:#64748b"><i class="fas fa-temperature-half me-1" style="color:#ef4444"></i>19°C</span><span style="font-size:12px;color:#64748b"><i class="fas fa-droplet me-1" style="color:#3b82f6"></i>50%</span><span class="badge-wms success">OK</span></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/charts.js' %}"></script>
+{% endblock %}

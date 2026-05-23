@@ -1,0 +1,136 @@
+{% load static %}
+<header class="wms-topbar">
+
+  <!-- Sidebar Toggle -->
+  <button class="topbar-toggle" id="sidebarToggle" title="Toggle Sidebar">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Search -->
+  <div class="topbar-search d-none d-sm-block">
+    <div class="search-wrapper">
+      <i class="fas fa-search search-icon"></i>
+      <input type="text" class="search-input" placeholder="Search orders, products, customers...">
+    </div>
+  </div>
+
+  <!-- Actions -->
+  <div class="topbar-actions">
+
+    <!-- Mobile Search -->
+    <button class="topbar-btn d-sm-none" title="Search">
+      <i class="fas fa-search"></i>
+    </button>
+
+    <!-- Refresh -->
+    <button class="topbar-btn d-none d-md-flex" title="Refresh" onclick="window.location.reload()">
+      <i class="fas fa-rotate-right"></i>
+    </button>
+
+    <!-- Theme Toggle -->
+    <button class="topbar-btn d-none d-md-flex theme-toggle-btn" id="themeToggle" title="Toggle Dark Mode">
+      <i class="fas fa-moon"></i>
+    </button>
+
+    <!-- Notifications -->
+    <div class="wms-dropdown">
+      <button class="topbar-btn" id="notifBtn" title="Notifications">
+        <i class="fas fa-bell"></i>
+        <span class="topbar-badge" id="topbarNotifBadge">3</span>
+      </button>
+      <div class="dropdown-menu-wms notif-dropdown" id="notifMenu">
+        <div class="notif-header">
+          <span class="notif-title">Notifications</span>
+          <span class="notif-count">7 New</span>
+        </div>
+
+        <div class="notif-item unread">
+          <div class="notif-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626)">
+            <i class="fas fa-exclamation-triangle"></i>
+          </div>
+          <div class="notif-content">
+            <div class="notif-msg"><strong>Low Stock Alert:</strong> Product SKU-4521 below threshold</div>
+            <div class="notif-time"><i class="fas fa-clock me-1"></i>2 minutes ago</div>
+          </div>
+          <div class="notif-unread-dot"></div>
+        </div>
+
+        <div class="notif-item unread">
+          <div class="notif-icon" style="background:linear-gradient(135deg,#10b981,#059669)">
+            <i class="fas fa-truck"></i>
+          </div>
+          <div class="notif-content">
+            <div class="notif-msg"><strong>Shipment #SH-2847</strong> has been delivered</div>
+            <div class="notif-time"><i class="fas fa-clock me-1"></i>18 minutes ago</div>
+          </div>
+          <div class="notif-unread-dot"></div>
+        </div>
+
+        <div class="notif-item unread">
+          <div class="notif-icon" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">
+            <i class="fas fa-shopping-cart"></i>
+          </div>
+          <div class="notif-content">
+            <div class="notif-msg"><strong>New Order #ORD-9921</strong> received from Client ABC</div>
+            <div class="notif-time"><i class="fas fa-clock me-1"></i>45 minutes ago</div>
+          </div>
+          <div class="notif-unread-dot"></div>
+        </div>
+
+        <div class="notif-item">
+          <div class="notif-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706)">
+            <i class="fas fa-clock"></i>
+          </div>
+          <div class="notif-content">
+            <div class="notif-msg"><strong>Dispatch delayed</strong> for Order #ORD-8845</div>
+            <div class="notif-time"><i class="fas fa-clock me-1"></i>2 hours ago</div>
+          </div>
+        </div>
+
+        <div class="notif-item">
+          <div class="notif-icon" style="background:linear-gradient(135deg,#3b82f6,#2563eb)">
+            <i class="fas fa-user-plus"></i>
+          </div>
+          <div class="notif-content">
+            <div class="notif-msg"><strong>New staff member</strong> Sarah K. joined the team</div>
+            <div class="notif-time"><i class="fas fa-clock me-1"></i>5 hours ago</div>
+          </div>
+        </div>
+
+        <div class="notif-footer">
+          <a href="{% url 'notifications' %}">View all notifications <i class="fas fa-arrow-right ms-1"></i></a>
+        </div>
+      </div>
+    </div>
+
+    <div class="topbar-divider d-none d-md-block"></div>
+
+    <!-- User Profile -->
+    <div class="wms-dropdown">
+      <div class="topbar-user" id="userProfileBtn">
+        <div class="topbar-avatar">JD</div>
+        <div class="topbar-user-info">
+          <span class="topbar-user-name">John Doe</span>
+          <span class="topbar-user-role">Warehouse Manager</span>
+        </div>
+        <i class="fas fa-chevron-down ms-1" style="font-size:11px;color:#94a3b8;"></i>
+      </div>
+      <div class="dropdown-menu-wms" id="userProfileMenu">
+        <a href="{% url 'profile' %}" class="dropdown-item-wms">
+          <i class="fas fa-user"></i> My Profile
+        </a>
+        <a href="{% url 'settings' %}" class="dropdown-item-wms">
+          <i class="fas fa-gear"></i> Settings
+        </a>
+        <a href="{% url 'activity_logs' %}" class="dropdown-item-wms">
+          <i class="fas fa-clock-rotate-left"></i> Activity Logs
+        </a>
+        <div class="dropdown-divider-wms"></div>
+        <a href="#" class="dropdown-item-wms" style="color:#ef4444;" onclick="showToast('Logged out successfully','success');return false;">
+          <i class="fas fa-right-from-bracket" style="color:#ef4444;"></i> Sign Out
+        </a>
+      </div>
+    </div>
+
+  </div>
+</header>

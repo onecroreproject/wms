@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div id="profilePage">
+<div class="page-header animate-in">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+      <h1 class="page-title">My Profile</h1>
+      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><a href="{% url 'dashboard' %}">Dashboard</a><span class="breadcrumb-sep">/</span><span>Profile</span></div>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn-wms ghost" id="editProfileBtn"><i class="fas fa-pen"></i> Edit Profile</button>
+      <button class="btn-wms primary" id="saveProfileBtn"><i class="fas fa-save"></i> Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <!-- Profile Card -->
+  <div class="col-xl-4 animate-in animate-in-delay-1">
+    <div class="wms-card mb-3" style="overflow:visible">
+      <div class="profile-banner">
+        <div style="position:absolute;bottom:-40px;left:24px;z-index:10">
+          <div class="profile-avatar-wrap" style="display:inline-block">
+            <img id="profileImagePreview" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Crect width='88' height='88' fill='%234f46e5' rx='44'/%3E%3Ctext x='44' y='58' text-anchor='middle' fill='white' font-size='28' font-family='Inter' font-weight='700'%3EJD%3C/text%3E%3C/svg%3E" alt="Profile">
+            <div class="profile-avatar-upload" id="uploadAvatarBtn" title="Change photo"><i class="fas fa-camera"></i></div>
+            <input type="file" id="profileImageInput" accept="image/*" style="display:none">
+          </div>
+        </div>
+      </div>
+      <div class="card-body-wms" style="padding-top:52px">
+        <div>
+          <h3 style="font-family:'Poppins',sans-serif;font-weight:700;font-size:20px;color:#0f172a;margin-bottom:2px">John Doe</h3>
+          <div style="font-size:13px;color:#64748b;margin-bottom:12px">Warehouse Manager &nbsp;•&nbsp; <span style="color:#4f46e5">Operations</span></div>
+          <div class="d-flex gap-2 flex-wrap mb-4">
+            <span class="tag-chip"><i class="fas fa-check-circle me-1" style="color:#10b981"></i>Verified</span>
+            <span class="tag-chip"><i class="fas fa-crown me-1" style="color:#f59e0b"></i>Admin</span>
+            <span class="tag-chip"><i class="fas fa-star me-1" style="color:#4f46e5"></i>Senior</span>
+          </div>
+          <div class="d-flex flex-column gap-2" style="font-size:13px">
+            <div><i class="fas fa-envelope me-2" style="color:#4f46e5;width:16px"></i>john.doe@wmspro.com</div>
+            <div><i class="fas fa-phone me-2" style="color:#10b981;width:16px"></i>+91-9876543210</div>
+            <div><i class="fas fa-location-dot me-2" style="color:#ef4444;width:16px"></i>Mumbai, Maharashtra</div>
+            <div><i class="fas fa-calendar me-2" style="color:#f59e0b;width:16px"></i>Joined: January 12, 2022</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Card -->
+    <div class="wms-card mb-3">
+      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-chart-simple"></i> My Stats</div></div>
+      <div class="card-body-wms">
+        <div class="row g-2">
+          <div class="col-6"><div class="text-center p-3 rounded-3" style="background:#f8fafc"><div style="font-size:22px;font-weight:800;color:#4f46e5;font-family:'Poppins',sans-serif">284</div><div style="font-size:11px;color:#64748b">Orders Managed</div></div></div>
+          <div class="col-6"><div class="text-center p-3 rounded-3" style="background:#f8fafc"><div style="font-size:22px;font-weight:800;color:#10b981;font-family:'Poppins',sans-serif">98%</div><div style="font-size:11px;color:#64748b">Accuracy Rate</div></div></div>
+          <div class="col-6"><div class="text-center p-3 rounded-3" style="background:#f8fafc"><div style="font-size:22px;font-weight:800;color:#f59e0b;font-family:'Poppins',sans-serif">42</div><div style="font-size:11px;color:#64748b">Team Members</div></div></div>
+          <div class="col-6"><div class="text-center p-3 rounded-3" style="background:#f8fafc"><div style="font-size:22px;font-weight:800;color:#06b6d4;font-family:'Poppins',sans-serif">2.4yr</div><div style="font-size:11px;color:#64748b">Tenure</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Edit Form -->
+  <div class="col-xl-8 animate-in animate-in-delay-2">
+    <div class="wms-card mb-3">
+      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-user-pen"></i> Personal Information</div></div>
+      <div class="card-body-wms">
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label-wms">First Name</label><input type="text" class="form-control-wms profile-field-input" disabled value="John"></div>
+          <div class="col-md-6"><label class="form-label-wms">Last Name</label><input type="text" class="form-control-wms profile-field-input" disabled value="Doe"></div>
+          <div class="col-md-6"><label class="form-label-wms">Email Address</label><input type="email" class="form-control-wms profile-field-input" disabled value="john.doe@wmspro.com"></div>
+          <div class="col-md-6"><label class="form-label-wms">Phone Number</label><input type="text" class="form-control-wms profile-field-input" disabled value="+91-9876543210"></div>
+          <div class="col-md-6"><label class="form-label-wms">Job Title</label><input type="text" class="form-control-wms profile-field-input" disabled value="Warehouse Manager"></div>
+          <div class="col-md-6"><label class="form-label-wms">Department</label><select class="form-control-wms form-select-wms profile-field-input" disabled><option selected>Operations</option><option>Logistics</option><option>Inventory</option><option>HR</option></select></div>
+          <div class="col-12"><label class="form-label-wms">Address</label><textarea class="form-control-wms profile-field-input" disabled rows="2">Flat 4B, Sai Heights, Andheri West, Mumbai - 400058</textarea></div>
+          <div class="col-md-6"><label class="form-label-wms">City</label><input type="text" class="form-control-wms profile-field-input" disabled value="Mumbai"></div>
+          <div class="col-md-6"><label class="form-label-wms">State</label><input type="text" class="form-control-wms profile-field-input" disabled value="Maharashtra"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="wms-card">
+      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-lock"></i> Change Password</div></div>
+      <div class="card-body-wms">
+        <div class="row g-3">
+          <div class="col-md-12"><label class="form-label-wms">Current Password</label><div class="password-wrap"><input type="password" class="form-control-wms" id="currentPassword" placeholder="Enter current password"><button class="toggle-password" type="button"><i class="fas fa-eye"></i></button></div></div>
+          <div class="col-md-6"><label class="form-label-wms">New Password</label><div class="password-wrap"><input type="password" class="form-control-wms" id="newPassword" placeholder="Min 6 characters"><button class="toggle-password" type="button"><i class="fas fa-eye"></i></button></div></div>
+          <div class="col-md-6"><label class="form-label-wms">Confirm New Password</label><div class="password-wrap"><input type="password" class="form-control-wms" id="confirmPassword" placeholder="Repeat new password"><button class="toggle-password" type="button"><i class="fas fa-eye"></i></button></div></div>
+          <div class="col-12">
+            <div class="p-3 rounded-3" style="background:#f0fdf4;border:1px solid #bbf7d0;font-size:12.5px;color:#059669">
+              <i class="fas fa-shield-halved me-2"></i><strong>Password Security Tips:</strong> Use at least 8 characters, mix uppercase, lowercase, numbers and symbols.
+            </div>
+          </div>
+        </div>
+        <div class="d-flex gap-2 mt-3">
+          <button class="btn-wms primary" id="changePasswordBtn"><i class="fas fa-lock me-1"></i>Update Password</button>
+          <button class="btn-wms ghost" onclick="document.getElementById('currentPassword').value='';document.getElementById('newPassword').value='';document.getElementById('confirmPassword').value=''"><i class="fas fa-rotate-left me-1"></i>Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+</div><!-- /profilePage -->
+{% endblock %}

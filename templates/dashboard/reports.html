@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div id="reportsPage">
+<div class="page-header animate-in">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+      <h1 class="page-title">Reports & Analytics</h1>
+      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><a href="{% url 'dashboard' %}">Dashboard</a><span class="breadcrumb-sep">/</span><span>Reports</span></div>
+    </div>
+    <div class="d-flex gap-2">
+      <select class="form-control-wms form-select-wms" style="width:auto"><option>Last 12 Months</option><option>This Quarter</option><option>This Month</option></select>
+      <button class="btn-wms ghost export-report-btn"><i class="fas fa-download"></i> Export PDF</button>
+      <button class="btn-wms primary generate-report-btn"><i class="fas fa-chart-bar"></i> Generate Report</button>
+    </div>
+  </div>
+</div>
+
+<!-- KPI Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-1">
+    <div class="stat-card primary"><div class="stat-card-header"><div class="stat-icon primary"><i class="fas fa-dollar-sign"></i></div><span class="stat-change up"><i class="fas fa-arrow-up"></i>+18.4%</span></div><div class="stat-value">$1.24M</div><div class="stat-label">Annual Revenue</div></div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-2">
+    <div class="stat-card success"><div class="stat-card-header"><div class="stat-icon success"><i class="fas fa-shopping-bag"></i></div><span class="stat-change up"><i class="fas fa-arrow-up"></i>+12.1%</span></div><div class="stat-value"><span class="counter-value" data-target="18420">18,420</span></div><div class="stat-label">Total Orders YTD</div></div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-3">
+    <div class="stat-card warning"><div class="stat-card-header"><div class="stat-icon warning"><i class="fas fa-percent"></i></div><span class="stat-change up"><i class="fas fa-arrow-up"></i>+2.3%</span></div><div class="stat-value">94.2%</div><div class="stat-label">Fulfillment Rate</div></div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-4">
+    <div class="stat-card info"><div class="stat-card-header"><div class="stat-icon info"><i class="fas fa-rotate"></i></div><span class="stat-change up"><i class="fas fa-arrow-up"></i>+0.8x</span></div><div class="stat-value">8.4x</div><div class="stat-label">Inventory Turnover</div></div>
+  </div>
+</div>
+
+<!-- Main Charts Row -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-8 animate-in animate-in-delay-2">
+    <div class="wms-card">
+      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-chart-bar"></i> Orders, Shipments & Returns</div></div>
+      <div class="card-body-wms"><div id="reportsBarChart"></div></div>
+    </div>
+  </div>
+  <div class="col-xl-4 animate-in animate-in-delay-3">
+    <div class="wms-card h-100">
+      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-chart-line"></i> Revenue Trend</div></div>
+      <div class="card-body-wms"><div id="revenueChart"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Report Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-4 animate-in animate-in-delay-1">
+    <div class="wms-card">
+      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-trophy"></i> Top Performing Zones</div></div>
+      <div class="card-body-wms">
+        <div class="d-flex align-items-center gap-3 mb-3 p-2 rounded-3" style="background:#f8fafc">
+          <div style="width:36px;height:36px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:9px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">A</div>
+          <div style="flex:1"><div style="font-size:13.5px;font-weight:600">Zone A — Electronics</div><div style="font-size:12px;color:#64748b">4,820 orders processed</div></div>
+          <div class="badge-wms success">98%</div>
+        </div>
+        <div class="d-flex align-items-center gap-3 mb-3 p-2 rounded-3" style="background:#f8fafc">
+          <div style="width:36px;height:36px;background:linear-gradient(135deg,#10b981,#059669);border-radius:9px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">C</div>
+          <div style="flex:1"><div style="font-size:13.5px;font-weight:600">Zone C — Apparel</div><div style="font-size:12px;color:#64748b">3,210 orders processed</div></div>
+          <div class="badge-wms success">95%</div>
+        </div>
+        <div class="d-flex align-items-center gap-3 mb-3 p-2 rounded-3" style="background:#f8fafc">
+          <div style="width:36px;height:36px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:9px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">B</div>
+          <div style="flex:1"><div style="font-size:13.5px;font-weight:600">Zone B — Furniture</div><div style="font-size:12px;color:#64748b">1,840 orders processed</div></div>
+          <div class="badge-wms warning">87%</div>
+        </div>
+        <div class="d-flex align-items-center gap-3 p-2 rounded-3" style="background:#f8fafc">
+          <div style="width:36px;height:36px;background:linear-gradient(135deg,#3b82f6,#2563eb);border-radius:9px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">D</div>
+          <div style="flex:1"><div style="font-size:13.5px;font-weight:600">Zone D — Hardware</div><div style="font-size:12px;color:#64748b">1,520 orders processed</div></div>
+          <div class="badge-wms primary">84%</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-4 animate-in animate-in-delay-2">
+    <div class="wms-card">
+      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-file-chart-pie"></i> Report Templates</div></div>
+      <div class="card-body-wms">
+        <div class="d-flex flex-column gap-2">
+          <button class="btn-wms ghost" style="justify-content:flex-start;width:100%" onclick="showToast('Inventory report downloading...','info')"><i class="fas fa-boxes-stacked text-primary-color me-2"></i> Inventory Summary Report</button>
+          <button class="btn-wms ghost" style="justify-content:flex-start;width:100%" onclick="showToast('Sales report downloading...','info')"><i class="fas fa-chart-line text-success-color me-2"></i> Sales Performance Report</button>
+          <button class="btn-wms ghost" style="justify-content:flex-start;width:100%" onclick="showToast('Shipment report downloading...','info')"><i class="fas fa-truck text-warning-color me-2"></i> Shipment Status Report</button>
+          <button class="btn-wms ghost" style="justify-content:flex-start;width:100%" onclick="showToast('Staff report downloading...','info')"><i class="fas fa-users text-info-color me-2"></i> Staff Productivity Report</button>
+          <button class="btn-wms ghost" style="justify-content:flex-start;width:100%" onclick="showToast('Financial report downloading...','info')"><i class="fas fa-dollar-sign text-danger-color me-2"></i> Financial Overview Report</button>
+          <button class="btn-wms ghost" style="justify-content:flex-start;width:100%" onclick="showToast('Customer report downloading...','info')"><i class="fas fa-users-gear me-2" style="color:#7c3aed"></i> Customer Analytics Report</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-4 animate-in animate-in-delay-3">
+    <div class="wms-card">
+      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-chart-simple"></i> Quick Metrics</div></div>
+      <div class="card-body-wms">
+        <div class="row g-3">
+          <div class="col-6"><div style="padding:12px;background:#f8fafc;border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#4f46e5;font-family:'Poppins',sans-serif">2.4 days</div><div style="font-size:11px;color:#64748b;margin-top:2px">Avg Order Cycle</div></div></div>
+          <div class="col-6"><div style="padding:12px;background:#f8fafc;border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#10b981;font-family:'Poppins',sans-serif">99.1%</div><div style="font-size:11px;color:#64748b;margin-top:2px">Order Accuracy</div></div></div>
+          <div class="col-6"><div style="padding:12px;background:#f8fafc;border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#f59e0b;font-family:'Poppins',sans-serif">$67.40</div><div style="font-size:11px;color:#64748b;margin-top:2px">Avg Order Value</div></div></div>
+          <div class="col-6"><div style="padding:12px;background:#f8fafc;border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#06b6d4;font-family:'Poppins',sans-serif">3.2%</div><div style="font-size:11px;color:#64748b;margin-top:2px">Return Rate</div></div></div>
+          <div class="col-6"><div style="padding:12px;background:#f8fafc;border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#7c3aed;font-family:'Poppins',sans-serif">8.4x</div><div style="font-size:11px;color:#64748b;margin-top:2px">Inventory Turns</div></div></div>
+          <div class="col-6"><div style="padding:12px;background:#f8fafc;border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#ef4444;font-family:'Poppins',sans-serif">1.8%</div><div style="font-size:11px;color:#64748b;margin-top:2px">Damage Rate</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/charts.js' %}"></script>
+{% endblock %}

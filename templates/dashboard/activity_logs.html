@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-header animate-in">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+      <h1 class="page-title">Activity Logs</h1>
+      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><a href="{% url 'dashboard' %}">Dashboard</a><span class="breadcrumb-sep">/</span><span>Activity Logs</span></div>
+    </div>
+    <div class="d-flex gap-2">
+      <select class="form-control-wms form-select-wms" style="width:auto"><option>All Users</option><option>John Doe</option><option>Sarah Kim</option><option>Mike Ross</option></select>
+      <button class="btn-wms ghost"><i class="fas fa-download"></i> Export</button>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-1">
+    <div class="stat-card primary"><div class="stat-card-header"><div class="stat-icon primary"><i class="fas fa-clock-rotate-left"></i></div></div><div class="stat-value"><span class="counter-value" data-target="4820">4,820</span></div><div class="stat-label">Total Activities</div></div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-2">
+    <div class="stat-card success"><div class="stat-card-header"><div class="stat-icon success"><i class="fas fa-calendar-day"></i></div></div><div class="stat-value"><span class="counter-value" data-target="142">142</span></div><div class="stat-label">Today's Actions</div></div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-3">
+    <div class="stat-card warning"><div class="stat-card-header"><div class="stat-icon warning"><i class="fas fa-users"></i></div></div><div class="stat-value"><span class="counter-value" data-target="72">72</span></div><div class="stat-label">Active Users Today</div></div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-4">
+    <div class="stat-card danger"><div class="stat-card-header"><div class="stat-icon danger"><i class="fas fa-shield-exclamation"></i></div></div><div class="stat-value"><span class="counter-value" data-target="3">3</span></div><div class="stat-label">Security Events</div></div>
+  </div>
+</div>
+
+<div class="row g-3">
+  <div class="col-xl-8 animate-in animate-in-delay-2">
+    <div class="wms-card">
+      <div class="card-header-wms">
+        <div class="card-title-wms"><i class="fas fa-table"></i> System Activity Log</div>
+        <div class="card-actions">
+          <select class="form-control-wms form-select-wms" style="width:auto;font-size:12px">
+            <option>All Types</option><option>Login</option><option>Order</option><option>Inventory</option><option>System</option>
+          </select>
+        </div>
+      </div>
+      <div class="card-body-wms">
+        <div class="table-responsive">
+          <table class="table-wms wms-datatable" id="logsTable">
+            <thead><tr><th>Log ID</th><th>User</th><th>Action</th><th>Module</th><th>IP Address</th><th>Timestamp</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8821</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm">JD</div>John Doe</div></td><td>Created new order #ORD-9921</td><td><span class="tag-chip">Orders</span></td><td>192.168.1.42</td><td>May 23, 14:22:10</td><td><span class="badge-wms success">Success</span></td></tr>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8820</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-success">SK</div>Sarah Kim</div></td><td>Updated stock for SKU-001</td><td><span class="tag-chip">Inventory</span></td><td>192.168.1.55</td><td>May 23, 13:48:32</td><td><span class="badge-wms success">Success</span></td></tr>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8819</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-warning">MR</div>Mike Ross</div></td><td>Marked shipment #SH-2847 delivered</td><td><span class="tag-chip">Shipments</span></td><td>192.168.1.71</td><td>May 23, 12:15:44</td><td><span class="badge-wms success">Success</span></td></tr>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8818</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-info">RK</div>Raj Kumar</div></td><td>Login from new device</td><td><span class="tag-chip">Auth</span></td><td>122.45.78.92</td><td>May 23, 11:02:18</td><td><span class="badge-wms warning">Warning</span></td></tr>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8817</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm">JD</div>John Doe</div></td><td>Exported inventory report</td><td><span class="tag-chip">Reports</span></td><td>192.168.1.42</td><td>May 23, 10:30:55</td><td><span class="badge-wms success">Success</span></td></tr>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8816</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-danger">SY</div>System</div></td><td>Auto-backup completed</td><td><span class="tag-chip">System</span></td><td>127.0.0.1</td><td>May 23, 02:00:00</td><td><span class="badge-wms success">Success</span></td></tr>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8815</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-danger">UK</div>Unknown</div></td><td>Failed login attempt (3x)</td><td><span class="tag-chip">Auth</span></td><td>45.123.56.89</td><td>May 22, 23:44:11</td><td><span class="badge-wms danger">Failed</span></td></tr>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8814</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-success">JS</div>Jane Smith</div></td><td>Added new staff member Sarah Kim</td><td><span class="tag-chip">Staff</span></td><td>192.168.1.88</td><td>May 22, 15:20:30</td><td><span class="badge-wms success">Success</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-xl-4 animate-in animate-in-delay-3">
+    <div class="wms-card mb-3">
+      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-fire"></i> Activity Heatmap</div></div>
+      <div class="card-body-wms">
+        <div style="font-size:12px;color:#64748b;margin-bottom:12px">Actions by Hour (Today)</div>
+        <div class="d-flex flex-wrap gap-1">
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.08);cursor:pointer" title="00:00 - 1 action"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.10);cursor:pointer" title="01:00 - 3 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.09);cursor:pointer" title="02:00 - 2 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.14);cursor:pointer" title="03:00 - 5 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.13);cursor:pointer" title="04:00 - 4 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.20);cursor:pointer" title="05:00 - 8 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.30);cursor:pointer" title="06:00 - 12 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.45);cursor:pointer" title="07:00 - 18 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.60);cursor:pointer" title="08:00 - 24 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.55);cursor:pointer" title="09:00 - 22 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.40);cursor:pointer" title="10:00 - 15 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.28);cursor:pointer" title="11:00 - 10 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.20);cursor:pointer" title="12:00 - 8 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.17);cursor:pointer" title="13:00 - 6 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.38);cursor:pointer" title="14:00 - 14 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.50);cursor:pointer" title="15:00 - 20 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.62);cursor:pointer" title="16:00 - 25 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.70);cursor:pointer" title="17:00 - 28 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.55);cursor:pointer" title="18:00 - 22 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.45);cursor:pointer" title="19:00 - 18 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.30);cursor:pointer" title="20:00 - 12 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.20);cursor:pointer" title="21:00 - 8 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.14);cursor:pointer" title="22:00 - 5 actions"></div>
+          <div style="width:calc(8.33% - 4px);height:28px;border-radius:4px;background:rgba(79,70,229,0.10);cursor:pointer" title="23:00 - 3 actions"></div>
+        </div>
+        <div class="d-flex justify-content-between mt-2" style="font-size:11px;color:#94a3b8">
+          <span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:00</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="wms-card">
+      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-user-clock"></i> Recent User Sessions</div></div>
+      <div class="card-body-wms">
+        <div class="d-flex flex-column gap-3">
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar sm">JD</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">John Doe</div><div style="font-size:11px;color:#64748b">192.168.1.42 · Chrome · Windows</div></div>
+            <span class="badge-wms success"><span class="badge-dot"></span>Online</span>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar sm avatar-success">SK</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">Sarah Kim</div><div style="font-size:11px;color:#64748b">192.168.1.55 · Firefox · Mac</div></div>
+            <span class="badge-wms success"><span class="badge-dot"></span>Online</span>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar sm avatar-warning">MR</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">Mike Ross</div><div style="font-size:11px;color:#64748b">192.168.1.71 · Mobile · Android</div></div>
+            <span class="badge-wms secondary"><span class="badge-dot"></span>Away</span>
+          </div>
+          <div class="d-flex align-items-center gap-3">
+            <div class="avatar sm avatar-info">JS</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">Jane Smith</div><div style="font-size:11px;color:#64748b">192.168.1.88 · Chrome · Mac</div></div>
+            <span class="badge-wms warning"><span class="badge-dot"></span>Idle</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+  $('#logsTable').DataTable({responsive:true,pageLength:10,order:[[5,'desc']],language:{search:'',searchPlaceholder:'Search logs...'}});
+});
+</script>
+{% endblock %}

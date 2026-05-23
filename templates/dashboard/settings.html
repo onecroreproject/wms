@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div id="settingsPage">
+<div class="page-header animate-in">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+      <h1 class="page-title">Settings</h1>
+      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><a href="{% url 'dashboard' %}">Dashboard</a><span class="breadcrumb-sep">/</span><span>Settings</span></div>
+    </div>
+    <button class="btn-wms primary settings-save-btn"><i class="fas fa-save"></i> Save Changes</button>
+  </div>
+</div>
+
+<div class="row g-3">
+  <!-- Left: Settings Menu -->
+  <div class="col-xl-3 animate-in animate-in-delay-1">
+    <div class="wms-card">
+      <div class="card-body-wms p-2">
+        <div class="d-flex flex-column gap-1" id="settingsTabs">
+          <button class="btn-wms ghost settings-tab active" data-target="general" style="justify-content:flex-start;width:100%"><i class="fas fa-gear me-2 text-primary-color"></i>General</button>
+          <button class="btn-wms ghost settings-tab" data-target="warehouse" style="justify-content:flex-start;width:100%"><i class="fas fa-warehouse me-2 text-success-color"></i>Warehouse Config</button>
+          <button class="btn-wms ghost settings-tab" data-target="notifications-s" style="justify-content:flex-start;width:100%"><i class="fas fa-bell me-2 text-warning-color"></i>Notifications</button>
+          <button class="btn-wms ghost settings-tab" data-target="users" style="justify-content:flex-start;width:100%"><i class="fas fa-users me-2 text-info-color"></i>User Access</button>
+          <button class="btn-wms ghost settings-tab" data-target="integrations" style="justify-content:flex-start;width:100%"><i class="fas fa-plug me-2" style="color:#7c3aed"></i>Integrations</button>
+          <button class="btn-wms ghost settings-tab" data-target="backup" style="justify-content:flex-start;width:100%"><i class="fas fa-database me-2 text-danger-color"></i>Backup & Security</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right: Settings Content -->
+  <div class="col-xl-9 animate-in animate-in-delay-2">
+
+    <!-- General Settings -->
+    <div class="settings-panel" id="panel-general">
+      <div class="wms-card mb-3">
+        <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-building"></i> Company Information</div></div>
+        <div class="card-body-wms">
+          <div class="row g-3">
+            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Company Name</label><input type="text" class="form-control-wms" value="WMS Pro Enterprises Ltd."></div></div>
+            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Registration No.</label><input type="text" class="form-control-wms" value="REG-2024-WMS-001"></div></div>
+            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Email Address</label><input type="email" class="form-control-wms" value="admin@wmspro.com"></div></div>
+            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Phone Number</label><input type="text" class="form-control-wms" value="+91-22-4001-2345"></div></div>
+            <div class="col-12"><div class="form-group-wms"><label class="form-label-wms">Address</label><textarea class="form-control-wms" rows="2">Plot 47, MIDC Industrial Area, Andheri East, Mumbai — 400093, Maharashtra, India</textarea></div></div>
+            <div class="col-md-4"><div class="form-group-wms"><label class="form-label-wms">Currency</label><select class="form-control-wms form-select-wms"><option>USD ($)</option><option selected>INR (₹)</option><option>EUR (€)</option></select></div></div>
+            <div class="col-md-4"><div class="form-group-wms"><label class="form-label-wms">Timezone</label><select class="form-control-wms form-select-wms"><option selected>Asia/Kolkata (IST)</option><option>UTC</option><option>America/New_York</option></select></div></div>
+            <div class="col-md-4"><div class="form-group-wms"><label class="form-label-wms">Date Format</label><select class="form-control-wms form-select-wms"><option>DD/MM/YYYY</option><option selected>MMM DD, YYYY</option></select></div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="wms-card">
+        <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-palette"></i> Theme & Appearance</div></div>
+        <div class="card-body-wms">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="form-group-wms"><label class="form-label-wms">Color Theme</label>
+                <div class="d-flex gap-2 mt-2">
+                  <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#4f46e5,#7c3aed);cursor:pointer;border:3px solid #4f46e5" title="Indigo Purple"></div>
+                  <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#10b981,#059669);cursor:pointer;border:3px solid transparent" title="Green"></div>
+                  <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#3b82f6,#2563eb);cursor:pointer;border:3px solid transparent" title="Blue"></div>
+                  <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#ef4444,#dc2626);cursor:pointer;border:3px solid transparent" title="Red"></div>
+                  <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#f59e0b,#d97706);cursor:pointer;border:3px solid transparent" title="Amber"></div>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="form-group-wms"><label class="form-label-wms">Dashboard Language</label>
+                <select class="form-control-wms form-select-wms"><option selected>English</option><option>Hindi</option><option>Spanish</option><option>French</option></select>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Warehouse Config (hidden by default) -->
+    <div class="settings-panel d-none" id="panel-warehouse">
+      <div class="wms-card">
+        <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-warehouse"></i> Warehouse Configuration</div></div>
+        <div class="card-body-wms">
+          <div class="row g-3">
+            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Total Warehouse Area (sq ft)</label><input type="text" class="form-control-wms" value="60,000"></div></div>
+            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Number of Zones</label><input type="number" class="form-control-wms" value="6"></div></div>
+            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Low Stock Threshold (%)</label><input type="number" class="form-control-wms" value="20"></div></div>
+            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Critical Stock Threshold (%)</label><input type="number" class="form-control-wms" value="10"></div></div>
+            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Max Capacity Utilization Alert (%)</label><input type="number" class="form-control-wms" value="90"></div></div>
+            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Default Shipping Method</label><select class="form-control-wms form-select-wms"><option selected>Express Courier</option><option>Standard Freight</option><option>Air Cargo</option></select></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.querySelectorAll('.settings-tab').forEach(function(tab) {
+  tab.addEventListener('click', function() {
+    document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.settings-panel').forEach(p => p.classList.add('d-none'));
+    tab.classList.add('active');
+    var target = document.getElementById('panel-' + tab.dataset.target);
+    if (target) {
+      target.classList.remove('d-none');
+    } else {
+      document.getElementById('panel-general').classList.remove('d-none');
+      showToast('This settings section is under construction','info');
+    }
+  });
+});
+</script>
+{% endblock %}

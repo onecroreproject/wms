@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-header animate-in">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+      <h1 class="page-title">Dispatch Management</h1>
+      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><a href="{% url 'dashboard' %}">Dashboard</a><span class="breadcrumb-sep">/</span><span>Dispatch</span></div>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn-wms ghost"><i class="fas fa-route"></i> Plan Route</button>
+      <button class="btn-wms primary" id="addDispatchBtn" onclick="showToast('New dispatch form — assign driver and route below','info')"><i class="fas fa-plus"></i> New Dispatch</button>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-1">
+    <div class="stat-card primary"><div class="stat-card-header"><div class="stat-icon primary"><i class="fas fa-truck-fast"></i></div><span class="stat-change up"><i class="fas fa-arrow-up"></i>+5.7%</span></div><div class="stat-value"><span class="counter-value" data-target="328">328</span></div><div class="stat-label">Active Dispatches</div></div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-2">
+    <div class="stat-card success"><div class="stat-card-header"><div class="stat-icon success"><i class="fas fa-circle-check"></i></div><span class="stat-change up"><i class="fas fa-arrow-up"></i>+3.2%</span></div><div class="stat-value"><span class="counter-value" data-target="2140">2,140</span></div><div class="stat-label">Completed This Month</div></div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-3">
+    <div class="stat-card warning"><div class="stat-card-header"><div class="stat-icon warning"><i class="fas fa-clock"></i></div></div><div class="stat-value"><span class="counter-value" data-target="12">12</span></div><div class="stat-label">Delayed</div></div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-4">
+    <div class="stat-card info"><div class="stat-card-header"><div class="stat-icon info"><i class="fas fa-percentage"></i></div></div><div class="stat-value">94.2%</div><div class="stat-label">On-Time Rate</div></div>
+  </div>
+</div>
+
+<div class="row g-3 mb-4">
+  <div class="col-xl-4 animate-in animate-in-delay-2">
+    <div class="wms-card h-100">
+      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-chart-pie"></i> Dispatch Status</div></div>
+      <div class="card-body-wms"><div id="dispatchPie"></div></div>
+    </div>
+  </div>
+  <div class="col-xl-8 animate-in animate-in-delay-3">
+    <div class="wms-card h-100">
+      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-map-location-dot"></i> Active Dispatch Tracking</div></div>
+      <div class="card-body-wms">
+        <div class="table-responsive">
+          <table class="table-wms">
+            <thead><tr><th>Dispatch ID</th><th>Driver</th><th>Vehicle</th><th>Destination</th><th>ETA</th><th>Status</th><th>Action</th></tr></thead>
+            <tbody>
+              <tr><td><strong>#DSP-441</strong></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm">MR</div>Mike Ross</div></td><td>TRK-021 (Ford Transit)</td><td>Mumbai — Client A</td><td>2h 15m</td><td><span class="badge-wms success"><span class="badge-dot"></span>On Route</span></td><td><button class="btn-wms ghost sm icon-only" title="Track"><i class="fas fa-location-dot"></i></button></td></tr>
+              <tr><td><strong>#DSP-440</strong></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-success">JS</div>Jane Smith</div></td><td>TRK-015 (Mercedes)</td><td>Pune — Warehouse B</td><td>4h 30m</td><td><span class="badge-wms warning"><span class="badge-dot"></span>Delayed</span></td><td><button class="btn-wms ghost sm icon-only" title="Track"><i class="fas fa-location-dot"></i></button></td></tr>
+              <tr><td><strong>#DSP-439</strong></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-info">RK</div>Raj Kumar</div></td><td>TRK-009 (Tata Ace)</td><td>Nashik — Zone D</td><td>1h 45m</td><td><span class="badge-wms success"><span class="badge-dot"></span>On Route</span></td><td><button class="btn-wms ghost sm icon-only" title="Track"><i class="fas fa-location-dot"></i></button></td></tr>
+              <tr><td><strong>#DSP-438</strong></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-warning">AP</div>Amit Patel</div></td><td>TRK-032 (Eicher)</td><td>Surat — Distribution</td><td>6h 10m</td><td><span class="badge-wms cyan"><span class="badge-dot"></span>Loading</span></td><td><button class="btn-wms ghost sm icon-only" title="Track"><i class="fas fa-location-dot"></i></button></td></tr>
+              <tr><td><strong>#DSP-437</strong></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-danger">SN</div>Sara Nair</div></td><td>TRK-018 (Ashok)</td><td>Nagpur — Client C</td><td>Delivered</td><td><span class="badge-wms success"><span class="badge-dot"></span>Delivered</span></td><td><button class="btn-wms ghost sm icon-only" title="Track"><i class="fas fa-location-dot"></i></button></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="wms-card animate-in animate-in-delay-3">
+  <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-list"></i> All Dispatches</div></div>
+  <div class="card-body-wms">
+    <div class="table-responsive">
+      <table class="table-wms wms-datatable" id="dispatchTable">
+        <thead><tr><th>Dispatch ID</th><th>Order Ref</th><th>Driver</th><th>Vehicle</th><th>Origin</th><th>Destination</th><th>Dispatch Date</th><th>ETA</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td><strong>#DSP-441</strong></td><td>#ORD-9921</td><td>Mike Ross</td><td>TRK-021</td><td>Warehouse A</td><td>Mumbai Client A</td><td>May 23, 2024</td><td>May 23, 5:30 PM</td><td><span class="badge-wms success"><span class="badge-dot"></span>On Route</span></td></tr>
+          <tr><td><strong>#DSP-440</strong></td><td>#ORD-9919</td><td>Jane Smith</td><td>TRK-015</td><td>Warehouse B</td><td>Pune WH-B</td><td>May 22, 2024</td><td>May 23, 8:00 PM</td><td><span class="badge-wms warning"><span class="badge-dot"></span>Delayed</span></td></tr>
+          <tr><td><strong>#DSP-439</strong></td><td>#ORD-9918</td><td>Raj Kumar</td><td>TRK-009</td><td>Warehouse A</td><td>Nashik Zone D</td><td>May 22, 2024</td><td>May 23, 4:15 PM</td><td><span class="badge-wms success"><span class="badge-dot"></span>On Route</span></td></tr>
+          <tr><td><strong>#DSP-437</strong></td><td>#ORD-9916</td><td>Sara Nair</td><td>TRK-018</td><td>Warehouse C</td><td>Nagpur Client C</td><td>May 21, 2024</td><td>May 22, 2024</td><td><span class="badge-wms success"><span class="badge-dot"></span>Delivered</span></td></tr>
+          <tr><td><strong>#DSP-435</strong></td><td>#ORD-9914</td><td>Vikram Singh</td><td>TRK-027</td><td>Warehouse A</td><td>Delhi Zone A</td><td>May 20, 2024</td><td>May 22, 2024</td><td><span class="badge-wms success"><span class="badge-dot"></span>Delivered</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/charts.js' %}"></script>
+<script>
+$(document).ready(function() {
+  if ($.fn.DataTable && !$.fn.DataTable.isDataTable('#dispatchTable')) {
+    $('#dispatchTable').DataTable({
+      responsive:true, pageLength:10,
+      dom:'<"d-flex justify-content-between align-items-center mb-3"<"d-flex align-items-center gap-2"Bl><"d-flex"f>>rtip',
+      buttons:[{extend:'csv',className:'btn-wms ghost sm',text:'<i class="fas fa-download me-1"></i>CSV'},{extend:'print',className:'btn-wms ghost sm',text:'Print'}],
+      language:{search:'',searchPlaceholder:'Search dispatches...',paginate:{previous:'<i class="fas fa-angle-left"></i>',next:'<i class="fas fa-angle-right"></i>'}}
+    });
+  }
+});
+</script>
+{% endblock %}
