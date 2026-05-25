@@ -683,16 +683,18 @@ body {
    CARDS
    ============================================================ */
 
-/* Cards inside grid columns stretch to equal height */
-.row > [class*="col"] > .wms-card {
-  height: 100%;
+/* Card body fills remaining space so headers/footers stay put */
+.wms-card {
   display: flex;
   flex-direction: column;
 }
-
-/* Card body fills remaining space so headers/footers stay put */
-.row > [class*="col"] > .wms-card > .card-body-wms {
+.wms-card > .card-body-wms {
   flex: 1;
+}
+
+/* Equal-height cards: opt-in only with .row-stretch */
+.row-stretch > [class*="col"] > .wms-card {
+  height: 100%;
 }
 
 .wms-card {
