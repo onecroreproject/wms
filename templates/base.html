@@ -1,10 +1,23 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>{% block title %}{{ page_title }} | WMS Pro{% endblock %}</title>
+  <title>{% block title %}{{ page_title }} | WareHub{% endblock %}</title>
   {% load static %}
+
+  <!-- Theme + sidebar state: apply synchronously before paint -->
+  <script>
+    (function(){
+      var t = localStorage.getItem('wms-theme');
+      if (t) document.documentElement.setAttribute('data-theme', t);
+      // Clear stale auto-collapsed sidebar state (was set by broken 1280px CSS breakpoint)
+      // Only keep it if the user deliberately toggled via the button
+      if (!localStorage.getItem('wms-sidebar-user-set')) {
+        localStorage.removeItem('sidebar-collapsed');
+      }
+    })();
+  </script>
 
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -77,5 +90,16 @@
 <script src="{% static 'js/wms-interactions.js' %}"></script>
 
 {% block extra_js %}{% endblock %}
+
+<script>
+(function () {
+  document.addEventListener('click', function (e) {
+    var card = e.target.closest('[data-href]');
+    if (!card) return;
+    if (e.target.closest('a, button, input, select, textarea, [onclick]')) return;
+    window.location.href = card.getAttribute('data-href');
+  });
+})();
+</script>
 </body>
 </html>

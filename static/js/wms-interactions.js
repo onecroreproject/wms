@@ -1325,6 +1325,10 @@ WMS.Reports = {
 /* ═══════════════════════════════════════════════════════════════
    AUTO INITIALISE — runs on DOMContentLoaded
    ═══════════════════════════════════════════════════════════ */
+/* Apply opacity:0 immediately (before DOMContentLoaded) so theme
+   is already set by the inline <head> script before body paints */
+document.documentElement.style.opacity = '0';
+
 document.addEventListener('DOMContentLoaded', function() {
   WMS.initTheme();
   WMS.Products.init();
@@ -1340,10 +1344,9 @@ document.addEventListener('DOMContentLoaded', function() {
   WMS.Reports.init();
   WMS.hideLoading();
 
-  /* Page-transition fade-in */
-  document.body.style.opacity='0';
+  /* Page-transition fade-in — reveal after theme is applied */
   requestAnimationFrame(function(){
-    document.body.style.transition='opacity .3s ease';
-    document.body.style.opacity='1';
+    document.documentElement.style.transition = 'opacity .25s ease';
+    document.documentElement.style.opacity = '1';
   });
 });

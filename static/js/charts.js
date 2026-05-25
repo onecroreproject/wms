@@ -20,29 +20,29 @@
   };
 
   // ============================================================
-  // DASHBOARD - Revenue Line Chart
+  // DASHBOARD - Monthly Rent Revenue Chart
   // ============================================================
   if (document.getElementById('revenueChart')) {
     const chart = new ApexCharts(document.getElementById('revenueChart'), {
       ...baseChartOptions,
       chart: { ...baseChartOptions.chart, type: 'area', height: 300, sparkline: { enabled: false } },
       series: [
-        { name: 'Revenue', data: [42000, 58000, 51000, 73000, 68000, 82000, 79000, 91000, 86000, 104000, 98000, 115000] },
-        { name: 'Expenses', data: [28000, 34000, 30000, 42000, 38000, 47000, 44000, 52000, 49000, 58000, 54000, 63000] },
+        { name: 'Rent Collected', data: [72000, 78000, 75000, 80000, 82000, 85000, 83000, 88000, 90000, 94000, 98000, 89000] },
+        { name: 'Outstanding', data: [18000, 14000, 20000, 15000, 12000, 10000, 16000, 12000, 9000, 11000, 8000, 27000] },
       ],
       xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        categories: ['Jun\u201925', 'Jul\u201925', 'Aug\u201925', 'Sep\u201925', 'Oct\u201925', 'Nov\u201925', 'Dec\u201925', 'Jan\u201926', 'Feb\u201926', 'Mar\u201926', 'Apr\u201926', 'May\u201926'],
         labels: { style: { colors: '#94a3b8', fontSize: '12px' } },
       },
       yaxis: {
         labels: {
-          formatter: function (v) { return '$' + (v / 1000).toFixed(0) + 'K'; },
+          formatter: function (v) { return '\u20b9' + (v / 1000).toFixed(0) + 'K'; },
           style: { colors: '#94a3b8', fontSize: '12px' },
         }
       },
-      colors: [PRIMARY, '#e2e8f0'],
+      colors: [PRIMARY, DANGER],
       fill: {
-        type: ['gradient', 'solid'],
+        type: ['gradient', 'gradient'],
         gradient: { shadeIntensity: 1, opacityFrom: 0.35, opacityTo: 0.05, stops: [0, 100] },
       },
       stroke: { curve: 'smooth', width: [3, 2] },
@@ -54,15 +54,15 @@
   }
 
   // ============================================================
-  // DASHBOARD - Order Status Donut
+  // DASHBOARD - Occupancy / Ticket Status Donut
   // ============================================================
   if (document.getElementById('orderStatusChart')) {
     const chart = new ApexCharts(document.getElementById('orderStatusChart'), {
       ...baseChartOptions,
-      chart: { ...baseChartOptions.chart, type: 'donut', height: 300 },
-      series: [38, 27, 19, 16],
-      labels: ['Delivered', 'Processing', 'Pending', 'Cancelled'],
-      colors: [SUCCESS, PRIMARY, WARNING, DANGER],
+      chart: { ...baseChartOptions.chart, type: 'donut', height: 220 },
+      series: [8, 3, 1],
+      labels: ['Occupied', 'Vacant', 'Maintenance'],
+      colors: [SUCCESS, PRIMARY, WARNING],
       plotOptions: {
         pie: {
           donut: {
@@ -71,7 +71,7 @@
               show: true,
               total: {
                 show: true,
-                label: 'Total Orders',
+                label: 'Total Units',
                 fontSize: '13px',
                 fontWeight: 600,
                 color: '#64748b',
@@ -92,28 +92,29 @@
   }
 
   // ============================================================
-  // DASHBOARD - Warehouse Utilization Bar
+  // REPORTS - Occupancy Rate (Last 6 Months)
   // ============================================================
   if (document.getElementById('warehouseChart')) {
     const chart = new ApexCharts(document.getElementById('warehouseChart'), {
       ...baseChartOptions,
       chart: { ...baseChartOptions.chart, type: 'bar', height: 280 },
       series: [
-        { name: 'Used', data: [78, 65, 90, 54, 82, 71] },
-        { name: 'Available', data: [22, 35, 10, 46, 18, 29] },
+        { name: 'Occupied', data: [7, 7, 8, 8, 7, 8] },
+        { name: 'Vacant', data: [4, 4, 3, 3, 4, 3] },
+        { name: 'Maintenance', data: [1, 1, 1, 1, 1, 1] },
       ],
       xaxis: {
-        categories: ['Zone A', 'Zone B', 'Zone C', 'Zone D', 'Zone E', 'Zone F'],
+        categories: ['Dec\u201925', 'Jan\u201926', 'Feb\u201926', 'Mar\u201926', 'Apr\u201926', 'May\u201926'],
         labels: { style: { colors: '#94a3b8', fontSize: '12px' } },
       },
       yaxis: {
-        max: 100,
+        max: 12,
         labels: {
-          formatter: function (v) { return v + '%'; },
+          formatter: function (v) { return v + ' units'; },
           style: { colors: '#94a3b8', fontSize: '12px' },
         }
       },
-      colors: [PRIMARY, '#e2e8f0'],
+      colors: [SUCCESS, PRIMARY, WARNING],
       plotOptions: {
         bar: { horizontal: false, columnWidth: '55%', borderRadius: 6, stacked: true }
       },
@@ -126,21 +127,21 @@
   }
 
   // ============================================================
-  // REPORTS - Sales Analytics Line
+  // REPORTS - Revenue Trend Line (reused as salesChart id)
   // ============================================================
   if (document.getElementById('salesChart')) {
     const chart = new ApexCharts(document.getElementById('salesChart'), {
       ...baseChartOptions,
       chart: { ...baseChartOptions.chart, type: 'line', height: 350 },
       series: [
-        { name: 'This Year', data: [31, 40, 28, 51, 42, 109, 100, 87, 95, 111, 104, 118] },
-        { name: 'Last Year', data: [20, 29, 37, 36, 44, 45, 50, 68, 76, 88, 80, 93] },
+        { name: 'Collected (FY2026)', data: [78000, 80000, 82000, 85000, 88000, 90000, 83000, 87000, 92000, 95000, 98000, 89000] },
+        { name: 'Collected (FY2025)', data: [62000, 65000, 68000, 70000, 72000, 75000, 73000, 77000, 80000, 82000, 85000, 84000] },
       ],
       xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        categories: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May'],
         labels: { style: { colors: '#94a3b8', fontSize: '12px' } },
       },
-      yaxis: { labels: { style: { colors: '#94a3b8', fontSize: '12px' } } },
+      yaxis: { labels: { formatter: function(v){ return '\u20b9'+(v/1000).toFixed(0)+'K'; }, style: { colors: '#94a3b8', fontSize: '12px' } } },
       colors: [PRIMARY, '#e2e8f0'],
       stroke: { curve: 'smooth', width: [3, 2], dashArray: [0, 5] },
       markers: { size: [4, 0] },
@@ -151,14 +152,14 @@
   }
 
   // ============================================================
-  // SALES ANALYTICS - Radial Chart
+  // REPORTS - Ticket Resolution Radial
   // ============================================================
   if (document.getElementById('salesRadial')) {
     const chart = new ApexCharts(document.getElementById('salesRadial'), {
       ...baseChartOptions,
       chart: { ...baseChartOptions.chart, type: 'radialBar', height: 300 },
-      series: [87, 73, 61, 94],
-      labels: ['Electronics', 'Apparel', 'Food', 'Hardware'],
+      series: [92, 75, 88, 60],
+      labels: ['Maintenance', 'Billing', 'Access Issue', 'General'],
       colors: [PRIMARY, SUCCESS, WARNING, CYAN],
       plotOptions: {
         radialBar: {
@@ -172,7 +173,7 @@
             value: { fontSize: '18px', fontWeight: 700, color: '#0f172a', fontFamily: 'Poppins, sans-serif' },
             total: {
               show: true,
-              label: 'Avg Score',
+              label: 'Avg Resolution',
               fontSize: '12px',
               fontWeight: 600,
               color: '#64748b',
@@ -186,58 +187,7 @@
     chart.render();
   }
 
-  // ============================================================
-  // INVENTORY - Stock Levels Heatmap
-  // ============================================================
-  if (document.getElementById('stockHeatmap')) {
-    const generateData = function (count, yrange) {
-      let series = [];
-      for (let i = 0; i < count; i++) {
-        series.push({ x: 'W' + (i + 1), y: Math.floor(Math.random() * (yrange.max - yrange.min + 1)) + yrange.min });
-      }
-      return series;
-    };
-    const chart = new ApexCharts(document.getElementById('stockHeatmap'), {
-      ...baseChartOptions,
-      chart: { ...baseChartOptions.chart, type: 'heatmap', height: 260 },
-      series: [
-        { name: 'Electronics', data: generateData(12, { min: 0, max: 100 }) },
-        { name: 'Apparel', data: generateData(12, { min: 10, max: 90 }) },
-        { name: 'Food', data: generateData(12, { min: 5, max: 95 }) },
-        { name: 'Hardware', data: generateData(12, { min: 20, max: 80 }) },
-      ],
-      colors: [PRIMARY],
-      dataLabels: { enabled: false },
-      xaxis: { labels: { style: { colors: '#94a3b8', fontSize: '11px' } } },
-      yaxis: { labels: { style: { colors: '#94a3b8', fontSize: '11px' } } },
-    });
-    chart.render();
-  }
-
-  // ============================================================
-  // SHIPMENTS - Timeline Area Chart
-  // ============================================================
-  if (document.getElementById('shipmentsChart')) {
-    const chart = new ApexCharts(document.getElementById('shipmentsChart'), {
-      ...baseChartOptions,
-      chart: { ...baseChartOptions.chart, type: 'area', height: 260 },
-      series: [
-        { name: 'Incoming', data: [45, 62, 38, 71, 84, 56, 91, 68, 75, 82, 67, 88] },
-        { name: 'Outgoing', data: [38, 54, 31, 65, 72, 48, 83, 60, 68, 74, 59, 79] },
-      ],
-      xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-        labels: { style: { colors: '#94a3b8', fontSize: '11px' } },
-      },
-      yaxis: { labels: { style: { colors: '#94a3b8', fontSize: '11px' } } },
-      colors: [PRIMARY, SUCCESS],
-      fill: { type: 'gradient', gradient: { opacityFrom: 0.3, opacityTo: 0.05 } },
-      stroke: { curve: 'smooth', width: 2 },
-      dataLabels: { enabled: false },
-      legend: { position: 'top', fontSize: '12px', labels: { colors: '#64748b' } },
-    });
-    chart.render();
-  }
+  // (Removed obsolete inventory heatmap and shipments chart - not used in WareHub)
 
   // ============================================================
   // MINI SPARKLINES on stat cards
@@ -259,60 +209,26 @@
   renderSparkline('spark4', [8, 10, 9, 12, 11, 13, 12, 15, 13, 16], DANGER);
 
   // ============================================================
-  // REPORTS - Multi-metric Bar
+  // REPORTS - Payment Status Bar (Collected / Outstanding / Late Fee)
   // ============================================================
   if (document.getElementById('reportsBarChart')) {
     const chart = new ApexCharts(document.getElementById('reportsBarChart'), {
       ...baseChartOptions,
       chart: { ...baseChartOptions.chart, type: 'bar', height: 320 },
       series: [
-        { name: 'Orders', data: [120, 145, 132, 168, 155, 182, 175, 198, 185, 210, 202, 225] },
-        { name: 'Shipments', data: [95, 118, 108, 140, 128, 152, 147, 168, 158, 180, 172, 195] },
-        { name: 'Returns', data: [12, 15, 13, 18, 16, 20, 19, 22, 21, 25, 23, 26] },
+        { name: 'Collected', data: [72000, 78000, 75000, 80000, 82000, 85000, 83000, 88000, 90000, 94000, 98000, 89000] },
+        { name: 'Outstanding', data: [18000, 14000, 20000, 15000, 12000, 10000, 16000, 12000, 9000, 11000, 8000, 27000] },
+        { name: 'Late Fees', data: [900, 600, 1100, 500, 300, 200, 800, 400, 200, 300, 150, 1800] },
       ],
       xaxis: {
-        categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        categories: ['Jun\u201925', 'Jul\u201925', 'Aug\u201925', 'Sep\u201925', 'Oct\u201925', 'Nov\u201925', 'Dec\u201925', 'Jan\u201926', 'Feb\u201926', 'Mar\u201926', 'Apr\u201926', 'May\u201926'],
         labels: { style: { colors: '#94a3b8', fontSize: '11px' } },
       },
-      yaxis: { labels: { style: { colors: '#94a3b8', fontSize: '11px' } } },
-      colors: [PRIMARY, SUCCESS, DANGER],
+      yaxis: { labels: { formatter: function(v){ return '\u20b9'+(v/1000).toFixed(0)+'K'; }, style: { colors: '#94a3b8', fontSize: '11px' } } },
+      colors: [SUCCESS, WARNING, DANGER],
       plotOptions: { bar: { borderRadius: 4, columnWidth: '65%' } },
       dataLabels: { enabled: false },
       legend: { position: 'top', fontSize: '12px', labels: { colors: '#64748b' } },
-    });
-    chart.render();
-  }
-
-  // ============================================================
-  // CATEGORY PIE - Products page
-  // ============================================================
-  if (document.getElementById('categoryPie')) {
-    const chart = new ApexCharts(document.getElementById('categoryPie'), {
-      ...baseChartOptions,
-      chart: { ...baseChartOptions.chart, type: 'pie', height: 300 },
-      series: [35, 25, 20, 12, 8],
-      labels: ['Electronics', 'Apparel', 'Food & Bev', 'Hardware', 'Others'],
-      colors: [PRIMARY, SUCCESS, WARNING, CYAN, '#94a3b8'],
-      legend: { position: 'bottom', fontSize: '12px', labels: { colors: '#64748b' } },
-      dataLabels: { enabled: true, style: { fontSize: '12px' }, dropShadow: { enabled: false } },
-      stroke: { width: 3 },
-    });
-    chart.render();
-  }
-
-  // ============================================================
-  // DISPATCH STATUS PIE
-  // ============================================================
-  if (document.getElementById('dispatchPie')) {
-    const chart = new ApexCharts(document.getElementById('dispatchPie'), {
-      ...baseChartOptions,
-      chart: { ...baseChartOptions.chart, type: 'donut', height: 280 },
-      series: [42, 28, 18, 12],
-      labels: ['On Time', 'Delayed', 'In Transit', 'Failed'],
-      colors: [SUCCESS, WARNING, PRIMARY, DANGER],
-      plotOptions: { pie: { donut: { size: '70%' } } },
-      legend: { position: 'bottom', fontSize: '12px', labels: { colors: '#64748b' } },
-      dataLabels: { enabled: false },
     });
     chart.render();
   }

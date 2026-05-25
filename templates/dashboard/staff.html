@@ -6,143 +6,195 @@
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
     <div>
       <h1 class="page-title">Staff Management</h1>
-      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><a href="{% url 'dashboard' %}">Dashboard</a><span class="breadcrumb-sep">/</span><span>Staff</span></div>
+      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><span>Staff</span></div>
     </div>
     <div class="d-flex gap-2">
-      <button class="btn-wms ghost"><i class="fas fa-download"></i> Export</button>
-      <button class="btn-wms primary" id="addStaffBtn"><i class="fas fa-user-plus"></i> Add Staff</button>
+      <button class="btn-wms ghost" onclick="showToast('Exported!','success')"><i class="fas fa-download"></i> Export</button>
+      <button class="btn-wms primary" onclick="openAddStaffModal()"><i class="fas fa-user-plus"></i> Add Staff</button>
     </div>
   </div>
 </div>
 
+<!-- Stats -->
 <div class="row g-3 mb-4">
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-1">
-    <div class="stat-card primary"><div class="stat-card-header"><div class="stat-icon primary"><i class="fas fa-users"></i></div><span class="stat-change up"><i class="fas fa-arrow-up"></i>+4</span></div><div class="stat-value"><span class="counter-value" data-target="84">84</span></div><div class="stat-label">Total Staff</div></div>
+    <div class="stat-card primary" data-href="{% url 'staff' %}"><div class="stat-card-header"><div class="stat-icon primary"><i class="fas fa-users"></i></div></div><div class="stat-value" id="totalStaffCount">6</div><div class="stat-label">Total Staff</div></div>
   </div>
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-2">
-    <div class="stat-card success"><div class="stat-card-header"><div class="stat-icon success"><i class="fas fa-circle-check"></i></div></div><div class="stat-value"><span class="counter-value" data-target="72">72</span></div><div class="stat-label">On Duty Today</div></div>
+    <div class="stat-card success" data-href="{% url 'staff' %}"><div class="stat-card-header"><div class="stat-icon success"><i class="fas fa-circle-check"></i></div></div><div class="stat-value" id="activeStaffCount">6</div><div class="stat-label">Active</div></div>
   </div>
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-3">
-    <div class="stat-card warning"><div class="stat-card-header"><div class="stat-icon warning"><i class="fas fa-user-clock"></i></div></div><div class="stat-value"><span class="counter-value" data-target="8">8</span></div><div class="stat-label">On Leave</div></div>
+    <div class="stat-card info" data-href="{% url 'tickets' %}"><div class="stat-card-header"><div class="stat-icon info"><i class="fas fa-headset"></i></div></div><div class="stat-value">2</div><div class="stat-label">Support Agents</div></div>
   </div>
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-4">
-    <div class="stat-card info"><div class="stat-card-header"><div class="stat-icon info"><i class="fas fa-user-gear"></i></div></div><div class="stat-value"><span class="counter-value" data-target="6">6</span></div><div class="stat-label">Departments</div></div>
+    <div class="stat-card warning" data-href="{% url 'staff' %}"><div class="stat-card-header"><div class="stat-icon warning"><i class="fas fa-building"></i></div></div><div class="stat-value">5</div><div class="stat-label">Departments</div></div>
   </div>
 </div>
 
 <!-- Staff Cards Grid -->
-<div class="row g-3 mb-4" id="staffCardsGrid">
-
-  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-1">
-    <div class="wms-card"><div class="card-body-wms">
-      <div class="d-flex align-items-start gap-3">
-        <div class="avatar lg" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">JD</div>
-        <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#0f172a">John Doe</div><div style="font-size:12.5px;color:#64748b;margin-bottom:4px">Warehouse Manager</div><span class="tag-chip">Operations</span></div>
-        <span class="badge-wms success"><span class="badge-dot"></span>Active</span>
-      </div>
-      <div class="d-flex flex-column gap-2 mt-3" style="font-size:12.5px;color:#64748b">
-        <div><i class="fas fa-envelope me-2" style="color:#4f46e5;width:14px"></i>john@wms.com</div>
-        <div><i class="fas fa-phone me-2" style="color:#10b981;width:14px"></i>+91-9876543210</div>
-      </div>
-      <div class="d-flex gap-2 mt-3"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Viewing profile','info')"><i class="fas fa-eye me-1"></i>View</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Edit form opened','info')"><i class="fas fa-pen me-1"></i>Edit</button></div>
-    </div></div>
-  </div>
-
-  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-2">
-    <div class="wms-card"><div class="card-body-wms">
-      <div class="d-flex align-items-start gap-3">
-        <div class="avatar lg" style="background:linear-gradient(135deg,#10b981,#059669)">SK</div>
-        <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#0f172a">Sarah Kim</div><div style="font-size:12.5px;color:#64748b;margin-bottom:4px">Inventory Analyst</div><span class="tag-chip">Inventory</span></div>
-        <span class="badge-wms success"><span class="badge-dot"></span>Active</span>
-      </div>
-      <div class="d-flex flex-column gap-2 mt-3" style="font-size:12.5px;color:#64748b">
-        <div><i class="fas fa-envelope me-2" style="color:#4f46e5;width:14px"></i>sarah@wms.com</div>
-        <div><i class="fas fa-phone me-2" style="color:#10b981;width:14px"></i>+91-9876543211</div>
-      </div>
-      <div class="d-flex gap-2 mt-3"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Viewing profile','info')"><i class="fas fa-eye me-1"></i>View</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Edit form opened','info')"><i class="fas fa-pen me-1"></i>Edit</button></div>
-    </div></div>
-  </div>
-
-  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-3">
-    <div class="wms-card"><div class="card-body-wms">
-      <div class="d-flex align-items-start gap-3">
-        <div class="avatar lg" style="background:linear-gradient(135deg,#f59e0b,#d97706)">MR</div>
-        <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#0f172a">Mike Ross</div><div style="font-size:12.5px;color:#64748b;margin-bottom:4px">Dispatch Coordinator</div><span class="tag-chip">Logistics</span></div>
-        <span class="badge-wms warning"><span class="badge-dot"></span>On Leave</span>
-      </div>
-      <div class="d-flex flex-column gap-2 mt-3" style="font-size:12.5px;color:#64748b">
-        <div><i class="fas fa-envelope me-2" style="color:#4f46e5;width:14px"></i>mike@wms.com</div>
-        <div><i class="fas fa-phone me-2" style="color:#10b981;width:14px"></i>+91-9876543212</div>
-      </div>
-      <div class="d-flex gap-2 mt-3"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Viewing profile','info')"><i class="fas fa-eye me-1"></i>View</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Edit form opened','info')"><i class="fas fa-pen me-1"></i>Edit</button></div>
-    </div></div>
-  </div>
-
-  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-4">
-    <div class="wms-card"><div class="card-body-wms">
-      <div class="d-flex align-items-start gap-3">
-        <div class="avatar lg" style="background:linear-gradient(135deg,#3b82f6,#2563eb)">RK</div>
-        <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#0f172a">Raj Kumar</div><div style="font-size:12.5px;color:#64748b;margin-bottom:4px">Driver</div><span class="tag-chip">Logistics</span></div>
-        <span class="badge-wms success"><span class="badge-dot"></span>Active</span>
-      </div>
-      <div class="d-flex flex-column gap-2 mt-3" style="font-size:12.5px;color:#64748b">
-        <div><i class="fas fa-envelope me-2" style="color:#4f46e5;width:14px"></i>raj@wms.com</div>
-        <div><i class="fas fa-phone me-2" style="color:#10b981;width:14px"></i>+91-9876543213</div>
-      </div>
-      <div class="d-flex gap-2 mt-3"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Viewing profile','info')"><i class="fas fa-eye me-1"></i>View</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Edit form opened','info')"><i class="fas fa-pen me-1"></i>Edit</button></div>
-    </div></div>
-  </div>
-
-  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-5">
-    <div class="wms-card"><div class="card-body-wms">
-      <div class="d-flex align-items-start gap-3">
-        <div class="avatar lg" style="background:linear-gradient(135deg,#ef4444,#dc2626)">JS</div>
-        <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#0f172a">Jane Smith</div><div style="font-size:12.5px;color:#64748b;margin-bottom:4px">HR Manager</div><span class="tag-chip">Human Resources</span></div>
-        <span class="badge-wms success"><span class="badge-dot"></span>Active</span>
-      </div>
-      <div class="d-flex flex-column gap-2 mt-3" style="font-size:12.5px;color:#64748b">
-        <div><i class="fas fa-envelope me-2" style="color:#4f46e5;width:14px"></i>jane@wms.com</div>
-        <div><i class="fas fa-phone me-2" style="color:#10b981;width:14px"></i>+91-9876543214</div>
-      </div>
-      <div class="d-flex gap-2 mt-3"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Viewing profile','info')"><i class="fas fa-eye me-1"></i>View</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Edit form opened','info')"><i class="fas fa-pen me-1"></i>Edit</button></div>
-    </div></div>
-  </div>
-
-  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-6">
-    <div class="wms-card"><div class="card-body-wms">
-      <div class="d-flex align-items-start gap-3">
-        <div class="avatar lg" style="background:linear-gradient(135deg,#06b6d4,#0891b2)">AP</div>
-        <div style="flex:1"><div style="font-size:15px;font-weight:700;color:#0f172a">Amit Patel</div><div style="font-size:12.5px;color:#64748b;margin-bottom:4px">Security Guard</div><span class="tag-chip">Security</span></div>
-        <span class="badge-wms success"><span class="badge-dot"></span>Active</span>
-      </div>
-      <div class="d-flex flex-column gap-2 mt-3" style="font-size:12.5px;color:#64748b">
-        <div><i class="fas fa-envelope me-2" style="color:#4f46e5;width:14px"></i>amit@wms.com</div>
-        <div><i class="fas fa-phone me-2" style="color:#10b981;width:14px"></i>+91-9876543215</div>
-      </div>
-      <div class="d-flex gap-2 mt-3"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Viewing profile','info')"><i class="fas fa-eye me-1"></i>View</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Edit form opened','info')"><i class="fas fa-pen me-1"></i>Edit</button></div>
-    </div></div>
-  </div>
-
-</div>
+<div class="row g-3 mb-4" id="staffCardsGrid"></div>
 
 <!-- Staff Table -->
-<div class="wms-card animate-in animate-in-delay-3">
-  <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-table"></i> Staff Records</div></div>
-  <div class="card-body-wms">
+<div class="wms-card animate-in animate-in-delay-2">
+  <div class="card-header-wms">
+    <div class="card-title-wms"><i class="fas fa-list"></i> Staff Directory</div>
+    <div class="card-actions gap-2">
+      <select class="form-control-wms form-select-wms" id="staffRoleFilter" style="width:auto">
+        <option value="">All Roles</option>
+        <option>Property Manager</option>
+        <option>Support Agent</option>
+        <option>Finance Officer</option>
+        <option>HR Manager</option>
+        <option>Security Supervisor</option>
+      </select>
+    </div>
+  </div>
+  <div class="card-body-wms p-0">
     <div class="table-responsive">
-      <table class="table-wms wms-datatable" id="staffTable">
-        <thead><tr><th>ID</th><th>Name</th><th>Role</th><th>Department</th><th>Email</th><th>Phone</th><th>Join Date</th><th>Status</th><th>Action</th></tr></thead>
-        <tbody>
-          <tr><td>STF-001</td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm">JD</div><strong>John Doe</strong></div></td><td>Warehouse Manager</td><td>Operations</td><td>john@wms.com</td><td>+91-9876543210</td><td>Jan 12, 2022</td><td><span class="badge-wms success"><span class="badge-dot"></span>Active</span></td><td><div class="d-flex gap-1"><button class="btn-wms ghost sm icon-only"><i class="fas fa-eye"></i></button><button class="btn-wms ghost sm icon-only"><i class="fas fa-pen"></i></button></div></td></tr>
-          <tr><td>STF-002</td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-success">SK</div><strong>Sarah Kim</strong></div></td><td>Inventory Analyst</td><td>Inventory</td><td>sarah@wms.com</td><td>+91-9876543211</td><td>Mar 05, 2022</td><td><span class="badge-wms success"><span class="badge-dot"></span>Active</span></td><td><div class="d-flex gap-1"><button class="btn-wms ghost sm icon-only"><i class="fas fa-eye"></i></button><button class="btn-wms ghost sm icon-only"><i class="fas fa-pen"></i></button></div></td></tr>
-          <tr><td>STF-003</td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-warning">MR</div><strong>Mike Ross</strong></div></td><td>Dispatch Coordinator</td><td>Logistics</td><td>mike@wms.com</td><td>+91-9876543212</td><td>Jun 18, 2021</td><td><span class="badge-wms warning"><span class="badge-dot"></span>On Leave</span></td><td><div class="d-flex gap-1"><button class="btn-wms ghost sm icon-only"><i class="fas fa-eye"></i></button><button class="btn-wms ghost sm icon-only"><i class="fas fa-pen"></i></button></div></td></tr>
-          <tr><td>STF-004</td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-info">RK</div><strong>Raj Kumar</strong></div></td><td>Driver</td><td>Logistics</td><td>raj@wms.com</td><td>+91-9876543213</td><td>Aug 20, 2023</td><td><span class="badge-wms success"><span class="badge-dot"></span>Active</span></td><td><div class="d-flex gap-1"><button class="btn-wms ghost sm icon-only"><i class="fas fa-eye"></i></button><button class="btn-wms ghost sm icon-only"><i class="fas fa-pen"></i></button></div></td></tr>
-          <tr><td>STF-005</td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-danger">JS</div><strong>Jane Smith</strong></div></td><td>HR Manager</td><td>Human Resources</td><td>jane@wms.com</td><td>+91-9876543214</td><td>Feb 14, 2020</td><td><span class="badge-wms success"><span class="badge-dot"></span>Active</span></td><td><div class="d-flex gap-1"><button class="btn-wms ghost sm icon-only"><i class="fas fa-eye"></i></button><button class="btn-wms ghost sm icon-only"><i class="fas fa-pen"></i></button></div></td></tr>
-        </tbody>
+      <table class="table-wms">
+        <thead>
+          <tr><th>ID</th><th>Name</th><th>Role</th><th>Department</th><th>Email</th><th>Phone</th><th>Joined</th><th>Status</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="staffTableBody"></tbody>
       </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Staff Modal -->
+<div class="modal fade" id="staffModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="border-radius:16px;border:none">
+      <div class="modal-header" style="border-bottom:1px solid #e2e8f0;padding:20px 24px">
+        <h5 class="modal-title fw-700" id="staffModalTitle"><i class="fas fa-user-plus me-2"></i>Add Staff Member</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:24px">
+        <div class="row g-3">
+          <div class="col-md-6"><label class="form-label-wms">Full Name *</label><input type="text" class="form-control-wms" id="sName" placeholder="Full name"></div>
+          <div class="col-md-6"><label class="form-label-wms">Email *</label><input type="email" class="form-control-wms" id="sEmail" placeholder="email@warehub.com"></div>
+          <div class="col-md-6"><label class="form-label-wms">Phone</label><input type="text" class="form-control-wms" id="sPhone" placeholder="+91-98XXXXXXXX"></div>
+          <div class="col-md-6">
+            <label class="form-label-wms">Role *</label>
+            <select class="form-control-wms" id="sRole">
+              <option>Property Manager</option><option>Support Agent</option>
+              <option>Finance Officer</option><option>HR Manager</option><option>Security Supervisor</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-wms">Department *</label>
+            <select class="form-control-wms" id="sDept">
+              <option>Management</option><option>Operations</option>
+              <option>Finance</option><option>Human Resources</option><option>Security</option>
+            </select>
+          </div>
+          <div class="col-md-6"><label class="form-label-wms">Date Joined</label><input type="date" class="form-control-wms" id="sJoined"></div>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #e2e8f0;padding:16px 24px">
+        <button class="btn-wms ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-wms primary" onclick="saveStaff()"><i class="fas fa-save me-1"></i>Save</button>
+      </div>
     </div>
   </div>
 </div>
 {% endblock %}
 
-{% block extra_js %}{% endblock %}
+{% block extra_js %}
+<script>
+var editingStaffId = null;
+
+function renderStaffCards() {
+  var html = '';
+  WMS.staff.forEach(function(s) {
+    html += '<div class="col-xl-4 col-md-6 animate-in">';
+    html += '<div class="wms-card"><div class="card-body-wms" style="display:flex;flex-direction:column;height:100%">';
+    html += '<div class="d-flex align-items-start gap-3">';
+    html += '<div class="avatar lg" style="background:linear-gradient('+s.gradient+')">'+s.initials+'</div>';
+    html += '<div style="flex:1"><div style="font-size:15px;font-weight:700;color:#0f172a">'+s.name+'</div>';
+    html += '<div style="font-size:12.5px;color:#64748b;margin-bottom:4px">'+s.role+'</div>';
+    html += '<span class="tag-chip">'+s.dept+'</span></div>';
+    html += WMS.statusBadge(s.status)+'</div>';
+    html += '<div class="d-flex flex-column gap-2 mt-3" style="font-size:12.5px;color:#64748b">';
+    html += '<div><i class="fas fa-envelope me-2" style="color:#4f46e5;width:14px"></i>'+s.email+'</div>';
+    html += '<div><i class="fas fa-phone me-2" style="color:#10b981;width:14px"></i>'+s.phone+'</div>';
+    html += '</div>';
+    html += '<div style="flex:1"></div>';
+    html += '<div class="d-flex gap-2 mt-3">';
+    html += '<button class="btn-wms ghost sm flex-fill" onclick="editStaff(\''+s.id+'\')"><i class="fas fa-pen me-1"></i>Edit</button>';
+    html += '<button class="btn-wms outline sm flex-fill" onclick="deactivateStaff(\''+s.id+'\')"><i class="fas fa-ban me-1"></i>Deactivate</button>';
+    html += '</div></div></div></div>';
+  });
+  document.getElementById('staffCardsGrid').innerHTML = html;
+}
+
+function renderStaffTable() {
+  var filter = document.getElementById('staffRoleFilter').value;
+  var data = WMS.staff.filter(function(s){ return !filter || s.role === filter; });
+  var html = '';
+  data.forEach(function(s) {
+    html += '<tr>';
+    html += '<td><strong>'+s.id+'</strong></td>';
+    html += '<td><div class="d-flex align-items-center gap-2"><div class="avatar sm" style="background:linear-gradient('+s.gradient+')">'+s.initials+'</div>'+s.name+'</div></td>';
+    html += '<td>'+s.role+'</td><td>'+s.dept+'</td><td>'+s.email+'</td><td>'+s.phone+'</td><td>'+s.joined+'</td>';
+    html += '<td>'+WMS.statusBadge(s.status)+'</td>';
+    html += '<td><div class="d-flex gap-1">';
+    html += '<a href="#" class="btn-wms ghost sm icon-only" title="Edit" onclick="editStaff(\''+s.id+'\');return false;"><i class="fas fa-pen"></i></a>';
+    html += '<a href="#" class="btn-wms ghost sm icon-only" title="Deactivate" onclick="deactivateStaff(\''+s.id+'\');return false;"><i class="fas fa-ban"></i></a>';
+    html += '</div></td></tr>';
+  });
+  document.getElementById('staffTableBody').innerHTML = html;
+  document.getElementById('totalStaffCount').textContent = WMS.staff.length;
+  document.getElementById('activeStaffCount').textContent = WMS.staff.filter(function(s){return s.status==='Active';}).length;
+}
+
+function openAddStaffModal() {
+  editingStaffId = null;
+  document.getElementById('staffModalTitle').innerHTML = '<i class="fas fa-user-plus me-2"></i>Add Staff Member';
+  ['sName','sEmail','sPhone','sJoined'].forEach(function(id){ document.getElementById(id).value=''; });
+  new bootstrap.Modal(document.getElementById('staffModal')).show();
+}
+
+function editStaff(id) {
+  editingStaffId = id;
+  var s = WMS.staff.find(function(x){return x.id===id;});
+  if(!s) return;
+  document.getElementById('staffModalTitle').innerHTML = '<i class="fas fa-pen me-2"></i>Edit Staff Member';
+  document.getElementById('sName').value = s.name;
+  document.getElementById('sEmail').value = s.email;
+  document.getElementById('sPhone').value = s.phone;
+  document.getElementById('sRole').value = s.role;
+  document.getElementById('sDept').value = s.dept;
+  document.getElementById('sJoined').value = s.joined;
+  new bootstrap.Modal(document.getElementById('staffModal')).show();
+}
+
+function saveStaff() {
+  var name = document.getElementById('sName').value.trim();
+  var email = document.getElementById('sEmail').value.trim();
+  if(!name||!email){ showToast('Fill all required fields.','error'); return; }
+  if(editingStaffId) {
+    var s = WMS.staff.find(function(x){return x.id===editingStaffId;});
+    if(s){ s.name=name; s.email=email; s.phone=document.getElementById('sPhone').value; s.role=document.getElementById('sRole').value; s.dept=document.getElementById('sDept').value; s.joined=document.getElementById('sJoined').value; }
+    WMS.logAction('Admin User','Updated Staff','Staff','Updated staff '+name);
+    showToast('Staff updated!','success');
+  } else {
+    var initials = name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+    WMS.staff.push({ id:WMS.nextId('EMP',WMS.staff,'id'), name:name, role:document.getElementById('sRole').value, dept:document.getElementById('sDept').value, email:email, phone:document.getElementById('sPhone').value, joined:document.getElementById('sJoined').value||new Date().toISOString().slice(0,10), status:'Active', initials:initials, gradient:'135deg,#4f46e5,#7c3aed' });
+    WMS.logAction('Admin User','Added Staff','Staff','Added new staff '+name);
+    showToast('Staff member added!','success');
+  }
+  bootstrap.Modal.getInstance(document.getElementById('staffModal')).hide();
+  renderStaffCards(); renderStaffTable();
+}
+
+function deactivateStaff(id) {
+  var s = WMS.staff.find(function(x){return x.id===id;});
+  if(!s) return;
+  if(confirm('Deactivate '+s.name+'?')){ s.status='Inactive'; WMS.logAction('Admin User','Deactivated Staff','Staff','Deactivated '+s.name); showToast('Staff deactivated.','success'); renderStaffCards(); renderStaffTable(); }
+}
+
+document.getElementById('staffRoleFilter').addEventListener('change', renderStaffTable);
+document.addEventListener('DOMContentLoaded', function(){ renderStaffCards(); renderStaffTable(); });
+</script>
+{% endblock %}

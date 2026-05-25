@@ -23,7 +23,9 @@
       } else {
         sidebar.classList.toggle('collapsed');
         mainContent.classList.toggle('sidebar-collapsed');
-        localStorage.setItem('sidebar-collapsed', sidebar.classList.contains('collapsed'));
+        const isCollapsed = sidebar.classList.contains('collapsed');
+        localStorage.setItem('sidebar-collapsed', isCollapsed);
+        localStorage.setItem('wms-sidebar-user-set', 'true');
       }
     });
   }
@@ -35,12 +37,16 @@
     });
   }
 
-  // Restore sidebar state on desktop
-  if (!isMobile()) {
+  // Restore sidebar state on desktop (only if user explicitly collapsed it)
+  if (!isMobile() && sidebar && mainContent) {
     const collapsed = localStorage.getItem('sidebar-collapsed') === 'true';
-    if (collapsed && sidebar && mainContent) {
+    if (collapsed) {
       sidebar.classList.add('collapsed');
       mainContent.classList.add('sidebar-collapsed');
+    } else {
+      // Ensure sidebar is always fully expanded by default
+      sidebar.classList.remove('collapsed');
+      mainContent.classList.remove('sidebar-collapsed');
     }
   }
 
@@ -245,9 +251,22 @@
   // WINDOW RESIZE
   // ============================================================
   window.addEventListener('resize', function () {
-    if (!isMobile() && sidebar) {
-      sidebar.classList.remove('mobile-open');
+    if (isMobile()) {
+      // Going to mobile: ensure desktop-collapsed class removed
+      if (sidebar) {
+        sidebar.classList.remove('collapsed');
+        if (mainContent) mainContent.classList.remove('sidebar-collapsed');
+      }
+    } else {
+      // Going back to desktop: close mobile overlay
+      if (sidebar) sidebar.classList.remove('mobile-open');
       if (overlay) overlay.classList.remove('show');
+      // Restore user preference
+      const collapsed = localStorage.getItem('sidebar-collapsed') === 'true';
+      if (sidebar && mainContent) {
+        sidebar.classList.toggle('collapsed', collapsed);
+        mainContent.classList.toggle('sidebar-collapsed', collapsed);
+      }
     }
   });
 

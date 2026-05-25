@@ -1,0 +1,249 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-header animate-in">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+      <h1 class="page-title">Rent & Payments</h1>
+      <div class="breadcrumb-wms">
+        <i class="fas fa-home"></i><span class="breadcrumb-sep">/</span>
+        <span>Rent & Payments</span>
+      </div>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn-wms primary" onclick="showToast('Invoices sent to all tenants!','success')">
+        <i class="fas fa-paper-plane"></i> Send Bulk Invoices
+      </button>
+      <button class="btn-wms ghost" onclick="showToast('Report exported!','success')">
+        <i class="fas fa-download"></i> Export
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-1">
+    <div class="stat-card success" data-href="{% url 'rent_payments' %}">
+      <div class="stat-card-header"><div class="stat-icon success"><i class="fas fa-circle-check"></i></div></div>
+      <div class="stat-value">₹89,000</div>
+      <div class="stat-label">Collected This Month</div>
+      <div class="stat-footer"><span>5 of 7 tenants paid</span></div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-2">
+    <div class="stat-card warning" data-href="{% url 'rent_payments' %}">
+      <div class="stat-card-header"><div class="stat-icon warning"><i class="fas fa-clock"></i></div></div>
+      <div class="stat-value">₹15,000</div>
+      <div class="stat-label">Pending</div>
+      <div class="stat-footer"><span>1 tenant</span></div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-3">
+    <div class="stat-card danger" data-href="{% url 'rent_payments' %}">
+      <div class="stat-card-header"><div class="stat-icon danger"><i class="fas fa-triangle-exclamation"></i></div></div>
+      <div class="stat-value">₹29,700</div>
+      <div class="stat-label">Overdue (incl. late fee)</div>
+      <div class="stat-footer"><span>2 tenants</span></div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-4">
+    <div class="stat-card primary" data-href="{% url 'reports' %}">
+      <div class="stat-card-header"><div class="stat-icon primary"><i class="fas fa-indian-rupee-sign"></i></div></div>
+      <div class="stat-value">₹1,16,000</div>
+      <div class="stat-label">Total Rent Roll</div>
+      <div class="stat-footer"><span>7 active tenants</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- Month Filter Tabs -->
+<div class="wms-card mb-4 animate-in animate-in-delay-2">
+  <div class="card-body-wms" style="padding:16px 20px">
+    <div class="d-flex align-items-center gap-3 flex-wrap">
+      <span class="fw-600">Filter by Month:</span>
+      <div class="wms-tabs" style="margin-bottom:0" id="monthTabs">
+        <button class="wms-tab active" onclick="filterByMonth('May 2026',this)">May 2026</button>
+        <button class="wms-tab" onclick="filterByMonth('Apr 2026',this)">Apr 2026</button>
+        <button class="wms-tab" onclick="filterByMonth('',this)">All</button>
+      </div>
+      <select class="form-control-wms form-select-wms ms-auto" id="payStatusFilter" style="width:auto">
+        <option value="">All Status</option>
+        <option value="Paid">Paid</option>
+        <option value="Pending">Pending</option>
+        <option value="Overdue">Overdue</option>
+      </select>
+    </div>
+  </div>
+</div>
+
+<!-- Payments Table -->
+<div class="wms-card animate-in animate-in-delay-2">
+  <div class="card-header-wms">
+    <div class="card-title-wms"><i class="fas fa-list-check"></i> Payment Records</div>
+  </div>
+  <div class="card-body-wms p-0">
+    <div class="table-responsive">
+      <table class="table-wms" id="payTable">
+        <thead>
+          <tr>
+            <th>Pay ID</th><th>Tenant</th><th>Unit</th><th>Month</th>
+            <th>Rent</th><th>Late Fee</th><th>Total</th>
+            <th>Due Date</th><th>Paid On</th><th>Method</th>
+            <th>Status</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="payTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Mark Payment Modal -->
+<div class="modal fade" id="markPayModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius:16px;border:none">
+      <div class="modal-header" style="border-bottom:1px solid #e2e8f0;padding:20px 24px">
+        <h5 class="modal-title fw-700"><i class="fas fa-check-circle me-2"></i>Mark Payment Received</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:24px">
+        <div class="mb-3">
+          <label class="form-label-wms">Tenant / Month</label>
+          <input type="text" class="form-control-wms" id="markPayInfo" readonly>
+        </div>
+        <div class="mb-3">
+          <label class="form-label-wms">Amount (₹)</label>
+          <input type="number" class="form-control-wms" id="markPayAmt" readonly>
+        </div>
+        <div class="mb-3">
+          <label class="form-label-wms">Payment Date *</label>
+          <input type="date" class="form-control-wms" id="markPayDate">
+        </div>
+        <div class="mb-3">
+          <label class="form-label-wms">Payment Method *</label>
+          <select class="form-control-wms" id="markPayMethod">
+            <option value="">-- Select --</option>
+            <option>NEFT</option><option>RTGS</option><option>IMPS</option><option>Manual</option><option>UPI</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label-wms">Reference Number</label>
+          <input type="text" class="form-control-wms" id="markPayRef" placeholder="Transaction reference">
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #e2e8f0;padding:16px 24px">
+        <button class="btn-wms ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-wms primary" onclick="confirmMarkPay()"><i class="fas fa-check me-1"></i>Confirm Payment</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Upload Proof Modal -->
+<div class="modal fade" id="uploadProofModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius:16px;border:none">
+      <div class="modal-header" style="border-bottom:1px solid #e2e8f0;padding:20px 24px">
+        <h5 class="modal-title fw-700"><i class="fas fa-upload me-2"></i>Upload Payment Proof</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:24px">
+        <div class="mb-3">
+          <label class="form-label-wms">Payment ID</label>
+          <input type="text" class="form-control-wms" id="proofPayId" readonly>
+        </div>
+        <div class="mb-3">
+          <label class="form-label-wms">Upload Screenshot / Receipt</label>
+          <input type="file" class="form-control-wms" id="proofFile" accept="image/*,.pdf">
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #e2e8f0;padding:16px 24px">
+        <button class="btn-wms ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-wms primary" onclick="bootstrap.Modal.getInstance(document.getElementById('uploadProofModal')).hide();showToast('Payment proof uploaded!','success');"><i class="fas fa-upload me-1"></i>Upload</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var activePayId = null;
+var currentMonthFilter = 'May 2026';
+
+function renderPayments() {
+  var statusFilter = document.getElementById('payStatusFilter').value;
+  var data = WMS.payments.filter(function(p){
+    return (!currentMonthFilter || p.month === currentMonthFilter) && (!statusFilter || p.status === statusFilter);
+  });
+  var html = '';
+  data.forEach(function(p) {
+    var cls = p.status==='Paid'?'success':p.status==='Overdue'?'danger':'warning';
+    html += '<tr>';
+    html += '<td><strong>'+p.id+'</strong></td>';
+    html += '<td>'+p.tenant+'</td>';
+    html += '<td><strong>'+p.unit+'</strong></td>';
+    html += '<td>'+p.month+'</td>';
+    html += '<td>'+WMS.formatCurrency(p.amount)+'</td>';
+    html += '<td>'+(p.lateFee>0?'<span style="color:#ef4444">+'+WMS.formatCurrency(p.lateFee)+'</span>':'—')+'</td>';
+    html += '<td><strong>'+WMS.formatCurrency(p.total)+'</strong></td>';
+    html += '<td>'+p.dueDate+'</td>';
+    html += '<td>'+(p.paidDate||'—')+'</td>';
+    html += '<td>'+(p.method||'—')+'</td>';
+    html += '<td><span class="badge-wms '+cls+'"><span class="badge-dot"></span>'+p.status+'</span></td>';
+    html += '<td><div class="d-flex gap-1">';
+    if(p.status !== 'Paid') {
+      html += '<a href="#" class="btn-wms ghost sm icon-only" title="Mark Paid" onclick="openMarkPay(\''+p.id+'\');return false;"><i class="fas fa-check"></i></a>';
+      html += '<a href="#" class="btn-wms ghost sm icon-only" title="Upload Proof" onclick="openUploadProof(\''+p.id+'\');return false;"><i class="fas fa-upload"></i></a>';
+    }
+    if(p.status === 'Paid') {
+      html += '<a href="#" class="btn-wms ghost sm icon-only" title="Download Receipt" onclick="showToast(\'Receipt downloaded!\',\'success\');return false;"><i class="fas fa-file-pdf"></i></a>';
+    }
+    html += '</div></td></tr>';
+  });
+  document.getElementById('payTableBody').innerHTML = html;
+}
+
+function filterByMonth(month, btn) {
+  currentMonthFilter = month;
+  document.querySelectorAll('#monthTabs .wms-tab').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+  renderPayments();
+}
+
+function openMarkPay(id) {
+  activePayId = id;
+  var p = WMS.payments.find(function(x){return x.id===id;});
+  if(!p) return;
+  document.getElementById('markPayInfo').value = p.tenant + ' — ' + p.month;
+  document.getElementById('markPayAmt').value = p.total;
+  document.getElementById('markPayDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('markPayMethod').value = '';
+  document.getElementById('markPayRef').value = '';
+  new bootstrap.Modal(document.getElementById('markPayModal')).show();
+}
+
+function confirmMarkPay() {
+  var date = document.getElementById('markPayDate').value;
+  var method = document.getElementById('markPayMethod').value;
+  var ref = document.getElementById('markPayRef').value.trim();
+  if(!date||!method){ showToast('Please fill all required fields.','error'); return; }
+  var p = WMS.payments.find(function(x){return x.id===activePayId;});
+  if(p){ p.status='Paid'; p.paidDate=date; p.method=method; p.reference=ref||('REF'+Date.now()); p.receipt='RCP-'+activePayId; }
+  WMS.logAction('Admin User','Marked Payment','Payments','Marked '+activePayId+' as paid — '+p.tenant+', '+p.month);
+  bootstrap.Modal.getInstance(document.getElementById('markPayModal')).hide();
+  showToast('Payment marked as received!','success');
+  renderPayments();
+}
+
+function openUploadProof(id) {
+  document.getElementById('proofPayId').value = id;
+  new bootstrap.Modal(document.getElementById('uploadProofModal')).show();
+}
+
+document.getElementById('payStatusFilter').addEventListener('change', renderPayments);
+document.addEventListener('DOMContentLoaded', renderPayments);
+</script>
+{% endblock %}

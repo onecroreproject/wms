@@ -1,7 +1,110 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<style>
+/* ── DASHBOARD-SPECIFIC STYLES ─────────────────────────────── */
+
+/* KPI Cards */
+.kpi-card {
+  background:var(--bg-card);border-radius:18px;padding:22px 24px;
+  border:1px solid var(--border-color);box-shadow:var(--shadow);
+  transition:all .3s cubic-bezier(.4,0,.2,1);cursor:pointer;
+  position:relative;overflow:hidden;display:flex;flex-direction:column;height:100%;
+}
+.kpi-card:hover { transform:translateY(-4px);box-shadow:var(--shadow-lg); }
+.kpi-card::before {
+  content:'';position:absolute;top:0;left:0;right:0;height:4px;border-radius:18px 18px 0 0;
+}
+.kpi-card.kc-indigo::before { background:linear-gradient(90deg,#4f46e5,#818cf8); }
+.kpi-card.kc-emerald::before { background:linear-gradient(90deg,#10b981,#34d399); }
+.kpi-card.kc-rose::before { background:linear-gradient(90deg,#ef4444,#f87171); }
+.kpi-card.kc-amber::before { background:linear-gradient(90deg,#f59e0b,#fbbf24); }
+.kpi-card.kc-sky::before { background:linear-gradient(90deg,#3b82f6,#60a5fa); }
+.kpi-icon-wrap {
+  width:52px;height:52px;border-radius:14px;display:flex;align-items:center;
+  justify-content:center;font-size:22px;color:#fff;flex-shrink:0;margin-bottom:14px;
+}
+.kpi-icon-wrap.kc-indigo { background:linear-gradient(135deg,#4f46e5,#818cf8);box-shadow:0 6px 16px rgba(79,70,229,.3); }
+.kpi-icon-wrap.kc-emerald { background:linear-gradient(135deg,#10b981,#34d399);box-shadow:0 6px 16px rgba(16,185,129,.3); }
+.kpi-icon-wrap.kc-rose { background:linear-gradient(135deg,#ef4444,#f87171);box-shadow:0 6px 16px rgba(239,68,68,.3); }
+.kpi-icon-wrap.kc-amber { background:linear-gradient(135deg,#f59e0b,#fbbf24);box-shadow:0 6px 16px rgba(245,158,11,.3); }
+.kpi-icon-wrap.kc-sky { background:linear-gradient(135deg,#3b82f6,#60a5fa);box-shadow:0 6px 16px rgba(59,130,246,.3); }
+.kpi-number {
+  font-family:'Poppins',sans-serif;font-size:32px;font-weight:800;
+  color:var(--text-primary);line-height:1;letter-spacing:-1px;margin-bottom:4px;
+}
+.kpi-label { font-size:13px;color:var(--text-secondary);font-weight:500;margin-bottom:12px; }
+.kpi-footer { margin-top:auto;padding-top:12px;border-top:1px solid var(--border-color);display:flex;align-items:center;justify-content:space-between; }
+.kpi-badge-up { display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;color:#059669;background:#d1fae5;padding:3px 9px;border-radius:20px; }
+.kpi-badge-down { display:inline-flex;align-items:center;gap:4px;font-size:11.5px;font-weight:700;color:#dc2626;background:#fee2e2;padding:3px 9px;border-radius:20px; }
+.kpi-sub { font-size:11.5px;color:var(--text-muted); }
+
+/* Overdue Alert Strips */
+.overdue-strip {
+  display:flex;align-items:center;gap:14px;padding:14px 18px;
+  background:var(--bg-card);border-radius:14px;border:1px solid var(--border-color);
+  border-left:4px solid #ef4444;box-shadow:var(--shadow);
+  transition:var(--transition);
+}
+.overdue-strip:hover { box-shadow:var(--shadow-md);transform:translateX(3px); }
+.overdue-avatar {
+  width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#ef4444,#dc2626);
+  display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;
+  font-size:14px;flex-shrink:0;
+}
+.overdue-name { font-size:14px;font-weight:700;color:var(--text-primary);line-height:1.3; }
+.overdue-unit { font-size:12px;color:var(--text-muted); }
+.overdue-amount { font-family:'Poppins',sans-serif;font-size:18px;font-weight:800;color:#ef4444;margin-left:auto;white-space:nowrap; }
+
+/* Timeline activity */
+.timeline { position:relative; }
+.timeline::before {
+  content:'';position:absolute;left:18px;top:0;bottom:0;width:2px;
+  background:linear-gradient(180deg,#4f46e5,#7c3aed,#e2e8f0);border-radius:2px;
+}
+.tl-item { display:flex;gap:16px;padding-bottom:20px;position:relative; }
+.tl-item:last-child { padding-bottom:0; }
+.tl-dot {
+  width:14px;height:14px;border-radius:50%;border:2px solid #fff;
+  box-shadow:0 0 0 3px rgba(79,70,229,.15);flex-shrink:0;margin-top:3px;z-index:1;
+  position:relative;
+}
+.tl-dot.primary { background:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,.2); }
+.tl-dot.success { background:#10b981;box-shadow:0 0 0 3px rgba(16,185,129,.2); }
+.tl-dot.warning { background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.2); }
+.tl-dot.danger { background:#ef4444;box-shadow:0 0 0 3px rgba(239,68,68,.2); }
+.tl-dot.info { background:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.2); }
+.tl-content { flex:1; }
+.tl-text { font-size:13px;color:var(--text-primary);line-height:1.5; }
+.tl-time { font-size:11px;color:var(--text-muted);margin-top:3px; }
+
+/* Lease expiry cards */
+.lease-expiry-item {
+  display:flex;align-items:center;gap:12px;padding:12px 0;
+  border-bottom:1px solid var(--border-color);
+}
+.lease-expiry-item:last-child { border-bottom:none; }
+.lease-days-badge {
+  min-width:52px;height:52px;border-radius:12px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;font-weight:800;flex-shrink:0;
+}
+.lease-days-badge.expired { background:#fee2e2;color:#dc2626; }
+.lease-days-badge.urgent { background:#fff7ed;color:#ea580c; }
+.lease-days-badge.warning { background:#fefce8;color:#ca8a04; }
+.lease-days-badge .days-num { font-family:'Poppins',sans-serif;font-size:16px;line-height:1; }
+.lease-days-badge .days-lbl { font-size:9px;font-weight:600;text-transform:uppercase;letter-spacing:.5px; }
+
+/* Payment row with avatar */
+.pay-row-avatar {
+  width:34px;height:34px;border-radius:10px;display:flex;align-items:center;
+  justify-content:center;color:#fff;font-weight:700;font-size:12px;flex-shrink:0;
+}
+</style>
+{% endblock %}
+
 {% block content %}
+
 <!-- Page Header -->
 <div class="page-header animate-in">
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
@@ -13,90 +116,92 @@
         <span>Dashboard</span>
       </div>
     </div>
-    <div class="d-flex gap-2">
+    <div class="d-flex gap-2 flex-wrap">
       <select class="form-control-wms form-select-wms" style="width:auto">
-        <option>Last 30 Days</option>
-        <option>Last 7 Days</option>
+        <option>May 2026</option>
+        <option>April 2026</option>
         <option>This Year</option>
       </select>
-      <button class="btn-wms primary" onclick="showToast('Report exported!','success')">
-        <i class="fas fa-download"></i> Export
-      </button>
+      <a href="{% url 'rent_payments' %}" class="btn-wms primary"><i class="fas fa-paper-plane"></i> Send Reminders</a>
+      <a href="{% url 'reports' %}" class="btn-wms ghost"><i class="fas fa-download"></i> Export Report</a>
     </div>
   </div>
 </div>
 
-<!-- KPI Stat Cards -->
+<!-- KPI Cards Row -->
 <div class="row g-3 mb-4">
-  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-1">
-    <div class="stat-card primary">
-      <div class="stat-card-header">
-        <div class="stat-icon primary"><i class="fas fa-dollar-sign"></i></div>
-        <span class="stat-change up"><i class="fas fa-arrow-up"></i>+12.5%</span>
-      </div>
-      <div class="stat-value"><span class="counter-value" data-target="284750" data-prefix="$">$284,750</span></div>
-      <div class="stat-label">Total Revenue</div>
-      <div class="stat-footer d-flex align-items-center justify-content-between">
-        <span>vs last month: $252,400</span>
-        <div id="spark1" style="width:80px;height:40px"></div>
+  <div class="col-xl col-md-4 col-sm-6 animate-in animate-in-delay-1">
+    <div class="kpi-card kc-indigo" data-href="{% url 'rent_payments' %}">
+      <div class="kpi-icon-wrap kc-indigo"><i class="fas fa-indian-rupee-sign"></i></div>
+      <div class="kpi-number"><span class="counter-value" data-target="116000" data-prefix="₹">₹1,16,000</span></div>
+      <div class="kpi-label">Total Rent Roll</div>
+      <div class="kpi-footer">
+        <span class="kpi-badge-up"><i class="fas fa-arrow-up"></i>+8.3%</span>
+        <span class="kpi-sub">vs last month</span>
       </div>
     </div>
   </div>
-  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-2">
-    <div class="stat-card success">
-      <div class="stat-card-header">
-        <div class="stat-icon success"><i class="fas fa-shopping-cart"></i></div>
-        <span class="stat-change up"><i class="fas fa-arrow-up"></i>+8.2%</span>
-      </div>
-      <div class="stat-value"><span class="counter-value" data-target="1842">1,842</span></div>
-      <div class="stat-label">Total Orders</div>
-      <div class="stat-footer d-flex align-items-center justify-content-between">
-        <span>Completed: 1,584</span>
-        <div id="spark2" style="width:80px;height:40px"></div>
+  <div class="col-xl col-md-4 col-sm-6 animate-in animate-in-delay-2">
+    <div class="kpi-card kc-emerald" data-href="{% url 'rent_payments' %}">
+      <div class="kpi-icon-wrap kc-emerald"><i class="fas fa-circle-check"></i></div>
+      <div class="kpi-number"><span class="counter-value" data-target="89000" data-prefix="₹">₹89,000</span></div>
+      <div class="kpi-label">Collected This Month</div>
+      <div class="kpi-footer">
+        <span class="kpi-badge-up"><i class="fas fa-check"></i>5 of 7</span>
+        <span class="kpi-sub">tenants paid</span>
       </div>
     </div>
   </div>
-  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-3">
-    <div class="stat-card warning">
-      <div class="stat-card-header">
-        <div class="stat-icon warning"><i class="fas fa-boxes-stacked"></i></div>
-        <span class="stat-change down"><i class="fas fa-arrow-down"></i>-3.1%</span>
-      </div>
-      <div class="stat-value"><span class="counter-value" data-target="48920">48,920</span></div>
-      <div class="stat-label">Total Stock Units</div>
-      <div class="stat-footer d-flex align-items-center justify-content-between">
-        <span>Low stock: 24 items</span>
-        <div id="spark3" style="width:80px;height:40px"></div>
+  <div class="col-xl col-md-4 col-sm-6 animate-in animate-in-delay-3">
+    <div class="kpi-card kc-rose" data-href="{% url 'rent_payments' %}">
+      <div class="kpi-icon-wrap kc-rose"><i class="fas fa-triangle-exclamation"></i></div>
+      <div class="kpi-number"><span class="counter-value" data-target="29700" data-prefix="₹">₹29,700</span></div>
+      <div class="kpi-label">Outstanding Dues</div>
+      <div class="kpi-footer">
+        <span class="kpi-badge-down"><i class="fas fa-clock"></i>Overdue</span>
+        <span class="kpi-sub">2 tenants</span>
       </div>
     </div>
   </div>
-  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-4">
-    <div class="stat-card danger">
-      <div class="stat-card-header">
-        <div class="stat-icon danger"><i class="fas fa-truck-fast"></i></div>
-        <span class="stat-change up"><i class="fas fa-arrow-up"></i>+5.7%</span>
+  <div class="col-xl col-md-4 col-sm-6 animate-in animate-in-delay-4">
+    <div class="kpi-card kc-amber" data-href="{% url 'warehouse' %}">
+      <div class="kpi-icon-wrap kc-amber"><i class="fas fa-warehouse"></i></div>
+      <div class="kpi-number"><span class="counter-value" data-target="8">8</span><span style="font-size:18px;color:var(--text-muted);font-weight:400"> /12</span></div>
+      <div class="kpi-label">Units Occupied</div>
+      <div class="kpi-footer">
+        <span class="kpi-badge-up"><i class="fas fa-arrow-up"></i>+1</span>
+        <span class="kpi-sub">67% occupancy</span>
       </div>
-      <div class="stat-value"><span class="counter-value" data-target="328">328</span></div>
-      <div class="stat-label">Active Shipments</div>
-      <div class="stat-footer d-flex align-items-center justify-content-between">
-        <span>Delayed: 12</span>
-        <div id="spark4" style="width:80px;height:40px"></div>
+    </div>
+  </div>
+  <div class="col-xl col-md-4 col-sm-6 animate-in animate-in-delay-5">
+    <div class="kpi-card kc-sky" data-href="{% url 'tickets' %}">
+      <div class="kpi-icon-wrap kc-sky"><i class="fas fa-ticket"></i></div>
+      <div class="kpi-number"><span class="counter-value" data-target="4">4</span></div>
+      <div class="kpi-label">Open Tickets</div>
+      <div class="kpi-footer">
+        <span class="kpi-badge-down"><i class="fas fa-exclamation"></i>1 SLA breach</span>
+        <span class="kpi-sub">TKT-004</span>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Row 2: Revenue Chart + Order Donut -->
+<!-- Charts Row -->
 <div class="row g-3 mb-4">
+  <!-- Revenue Chart -->
   <div class="col-xl-8 animate-in animate-in-delay-2">
-    <div class="wms-card">
+    <div class="wms-card h-100">
       <div class="card-header-wms">
-        <div class="card-title-wms"><i class="fas fa-chart-area"></i> Revenue Overview</div>
+        <div>
+          <div class="card-title-wms"><i class="fas fa-chart-area"></i> 12-Month Revenue Overview</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Rent collected vs outstanding — FY 2025-26</div>
+        </div>
         <div class="card-actions">
           <div class="wms-tabs" style="margin-bottom:0">
             <button class="wms-tab active">Monthly</button>
-            <button class="wms-tab">Weekly</button>
-            <button class="wms-tab">Daily</button>
+            <button class="wms-tab">Quarterly</button>
+            <button class="wms-tab">Annual</button>
           </div>
         </div>
       </div>
@@ -105,37 +210,39 @@
       </div>
     </div>
   </div>
+
+  <!-- Occupancy Donut -->
   <div class="col-xl-4 animate-in animate-in-delay-3">
     <div class="wms-card h-100">
       <div class="card-header-wms">
-        <div class="card-title-wms"><i class="fas fa-chart-pie"></i> Order Status</div>
-        <a href="{% url 'orders' %}" class="btn-wms ghost sm">View All</a>
+        <div class="card-title-wms"><i class="fas fa-chart-pie"></i> Occupancy Status</div>
+        <a href="{% url 'warehouse' %}" class="btn-wms ghost sm">All Units</a>
       </div>
       <div class="card-body-wms">
         <div id="orderStatusChart"></div>
-        <div class="row g-2 mt-2">
+        <div class="row g-2 mt-1">
           <div class="col-6">
-            <div class="p-2 rounded-3" style="background:#f0fdf4">
-              <div class="fs-12 text-success fw-700">1,024</div>
-              <div class="fs-12" style="color:#64748b">Delivered</div>
+            <div style="background:#f0fdf4;border-radius:12px;padding:12px;border:1px solid #bbf7d0">
+              <div style="font-size:22px;font-weight:800;color:#059669;font-family:'Poppins',sans-serif;">8</div>
+              <div style="font-size:12px;color:#64748b;font-weight:500;">Occupied</div>
             </div>
           </div>
           <div class="col-6">
-            <div class="p-2 rounded-3" style="background:#eff6ff">
-              <div class="fs-12 fw-700" style="color:#4f46e5">724</div>
-              <div class="fs-12" style="color:#64748b">Processing</div>
+            <div style="background:#eff6ff;border-radius:12px;padding:12px;border:1px solid #bfdbfe">
+              <div style="font-size:22px;font-weight:800;color:#2563eb;font-family:'Poppins',sans-serif;">3</div>
+              <div style="font-size:12px;color:#64748b;font-weight:500;">Vacant</div>
             </div>
           </div>
           <div class="col-6">
-            <div class="p-2 rounded-3" style="background:#fffbeb">
-              <div class="fs-12 fw-700" style="color:#d97706">512</div>
-              <div class="fs-12" style="color:#64748b">Pending</div>
+            <div style="background:#fffbeb;border-radius:12px;padding:12px;border:1px solid #fde68a">
+              <div style="font-size:22px;font-weight:800;color:#d97706;font-family:'Poppins',sans-serif;">1</div>
+              <div style="font-size:12px;color:#64748b;font-weight:500;">Maintenance</div>
             </div>
           </div>
           <div class="col-6">
-            <div class="p-2 rounded-3" style="background:#fef2f2">
-              <div class="fs-12 fw-700" style="color:#dc2626">432</div>
-              <div class="fs-12" style="color:#64748b">Cancelled</div>
+            <div style="background:#faf5ff;border-radius:12px;padding:12px;border:1px solid #ddd6fe">
+              <div style="font-size:22px;font-weight:800;color:#7c3aed;font-family:'Poppins',sans-serif;">67%</div>
+              <div style="font-size:12px;color:#64748b;font-weight:500;">Occ. Rate</div>
             </div>
           </div>
         </div>
@@ -144,227 +251,246 @@
   </div>
 </div>
 
-<!-- Row 3: Warehouse Utilization + Quick Stats -->
+<!-- Overdue Tenants -->
 <div class="row g-3 mb-4">
-  <div class="col-xl-5 animate-in animate-in-delay-2">
+  <div class="col-12 animate-in">
     <div class="wms-card">
       <div class="card-header-wms">
-        <div class="card-title-wms"><i class="fas fa-warehouse"></i> Warehouse Utilization</div>
-        <a href="{% url 'warehouse' %}" class="btn-wms ghost sm">Details</a>
+        <div>
+          <div class="card-title-wms"><i class="fas fa-circle-exclamation" style="color:#ef4444"></i> Overdue Accounts Requiring Attention</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:2px">Outstanding dues including late fee penalties</div>
+        </div>
+        <a href="{% url 'rent_payments' %}" class="btn-wms ghost sm">View All Payments</a>
       </div>
       <div class="card-body-wms">
-        <div id="warehouseChart"></div>
-      </div>
-    </div>
-  </div>
-  <div class="col-xl-7 animate-in animate-in-delay-3">
-    <div class="row g-3 h-100">
-      <div class="col-md-6">
-        <div class="hero-card primary h-100" style="min-height:140px">
-          <div class="d-flex justify-content-between align-items-start mb-3">
-            <div>
-              <div style="font-size:13px;opacity:.8">Warehouse Capacity</div>
-              <div style="font-size:32px;font-weight:800;font-family:'Poppins',sans-serif">76%</div>
-            </div>
-            <div style="width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px">
-              <i class="fas fa-building"></i>
+        <div class="row g-3">
+          <div class="col-xl-6">
+            <div class="overdue-strip">
+              <div class="overdue-avatar">RM</div>
+              <div>
+                <div class="overdue-name">Rahul Mehta</div>
+                <div class="overdue-unit"><i class="fas fa-warehouse me-1" style="color:#94a3b8;font-size:11px"></i>Unit B-101 &nbsp;·&nbsp; <span style="color:#dc2626;font-weight:600">Expired</span></div>
+              </div>
+              <div class="ms-auto text-end">
+                <div class="overdue-amount">₹9,900</div>
+                <div style="font-size:11px;color:#94a3b8">+₹1,980 late fee</div>
+              </div>
+              <a href="{% url 'rent_payments' %}" class="btn-wms danger sm ms-3" style="white-space:nowrap"><i class="fas fa-bell"></i> Remind</a>
             </div>
           </div>
-          <div style="background:rgba(255,255,255,0.2);border-radius:20px;height:8px">
-            <div style="background:white;width:76%;height:100%;border-radius:20px"></div>
-          </div>
-          <div style="font-size:12px;opacity:.7;margin-top:8px">45,600 / 60,000 sq ft used</div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="hero-card success h-100" style="min-height:140px">
-          <div class="d-flex justify-content-between align-items-start mb-3">
-            <div>
-              <div style="font-size:13px;opacity:.8">On-Time Delivery</div>
-              <div style="font-size:32px;font-weight:800;font-family:'Poppins',sans-serif">94.2%</div>
-            </div>
-            <div style="width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px">
-              <i class="fas fa-check-circle"></i>
+          <div class="col-xl-6">
+            <div class="overdue-strip">
+              <div class="overdue-avatar">AR</div>
+              <div>
+                <div class="overdue-name">Anita Roy</div>
+                <div class="overdue-unit"><i class="fas fa-warehouse me-1" style="color:#94a3b8;font-size:11px"></i>Unit C-201 &nbsp;·&nbsp; <span style="color:#d97706;font-weight:600">Overdue 18d</span></div>
+              </div>
+              <div class="ms-auto text-end">
+                <div class="overdue-amount">₹22,000</div>
+                <div style="font-size:11px;color:#94a3b8">+₹4,400 late fee</div>
+              </div>
+              <a href="{% url 'rent_payments' %}" class="btn-wms danger sm ms-3" style="white-space:nowrap"><i class="fas fa-bell"></i> Remind</a>
             </div>
           </div>
-          <div style="background:rgba(255,255,255,0.2);border-radius:20px;height:8px">
-            <div style="background:white;width:94%;height:100%;border-radius:20px"></div>
-          </div>
-          <div style="font-size:12px;opacity:.7;margin-top:8px">310 of 328 deliveries on time</div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="hero-card warning h-100" style="min-height:140px">
-          <div class="d-flex justify-content-between align-items-start mb-3">
-            <div>
-              <div style="font-size:13px;opacity:.8">Pending Dispatch</div>
-              <div style="font-size:32px;font-weight:800;font-family:'Poppins',sans-serif">84</div>
-            </div>
-            <div style="width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px">
-              <i class="fas fa-clock"></i>
-            </div>
-          </div>
-          <div class="d-flex gap-2">
-            <span style="background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:20px;font-size:12px">High: 22</span>
-            <span style="background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:20px;font-size:12px">Med: 41</span>
-            <span style="background:rgba(255,255,255,0.2);padding:3px 10px;border-radius:20px;font-size:12px">Low: 21</span>
-          </div>
-        </div>
-      </div>
-      <div class="col-md-6">
-        <div class="hero-card cyan h-100" style="min-height:140px">
-          <div class="d-flex justify-content-between align-items-start mb-3">
-            <div>
-              <div style="font-size:13px;opacity:.8">Active Customers</div>
-              <div style="font-size:32px;font-weight:800;font-family:'Poppins',sans-serif">1,284</div>
-            </div>
-            <div style="width:44px;height:44px;background:rgba(255,255,255,0.15);border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px">
-              <i class="fas fa-users"></i>
-            </div>
-          </div>
-          <div style="font-size:12px;opacity:.8">+48 new this month</div>
         </div>
       </div>
     </div>
   </div>
 </div>
 
-<!-- Row 4: Recent Orders + Activity Feed -->
+<!-- Bottom Row: Lease Expiry + Recent Payments + Activity Timeline -->
 <div class="row g-3">
-  <div class="col-xl-8 animate-in animate-in-delay-2">
-    <div class="wms-card">
+
+  <!-- Lease Expiry -->
+  <div class="col-xl-4 animate-in animate-in-delay-1">
+    <div class="wms-card h-100">
       <div class="card-header-wms">
-        <div class="card-title-wms"><i class="fas fa-list-check"></i> Recent Orders</div>
-        <div class="card-actions">
-          <a href="{% url 'orders' %}" class="btn-wms ghost sm">View All <i class="fas fa-arrow-right ms-1"></i></a>
-        </div>
+        <div class="card-title-wms"><i class="fas fa-file-contract"></i> Lease Expiry Alerts</div>
+        <a href="{% url 'leases' %}" class="btn-wms ghost sm">Manage</a>
       </div>
-      <div class="card-body-wms p-0">
-        <div class="table-responsive">
-          <table class="table-wms">
-            <thead>
-              <tr>
-                <th>Order ID</th>
-                <th>Customer</th>
-                <th>Items</th>
-                <th>Value</th>
-                <th>Status</th>
-                <th>Date</th>
-                <th>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><strong>#ORD-9921</strong></td>
-                <td><div class="d-flex align-items-center gap-2"><div class="avatar sm">TC</div> TechCorp Inc.</div></td>
-                <td>24 items</td>
-                <td><strong>$4,850</strong></td>
-                <td><span class="badge-wms success"><span class="badge-dot"></span>Delivered</span></td>
-                <td>May 23, 2024</td>
-                <td><a href="#" class="btn-wms ghost sm icon-only" title="View"><i class="fas fa-eye"></i></a></td>
-              </tr>
-              <tr>
-                <td><strong>#ORD-9920</strong></td>
-                <td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-success">GL</div> Global Logistics</div></td>
-                <td>8 items</td>
-                <td><strong>$1,290</strong></td>
-                <td><span class="badge-wms primary"><span class="badge-dot"></span>Processing</span></td>
-                <td>May 22, 2024</td>
-                <td><a href="#" class="btn-wms ghost sm icon-only" title="View"><i class="fas fa-eye"></i></a></td>
-              </tr>
-              <tr>
-                <td><strong>#ORD-9919</strong></td>
-                <td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-warning">SA</div> Sunrise Auto</div></td>
-                <td>52 items</td>
-                <td><strong>$8,740</strong></td>
-                <td><span class="badge-wms warning"><span class="badge-dot"></span>Pending</span></td>
-                <td>May 22, 2024</td>
-                <td><a href="#" class="btn-wms ghost sm icon-only" title="View"><i class="fas fa-eye"></i></a></td>
-              </tr>
-              <tr>
-                <td><strong>#ORD-9918</strong></td>
-                <td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-info">BM</div> BlueMark Ltd</div></td>
-                <td>15 items</td>
-                <td><strong>$2,180</strong></td>
-                <td><span class="badge-wms success"><span class="badge-dot"></span>Delivered</span></td>
-                <td>May 21, 2024</td>
-                <td><a href="#" class="btn-wms ghost sm icon-only" title="View"><i class="fas fa-eye"></i></a></td>
-              </tr>
-              <tr>
-                <td><strong>#ORD-9917</strong></td>
-                <td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-danger">FP</div> FastParts Co.</div></td>
-                <td>7 items</td>
-                <td><strong>$920</strong></td>
-                <td><span class="badge-wms danger"><span class="badge-dot"></span>Cancelled</span></td>
-                <td>May 21, 2024</td>
-                <td><a href="#" class="btn-wms ghost sm icon-only" title="View"><i class="fas fa-eye"></i></a></td>
-              </tr>
-            </tbody>
-          </table>
+      <div class="card-body-wms">
+        <div class="lease-expiry-item">
+          <div class="lease-days-badge expired">
+            <div class="days-num">EXP</div>
+            <div class="days-lbl">Expired</div>
+          </div>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:14px;color:var(--text-primary)">Rahul Mehta</div>
+            <div style="font-size:12px;color:var(--text-muted)">Unit B-101 &nbsp;·&nbsp; Ended May 1</div>
+          </div>
+          <span class="badge-wms danger"><span class="badge-dot"></span>Action Needed</span>
+        </div>
+        <div class="lease-expiry-item">
+          <div class="lease-days-badge urgent">
+            <div class="days-num">18</div>
+            <div class="days-lbl">days</div>
+          </div>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:14px;color:var(--text-primary)">Arjun Sharma</div>
+            <div style="font-size:12px;color:var(--text-muted)">Unit A-101 &nbsp;·&nbsp; Expires Jun 2</div>
+          </div>
+          <span class="badge-wms primary"><span class="badge-dot"></span>Renewing</span>
+        </div>
+        <div class="lease-expiry-item">
+          <div class="lease-days-badge warning">
+            <div class="days-num">24</div>
+            <div class="days-lbl">days</div>
+          </div>
+          <div style="flex:1">
+            <div style="font-weight:700;font-size:14px;color:var(--text-primary)">Anita Roy</div>
+            <div style="font-size:12px;color:var(--text-muted)">Unit C-201 &nbsp;·&nbsp; Expires Jun 8</div>
+          </div>
+          <span class="badge-wms warning"><span class="badge-dot"></span>Expiring</span>
+        </div>
+        <div style="margin-top:16px">
+          <a href="{% url 'leases' %}" class="btn-wms primary" style="width:100%;justify-content:center"><i class="fas fa-paper-plane"></i> Send Renewal Reminders</a>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="col-xl-4 animate-in animate-in-delay-3">
+  <!-- Recent Payments -->
+  <div class="col-xl-5 animate-in animate-in-delay-2">
+    <div class="wms-card h-100">
+      <div class="card-header-wms">
+        <div>
+          <div class="card-title-wms"><i class="fas fa-money-bill-wave"></i> Recent Payments</div>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:2px">May 2026 collection</div>
+        </div>
+        <a href="{% url 'rent_payments' %}" class="btn-wms ghost sm">View All <i class="fas fa-arrow-right ms-1"></i></a>
+      </div>
+      <div class="card-body-wms p-0">
+        <table class="table-wms">
+          <thead><tr><th>Tenant</th><th>Unit</th><th>Amount</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div class="pay-row-avatar" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)">AS</div>
+                  <span style="font-weight:600">Arjun Sharma</span>
+                </div>
+              </td>
+              <td><span class="tag-chip">A-101</span></td>
+              <td style="font-weight:700;font-family:'Poppins',sans-serif">₹18,000</td>
+              <td><span class="badge-wms success"><span class="badge-dot"></span>Paid</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div class="pay-row-avatar" style="background:linear-gradient(135deg,#10b981,#059669)">PN</div>
+                  <span style="font-weight:600">Priya Nair</span>
+                </div>
+              </td>
+              <td><span class="tag-chip">A-102</span></td>
+              <td style="font-weight:700;font-family:'Poppins',sans-serif">₹12,000</td>
+              <td><span class="badge-wms success"><span class="badge-dot"></span>Paid</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div class="pay-row-avatar" style="background:linear-gradient(135deg,#ef4444,#dc2626)">RM</div>
+                  <span style="font-weight:600">Rahul Mehta</span>
+                </div>
+              </td>
+              <td><span class="tag-chip">B-101</span></td>
+              <td style="font-weight:700;font-family:'Poppins',sans-serif">₹9,900</td>
+              <td><span class="badge-wms danger"><span class="badge-dot"></span>Overdue</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div class="pay-row-avatar" style="background:linear-gradient(135deg,#f59e0b,#d97706)">SK</div>
+                  <span style="font-weight:600">Sneha Kapoor</span>
+                </div>
+              </td>
+              <td><span class="tag-chip">B-201</span></td>
+              <td style="font-weight:700;font-family:'Poppins',sans-serif">₹15,000</td>
+              <td><span class="badge-wms warning"><span class="badge-dot"></span>Pending</span></td>
+            </tr>
+            <tr>
+              <td>
+                <div class="d-flex align-items-center gap-2">
+                  <div class="pay-row-avatar" style="background:linear-gradient(135deg,#3b82f6,#2563eb)">VS</div>
+                  <span style="font-weight:600">Vikram Singh</span>
+                </div>
+              </td>
+              <td><span class="tag-chip">C-101</span></td>
+              <td style="font-weight:700;font-family:'Poppins',sans-serif">₹32,000</td>
+              <td><span class="badge-wms success"><span class="badge-dot"></span>Paid</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Collection progress bar -->
+      <div style="padding:16px 22px;border-top:1px solid var(--border-color);background:var(--bg-card)">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <span style="font-size:12.5px;font-weight:600;color:var(--text-secondary)">Collection Progress — May 2026</span>
+          <span style="font-size:13px;font-weight:700;color:#059669">₹89,000 / ₹1,16,000</span>
+        </div>
+        <div class="progress-wms">
+          <div class="progress-bar-wms success" style="width:77%" data-width="77%"></div>
+        </div>
+        <div style="font-size:11.5px;color:var(--text-muted);margin-top:6px">77% collected · ₹27,000 remaining</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Activity Timeline -->
+  <div class="col-xl-3 animate-in animate-in-delay-3">
     <div class="wms-card h-100">
       <div class="card-header-wms">
         <div class="card-title-wms"><i class="fas fa-bolt"></i> Recent Activity</div>
         <a href="{% url 'activity_logs' %}" class="btn-wms ghost sm">All Logs</a>
       </div>
       <div class="card-body-wms">
-        <div class="activity-item">
-          <div class="activity-dot primary"></div>
-          <div>
-            <div class="activity-text"><strong>New order #ORD-9921</strong> placed by TechCorp</div>
-            <div class="activity-time"><i class="fas fa-clock me-1"></i>2 min ago</div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot primary"></div>
+            <div class="tl-content">
+              <div class="tl-text">Tenant <strong>Sneha Kapoor</strong> onboarded</div>
+              <div class="tl-time"><i class="fas fa-clock me-1"></i>Today 5:15 PM</div>
+            </div>
           </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot success"></div>
-          <div>
-            <div class="activity-text">Shipment <strong>#SH-2847</strong> marked delivered</div>
-            <div class="activity-time"><i class="fas fa-clock me-1"></i>18 min ago</div>
+          <div class="tl-item">
+            <div class="tl-dot success"></div>
+            <div class="tl-content">
+              <div class="tl-text"><strong>PAY-001</strong> marked paid — Arjun Sharma ₹18,000</div>
+              <div class="tl-time"><i class="fas fa-clock me-1"></i>Today 4:45 PM</div>
+            </div>
           </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot warning"></div>
-          <div>
-            <div class="activity-text"><strong>Low stock alert</strong> for SKU-4521 (Electronics)</div>
-            <div class="activity-time"><i class="fas fa-clock me-1"></i>35 min ago</div>
+          <div class="tl-item">
+            <div class="tl-dot warning"></div>
+            <div class="tl-content">
+              <div class="tl-text"><strong>TKT-006</strong> closed by Meera Singh</div>
+              <div class="tl-time"><i class="fas fa-clock me-1"></i>Today 3:30 PM</div>
+            </div>
           </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot info"></div>
-          <div>
-            <div class="activity-text">Staff member <strong>Sarah K.</strong> clocked in</div>
-            <div class="activity-time"><i class="fas fa-clock me-1"></i>1 hour ago</div>
+          <div class="tl-item">
+            <div class="tl-dot danger"></div>
+            <div class="tl-content">
+              <div class="tl-text"><strong>WH-008</strong> (C-102) set to Maintenance</div>
+              <div class="tl-time"><i class="fas fa-clock me-1"></i>Today 2:00 PM</div>
+            </div>
           </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot danger"></div>
-          <div>
-            <div class="activity-text">Order <strong>#ORD-9917</strong> cancelled by customer</div>
-            <div class="activity-time"><i class="fas fa-clock me-1"></i>2 hours ago</div>
+          <div class="tl-item">
+            <div class="tl-dot info"></div>
+            <div class="tl-content">
+              <div class="tl-text"><strong>TKT-003</strong> resolved — Vikram Singh</div>
+              <div class="tl-time"><i class="fas fa-clock me-1"></i>Today 10:00 AM</div>
+            </div>
           </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot primary"></div>
-          <div>
-            <div class="activity-text">Inventory restock completed — <strong>Zone C</strong></div>
-            <div class="activity-time"><i class="fas fa-clock me-1"></i>3 hours ago</div>
-          </div>
-        </div>
-        <div class="activity-item">
-          <div class="activity-dot success"></div>
-          <div>
-            <div class="activity-text"><strong>Monthly report</strong> auto-generated</div>
-            <div class="activity-time"><i class="fas fa-clock me-1"></i>5 hours ago</div>
+          <div class="tl-item">
+            <div class="tl-dot success"></div>
+            <div class="tl-content">
+              <div class="tl-text">Bulk invoices generated for <strong>May 2026</strong></div>
+              <div class="tl-time"><i class="fas fa-clock me-1"></i>May 1, 9:00 AM</div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
 </div>
 {% endblock %}
 

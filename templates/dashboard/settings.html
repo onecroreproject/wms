@@ -2,29 +2,27 @@
 {% load static %}
 
 {% block content %}
-<div id="settingsPage">
 <div class="page-header animate-in">
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
     <div>
-      <h1 class="page-title">Settings</h1>
-      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><a href="{% url 'dashboard' %}">Dashboard</a><span class="breadcrumb-sep">/</span><span>Settings</span></div>
+      <h1 class="page-title">System Settings</h1>
+      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><span>Settings</span></div>
     </div>
-    <button class="btn-wms primary settings-save-btn"><i class="fas fa-save"></i> Save Changes</button>
+    <button class="btn-wms primary" onclick="saveAllSettings()"><i class="fas fa-save me-1"></i> Save All Changes</button>
   </div>
 </div>
 
 <div class="row g-3">
-  <!-- Left: Settings Menu -->
+  <!-- Left: Settings Tabs -->
   <div class="col-xl-3 animate-in animate-in-delay-1">
     <div class="wms-card">
-      <div class="card-body-wms p-2">
+      <div class="card-body-wms" style="padding:12px">
         <div class="d-flex flex-column gap-1" id="settingsTabs">
-          <button class="btn-wms ghost settings-tab active" data-target="general" style="justify-content:flex-start;width:100%"><i class="fas fa-gear me-2 text-primary-color"></i>General</button>
-          <button class="btn-wms ghost settings-tab" data-target="warehouse" style="justify-content:flex-start;width:100%"><i class="fas fa-warehouse me-2 text-success-color"></i>Warehouse Config</button>
-          <button class="btn-wms ghost settings-tab" data-target="notifications-s" style="justify-content:flex-start;width:100%"><i class="fas fa-bell me-2 text-warning-color"></i>Notifications</button>
-          <button class="btn-wms ghost settings-tab" data-target="users" style="justify-content:flex-start;width:100%"><i class="fas fa-users me-2 text-info-color"></i>User Access</button>
-          <button class="btn-wms ghost settings-tab" data-target="integrations" style="justify-content:flex-start;width:100%"><i class="fas fa-plug me-2" style="color:#7c3aed"></i>Integrations</button>
-          <button class="btn-wms ghost settings-tab" data-target="backup" style="justify-content:flex-start;width:100%"><i class="fas fa-database me-2 text-danger-color"></i>Backup & Security</button>
+          <button class="btn-wms ghost active text-start" onclick="showTab('rent', this)"><i class="fas fa-calendar-day me-2"></i>Rent Configuration</button>
+          <button class="btn-wms ghost text-start" onclick="showTab('latefee', this)"><i class="fas fa-indian-rupee-sign me-2"></i>Late Fee Rules</button>
+          <button class="btn-wms ghost text-start" onclick="showTab('notifications', this)"><i class="fas fa-bell me-2"></i>Notification Templates</button>
+          <button class="btn-wms ghost text-start" onclick="showTab('tickets', this)"><i class="fas fa-ticket me-2"></i>Ticket Categories & SLA</button>
+          <button class="btn-wms ghost text-start" onclick="showTab('roles', this)"><i class="fas fa-users-gear me-2"></i>Roles & Permissions</button>
         </div>
       </div>
     </div>
@@ -33,42 +31,127 @@
   <!-- Right: Settings Content -->
   <div class="col-xl-9 animate-in animate-in-delay-2">
 
-    <!-- General Settings -->
-    <div class="settings-panel" id="panel-general">
+    <!-- Rent Configuration -->
+    <div id="tab-rent" class="settings-tab">
       <div class="wms-card mb-3">
-        <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-building"></i> Company Information</div></div>
-        <div class="card-body-wms">
-          <div class="row g-3">
-            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Company Name</label><input type="text" class="form-control-wms" value="WMS Pro Enterprises Ltd."></div></div>
-            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Registration No.</label><input type="text" class="form-control-wms" value="REG-2024-WMS-001"></div></div>
-            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Email Address</label><input type="email" class="form-control-wms" value="admin@wmspro.com"></div></div>
-            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Phone Number</label><input type="text" class="form-control-wms" value="+91-22-4001-2345"></div></div>
-            <div class="col-12"><div class="form-group-wms"><label class="form-label-wms">Address</label><textarea class="form-control-wms" rows="2">Plot 47, MIDC Industrial Area, Andheri East, Mumbai — 400093, Maharashtra, India</textarea></div></div>
-            <div class="col-md-4"><div class="form-group-wms"><label class="form-label-wms">Currency</label><select class="form-control-wms form-select-wms"><option>USD ($)</option><option selected>INR (₹)</option><option>EUR (€)</option></select></div></div>
-            <div class="col-md-4"><div class="form-group-wms"><label class="form-label-wms">Timezone</label><select class="form-control-wms form-select-wms"><option selected>Asia/Kolkata (IST)</option><option>UTC</option><option>America/New_York</option></select></div></div>
-            <div class="col-md-4"><div class="form-group-wms"><label class="form-label-wms">Date Format</label><select class="form-control-wms form-select-wms"><option>DD/MM/YYYY</option><option selected>MMM DD, YYYY</option></select></div></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="wms-card">
-        <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-palette"></i> Theme & Appearance</div></div>
+        <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-calendar-day"></i> Rent Due Date Configuration</div></div>
         <div class="card-body-wms">
           <div class="row g-3">
             <div class="col-md-6">
-              <div class="form-group-wms"><label class="form-label-wms">Color Theme</label>
-                <div class="d-flex gap-2 mt-2">
-                  <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#4f46e5,#7c3aed);cursor:pointer;border:3px solid #4f46e5" title="Indigo Purple"></div>
-                  <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#10b981,#059669);cursor:pointer;border:3px solid transparent" title="Green"></div>
-                  <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#3b82f6,#2563eb);cursor:pointer;border:3px solid transparent" title="Blue"></div>
-                  <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#ef4444,#dc2626);cursor:pointer;border:3px solid transparent" title="Red"></div>
-                  <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(135deg,#f59e0b,#d97706);cursor:pointer;border:3px solid transparent" title="Amber"></div>
-                </div>
+              <label class="form-label-wms">Rent Due Day (of each month)</label>
+              <select class="form-control-wms" id="rentDueDay">
+                <option value="1" selected>1st of every month</option>
+                <option value="5">5th of every month</option>
+                <option value="10">10th of every month</option>
+                <option value="15">15th of every month</option>
+              </select>
+              <div style="font-size:12px;color:#64748b;margin-top:6px">Tenants will be reminded 5 days before this date.</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-wms">Grace Period (days)</label>
+              <input type="number" class="form-control-wms" id="gracePeriod" value="3" min="0" max="15">
+              <div style="font-size:12px;color:#64748b;margin-top:6px">Late fees apply after the grace period.</div>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-wms">Reminder Schedule</label>
+              <div class="d-flex flex-column gap-2 mt-1">
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px"><input type="checkbox" checked> 5 days before due date</label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px"><input type="checkbox" checked> On due date</label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px"><input type="checkbox" checked> 3 days after due date (overdue)</label>
+                <label style="display:flex;align-items:center;gap:8px;font-size:13px"><input type="checkbox"> 7 days after due date</label>
               </div>
             </div>
             <div class="col-md-6">
-              <div class="form-group-wms"><label class="form-label-wms">Dashboard Language</label>
-                <select class="form-control-wms form-select-wms"><option selected>English</option><option>Hindi</option><option>Spanish</option><option>French</option></select>
+              <label class="form-label-wms">Invoice Auto-Generation</label>
+              <select class="form-control-wms" id="invoiceAuto">
+                <option>Auto-generate on 25th of previous month</option>
+                <option>Auto-generate on 1st of current month</option>
+                <option>Manual only</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Late Fee Rules -->
+    <div id="tab-latefee" class="settings-tab" style="display:none">
+      <div class="wms-card mb-3">
+        <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-indian-rupee-sign"></i> Late Fee Rules</div></div>
+        <div class="card-body-wms">
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label-wms">Late Fee Type</label>
+              <select class="form-control-wms" id="lateFeeType" onchange="toggleLateFeeFields()">
+                <option value="percentage">Percentage of Monthly Rent</option>
+                <option value="flat">Flat Amount (₹)</option>
+              </select>
+            </div>
+            <div class="col-md-6" id="lateFeeValueField">
+              <label class="form-label-wms">Late Fee Percentage (%)</label>
+              <input type="number" class="form-control-wms" id="lateFeeValue" value="10" min="1" max="50">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-wms">Apply After (days overdue)</label>
+              <input type="number" class="form-control-wms" id="lateFeeAfter" value="7" min="1">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-wms">Maximum Late Fee Cap (₹)</label>
+              <input type="number" class="form-control-wms" id="lateFeeCap" value="5000" min="0">
+              <div style="font-size:12px;color:#64748b;margin-top:6px">Set 0 for no cap.</div>
+            </div>
+            <div class="col-md-12">
+              <label class="form-label-wms">Apply Rule To</label>
+              <select class="form-control-wms" id="lateFeeScope">
+                <option>All Tenants (Global)</option>
+                <option>Per Warehouse Unit</option>
+              </select>
+            </div>
+          </div>
+          <div class="mt-3 p-3 rounded-3" style="background:#f0fdf4;border:1px solid #bbf7d0">
+            <div class="fw-600 text-success mb-1"><i class="fas fa-circle-info me-1"></i>Current Rule Preview</div>
+            <div style="font-size:13px;color:#334155" id="lateFeePreview">Late fee of <strong>10%</strong> of monthly rent applies after <strong>7 days</strong> overdue. Max cap: <strong>₹5,000</strong>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notification Templates -->
+    <div id="tab-notifications" class="settings-tab" style="display:none">
+      <div class="wms-card mb-3">
+        <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-bell"></i> Notification Templates</div></div>
+        <div class="card-body-wms">
+          <div class="wms-tabs mb-3">
+            <button class="wms-tab active" onclick="switchNotifTab('sms',this)">SMS</button>
+            <button class="wms-tab" onclick="switchNotifTab('email',this)">Email</button>
+          </div>
+          <div id="notifTemplateSMS">
+            <div class="mb-3">
+              <label class="form-label-wms">Rent Due Reminder (SMS)</label>
+              <textarea class="form-control-wms" rows="3">Dear {{tenant_name}}, your rent of {{rent_amount}} for unit {{unit}} is due on {{due_date}}. Please pay on time to avoid late fees. — WareHub</textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label-wms">Overdue Alert (SMS)</label>
+              <textarea class="form-control-wms" rows="3">Dear {{tenant_name}}, your rent for {{month}} is overdue. Total due: {{total_amount}} (incl. late fee). Please pay immediately. — WareHub</textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label-wms">Lease Expiry Alert (SMS)</label>
+              <textarea class="form-control-wms" rows="3">Dear {{tenant_name}}, your lease for unit {{unit}} expires on {{lease_end}}. Please contact us to renew. — WareHub</textarea>
+            </div>
+          </div>
+          <div id="notifTemplateEmail" style="display:none">
+            <div class="mb-3">
+              <label class="form-label-wms">Rent Due Reminder (Email Subject)</label>
+              <input type="text" class="form-control-wms" value="Rent Due Reminder — {{month}} | WareHub">
+            </div>
+            <div class="mb-3">
+              <label class="form-label-wms">Overdue Alert (Email Subject)</label>
+              <input type="text" class="form-control-wms" value="ACTION REQUIRED: Rent Overdue for {{month}} | WareHub">
+            </div>
+            <div class="mb-3">
+              <label class="form-label-wms">Available Variables</label>
+              <div style="background:#f8fafc;border-radius:8px;padding:12px;font-size:12px;color:#475569">
+                <code>{{tenant_name}}</code> &nbsp; <code>{{unit}}</code> &nbsp; <code>{{rent_amount}}</code> &nbsp; <code>{{due_date}}</code> &nbsp; <code>{{month}}</code> &nbsp; <code>{{total_amount}}</code> &nbsp; <code>{{lease_end}}</code>
               </div>
             </div>
           </div>
@@ -76,18 +159,100 @@
       </div>
     </div>
 
-    <!-- Warehouse Config (hidden by default) -->
-    <div class="settings-panel d-none" id="panel-warehouse">
+    <!-- Ticket Categories & SLA -->
+    <div id="tab-tickets" class="settings-tab" style="display:none">
+      <div class="wms-card mb-3">
+        <div class="card-header-wms">
+          <div class="card-title-wms"><i class="fas fa-ticket"></i> Ticket Categories & SLA Targets</div>
+          <button class="btn-wms ghost sm" onclick="showToast('Category added!','success')"><i class="fas fa-plus me-1"></i>Add</button>
+        </div>
+        <div class="card-body-wms p-0">
+          <table class="table-wms">
+            <thead><tr><th>Category</th><th>SLA Target (Hours)</th><th>Priority Default</th><th>Active</th><th>Actions</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>Maintenance</strong></td>
+                <td><input type="number" class="form-control-wms" style="width:80px" value="24"></td>
+                <td><select class="form-control-wms" style="width:100px"><option>High</option><option>Medium</option><option>Low</option></select></td>
+                <td><input type="checkbox" checked></td>
+                <td><a href="#" class="btn-wms ghost sm icon-only"><i class="fas fa-pen"></i></a></td>
+              </tr>
+              <tr>
+                <td><strong>Billing</strong></td>
+                <td><input type="number" class="form-control-wms" style="width:80px" value="48"></td>
+                <td><select class="form-control-wms" style="width:100px"><option>High</option><option selected>Medium</option><option>Low</option></select></td>
+                <td><input type="checkbox" checked></td>
+                <td><a href="#" class="btn-wms ghost sm icon-only"><i class="fas fa-pen"></i></a></td>
+              </tr>
+              <tr>
+                <td><strong>Access Issue</strong></td>
+                <td><input type="number" class="form-control-wms" style="width:80px" value="12"></td>
+                <td><select class="form-control-wms" style="width:100px"><option>High</option><option>Medium</option><option>Low</option></select></td>
+                <td><input type="checkbox" checked></td>
+                <td><a href="#" class="btn-wms ghost sm icon-only"><i class="fas fa-pen"></i></a></td>
+              </tr>
+              <tr>
+                <td><strong>General Inquiry</strong></td>
+                <td><input type="number" class="form-control-wms" style="width:80px" value="72"></td>
+                <td><select class="form-control-wms" style="width:100px"><option>High</option><option>Medium</option><option selected>Low</option></select></td>
+                <td><input type="checkbox" checked></td>
+                <td><a href="#" class="btn-wms ghost sm icon-only"><i class="fas fa-pen"></i></a></td>
+              </tr>
+              <tr>
+                <td><strong>Other</strong></td>
+                <td><input type="number" class="form-control-wms" style="width:80px" value="72"></td>
+                <td><select class="form-control-wms" style="width:100px"><option>High</option><option selected>Medium</option><option>Low</option></select></td>
+                <td><input type="checkbox" checked></td>
+                <td><a href="#" class="btn-wms ghost sm icon-only"><i class="fas fa-pen"></i></a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
       <div class="wms-card">
-        <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-warehouse"></i> Warehouse Configuration</div></div>
+        <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-clock"></i> Escalation Rules</div></div>
         <div class="card-body-wms">
           <div class="row g-3">
-            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Total Warehouse Area (sq ft)</label><input type="text" class="form-control-wms" value="60,000"></div></div>
-            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Number of Zones</label><input type="number" class="form-control-wms" value="6"></div></div>
-            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Low Stock Threshold (%)</label><input type="number" class="form-control-wms" value="20"></div></div>
-            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Critical Stock Threshold (%)</label><input type="number" class="form-control-wms" value="10"></div></div>
-            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Max Capacity Utilization Alert (%)</label><input type="number" class="form-control-wms" value="90"></div></div>
-            <div class="col-md-6"><div class="form-group-wms"><label class="form-label-wms">Default Shipping Method</label><select class="form-control-wms form-select-wms"><option selected>Express Courier</option><option>Standard Freight</option><option>Air Cargo</option></select></div></div>
+            <div class="col-md-6">
+              <label class="form-label-wms">Escalate unassigned ticket after (hours)</label>
+              <input type="number" class="form-control-wms" value="4">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label-wms">Alert for tickets inactive more than (hours)</label>
+              <input type="number" class="form-control-wms" value="24">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Roles & Permissions -->
+    <div id="tab-roles" class="settings-tab" style="display:none">
+      <div class="wms-card">
+        <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-users-gear"></i> Role Permissions Matrix</div></div>
+        <div class="card-body-wms p-0">
+          <div class="table-responsive">
+            <table class="table-wms">
+              <thead>
+                <tr>
+                  <th>Permission</th>
+                  <th>Property Manager</th>
+                  <th>Finance Officer</th>
+                  <th>Support Agent</th>
+                  <th>Security</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr><td>Add / Edit Tenants</td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-xmark text-danger"></i></td><td><i class="fas fa-xmark text-danger"></i></td><td><i class="fas fa-xmark text-danger"></i></td></tr>
+                <tr><td>Mark Payments</td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-xmark text-danger"></i></td><td><i class="fas fa-xmark text-danger"></i></td></tr>
+                <tr><td>View Payment History</td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-xmark text-danger"></i></td></tr>
+                <tr><td>Manage Leases</td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-xmark text-danger"></i></td><td><i class="fas fa-xmark text-danger"></i></td><td><i class="fas fa-xmark text-danger"></i></td></tr>
+                <tr><td>Manage Tickets</td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-xmark text-danger"></i></td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-xmark text-danger"></i></td></tr>
+                <tr><td>View Tenant Profile</td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-xmark text-danger"></i></td></tr>
+                <tr><td>System Settings</td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-xmark text-danger"></i></td><td><i class="fas fa-xmark text-danger"></i></td><td><i class="fas fa-xmark text-danger"></i></td></tr>
+                <tr><td>Export Reports</td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-check text-success"></i></td><td><i class="fas fa-xmark text-danger"></i></td><td><i class="fas fa-xmark text-danger"></i></td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -99,19 +264,24 @@
 
 {% block extra_js %}
 <script>
-document.querySelectorAll('.settings-tab').forEach(function(tab) {
-  tab.addEventListener('click', function() {
-    document.querySelectorAll('.settings-tab').forEach(t => t.classList.remove('active'));
-    document.querySelectorAll('.settings-panel').forEach(p => p.classList.add('d-none'));
-    tab.classList.add('active');
-    var target = document.getElementById('panel-' + tab.dataset.target);
-    if (target) {
-      target.classList.remove('d-none');
-    } else {
-      document.getElementById('panel-general').classList.remove('d-none');
-      showToast('This settings section is under construction','info');
-    }
-  });
-});
+function showTab(id, btn) {
+  document.querySelectorAll('.settings-tab').forEach(function(t){ t.style.display='none'; });
+  document.getElementById('tab-'+id).style.display='';
+  document.querySelectorAll('#settingsTabs button').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+}
+function saveAllSettings() { showToast('Settings saved successfully!','success'); }
+function toggleLateFeeFields() {
+  var type = document.getElementById('lateFeeType').value;
+  var label = document.querySelector('#lateFeeValueField label');
+  if(type==='percentage') label.textContent='Late Fee Percentage (%)';
+  else label.textContent='Flat Late Fee Amount (₹)';
+}
+function switchNotifTab(tab, btn) {
+  document.getElementById('notifTemplateSMS').style.display = tab==='sms' ? '' : 'none';
+  document.getElementById('notifTemplateEmail').style.display = tab==='email' ? '' : 'none';
+  document.querySelectorAll('.wms-tabs .wms-tab').forEach(function(b){ b.classList.remove('active'); });
+  btn.classList.add('active');
+}
 </script>
 {% endblock %}

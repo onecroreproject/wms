@@ -5,12 +5,12 @@
 <div class="page-header animate-in">
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
     <div>
-      <h1 class="page-title">Warehouse Overview</h1>
-      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><a href="{% url 'dashboard' %}">Dashboard</a><span class="breadcrumb-sep">/</span><span>Warehouse</span></div>
+      <h1 class="page-title">Warehouse Units</h1>
+      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><span>Warehouse Units</span></div>
     </div>
     <div class="d-flex gap-2">
-      <button class="btn-wms ghost"><i class="fas fa-map-location-dot"></i> Floor Plan</button>
-      <button class="btn-wms primary" onclick="showToast('Zone added','success')"><i class="fas fa-plus"></i> Add Zone</button>
+      <button class="btn-wms primary" onclick="openAddUnitModal()"><i class="fas fa-plus"></i> Add Unit</button>
+      <button class="btn-wms ghost" onclick="showToast('Exported!','success')"><i class="fas fa-download"></i> Export</button>
     </div>
   </div>
 </div>
@@ -18,144 +18,318 @@
 <!-- Stats -->
 <div class="row g-3 mb-4">
   <div class="col-xl-2 col-md-4 col-6 animate-in animate-in-delay-1">
-    <div class="stat-card primary">
+    <div class="stat-card primary" data-href="{% url 'warehouse' %}">
       <div class="stat-card-header"><div class="stat-icon primary" style="width:38px;height:38px;font-size:17px"><i class="fas fa-building"></i></div></div>
-      <div class="stat-value" style="font-size:22px"><span class="counter-value" data-target="6">6</span></div>
-      <div class="stat-label">Total Zones</div>
+      <div class="stat-value" style="font-size:22px" id="totalUnitsCount">12</div>
+      <div class="stat-label">Total Units</div>
     </div>
   </div>
   <div class="col-xl-2 col-md-4 col-6 animate-in animate-in-delay-2">
-    <div class="stat-card success">
-      <div class="stat-card-header"><div class="stat-icon success" style="width:38px;height:38px;font-size:17px"><i class="fas fa-ruler-combined"></i></div></div>
-      <div class="stat-value" style="font-size:22px">60K</div>
-      <div class="stat-label">Total sq ft</div>
+    <div class="stat-card success" data-href="{% url 'tenants' %}">
+      <div class="stat-card-header"><div class="stat-icon success" style="width:38px;height:38px;font-size:17px"><i class="fas fa-users"></i></div></div>
+      <div class="stat-value" style="font-size:22px" id="occupiedCount">8</div>
+      <div class="stat-label">Occupied</div>
     </div>
   </div>
   <div class="col-xl-2 col-md-4 col-6 animate-in animate-in-delay-3">
-    <div class="stat-card warning">
-      <div class="stat-card-header"><div class="stat-icon warning" style="width:38px;height:38px;font-size:17px"><i class="fas fa-percent"></i></div></div>
-      <div class="stat-value" style="font-size:22px">76%</div>
-      <div class="stat-label">Utilization</div>
+    <div class="stat-card info" data-href="{% url 'warehouse' %}">
+      <div class="stat-card-header"><div class="stat-icon info" style="width:38px;height:38px;font-size:17px"><i class="fas fa-door-open"></i></div></div>
+      <div class="stat-value" style="font-size:22px" id="vacantCount">3</div>
+      <div class="stat-label">Vacant</div>
     </div>
   </div>
   <div class="col-xl-2 col-md-4 col-6 animate-in animate-in-delay-4">
-    <div class="stat-card info">
-      <div class="stat-card-header"><div class="stat-icon info" style="width:38px;height:38px;font-size:17px"><i class="fas fa-pallet"></i></div></div>
-      <div class="stat-value" style="font-size:22px"><span class="counter-value" data-target="1240">1,240</span></div>
-      <div class="stat-label">Pallets</div>
+    <div class="stat-card warning" data-href="{% url 'warehouse' %}">
+      <div class="stat-card-header"><div class="stat-icon warning" style="width:38px;height:38px;font-size:17px"><i class="fas fa-wrench"></i></div></div>
+      <div class="stat-value" style="font-size:22px" id="maintenanceCount">1</div>
+      <div class="stat-label">Maintenance</div>
     </div>
   </div>
   <div class="col-xl-2 col-md-4 col-6 animate-in animate-in-delay-5">
-    <div class="stat-card cyan">
-      <div class="stat-card-header"><div class="stat-icon cyan" style="width:38px;height:38px;font-size:17px"><i class="fas fa-users"></i></div></div>
-      <div class="stat-value" style="font-size:22px"><span class="counter-value" data-target="42">42</span></div>
-      <div class="stat-label">Staff On-Site</div>
+    <div class="stat-card cyan" data-href="{% url 'warehouse' %}">
+      <div class="stat-card-header"><div class="stat-icon cyan" style="width:38px;height:38px;font-size:17px"><i class="fas fa-ruler-combined"></i></div></div>
+      <div class="stat-value" style="font-size:22px" id="totalSqft">13.2K</div>
+      <div class="stat-label">Total sq ft</div>
     </div>
   </div>
   <div class="col-xl-2 col-md-4 col-6 animate-in animate-in-delay-6">
-    <div class="stat-card danger">
-      <div class="stat-card-header"><div class="stat-icon danger" style="width:38px;height:38px;font-size:17px"><i class="fas fa-triangle-exclamation"></i></div></div>
-      <div class="stat-value" style="font-size:22px"><span class="counter-value" data-target="3">3</span></div>
-      <div class="stat-label">Alerts</div>
+    <div class="stat-card danger" data-href="{% url 'reports' %}">
+      <div class="stat-card-header"><div class="stat-icon danger" style="width:38px;height:38px;font-size:17px"><i class="fas fa-percent"></i></div></div>
+      <div class="stat-value" style="font-size:22px" id="occupancyRate">67%</div>
+      <div class="stat-label">Occupancy Rate</div>
     </div>
   </div>
 </div>
 
-<!-- Zone Cards -->
-<div class="row g-3 mb-4">
-
-  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-1">
-    <div class="zone-card">
-      <div class="zone-header"><div class="zone-name"><i class="fas fa-map-pin me-2" style="color:#4f46e5"></i>Zone A — Electronics</div><span class="badge-wms success"><span class="badge-dot"></span>Active</span></div>
-      <div class="row g-3 mb-3"><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Capacity Used</div><div class="zone-capacity">78%</div></div><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Area</div><div class="zone-capacity" style="font-size:18px">10,000</div><div class="zone-sub">sq ft</div></div></div>
-      <div class="progress-wms mb-2"><div class="progress-bar-wms primary" style="width:78%"></div></div>
-      <div class="d-flex justify-content-between mb-3" style="font-size:12px;color:#64748b"><span>780 pallets used</span><span>220 available</span></div>
-      <div class="d-flex gap-2"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Zone A details loaded','info')"><i class="fas fa-eye me-1"></i>Details</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Managing Zone A','info')"><i class="fas fa-pen me-1"></i>Manage</button></div>
+<!-- Filter + View Toggle -->
+<div class="wms-card mb-4 animate-in">
+  <div class="card-body-wms d-flex align-items-center gap-3 flex-wrap" style="padding:14px 20px">
+    <select class="form-control-wms form-select-wms" id="unitBlockFilter" style="width:auto">
+      <option value="">All Blocks</option>
+      <option>Block A</option><option>Block B</option><option>Block C</option><option>Block D</option>
+    </select>
+    <select class="form-control-wms form-select-wms" id="unitStatusFilter" style="width:auto">
+      <option value="">All Status</option>
+      <option>Occupied</option><option>Vacant</option><option>Under Maintenance</option>
+    </select>
+    <select class="form-control-wms form-select-wms" id="unitTypeFilter" style="width:auto">
+      <option value="">All Types</option>
+      <option>Small</option><option>Standard</option><option>Large</option><option>Extra Large</option>
+    </select>
+    <div class="ms-auto d-flex gap-2">
+      <button class="btn-wms ghost sm" id="cardViewBtn" onclick="setView('card')"><i class="fas fa-th-large"></i> Cards</button>
+      <button class="btn-wms ghost sm active" id="tableViewBtn" onclick="setView('table')"><i class="fas fa-list"></i> Table</button>
     </div>
   </div>
-
-  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-2">
-    <div class="zone-card">
-      <div class="zone-header"><div class="zone-name"><i class="fas fa-map-pin me-2" style="color:#4f46e5"></i>Zone B — Furniture</div><span class="badge-wms success"><span class="badge-dot"></span>Active</span></div>
-      <div class="row g-3 mb-3"><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Capacity Used</div><div class="zone-capacity">65%</div></div><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Area</div><div class="zone-capacity" style="font-size:18px">8,500</div><div class="zone-sub">sq ft</div></div></div>
-      <div class="progress-wms mb-2"><div class="progress-bar-wms success" style="width:65%"></div></div>
-      <div class="d-flex justify-content-between mb-3" style="font-size:12px;color:#64748b"><span>552 pallets used</span><span>298 available</span></div>
-      <div class="d-flex gap-2"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Zone B details loaded','info')"><i class="fas fa-eye me-1"></i>Details</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Managing Zone B','info')"><i class="fas fa-pen me-1"></i>Manage</button></div>
-    </div>
-  </div>
-
-  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-3">
-    <div class="zone-card">
-      <div class="zone-header"><div class="zone-name"><i class="fas fa-map-pin me-2" style="color:#4f46e5"></i>Zone C — Apparel</div><span class="badge-wms warning"><span class="badge-dot"></span>Near Full</span></div>
-      <div class="row g-3 mb-3"><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Capacity Used</div><div class="zone-capacity">92%</div></div><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Area</div><div class="zone-capacity" style="font-size:18px">12,000</div><div class="zone-sub">sq ft</div></div></div>
-      <div class="progress-wms mb-2"><div class="progress-bar-wms warning" style="width:92%"></div></div>
-      <div class="d-flex justify-content-between mb-3" style="font-size:12px;color:#64748b"><span>1,104 pallets used</span><span>96 available</span></div>
-      <div class="d-flex gap-2"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Zone C details loaded','info')"><i class="fas fa-eye me-1"></i>Details</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Managing Zone C','info')"><i class="fas fa-pen me-1"></i>Manage</button></div>
-    </div>
-  </div>
-
-  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-4">
-    <div class="zone-card">
-      <div class="zone-header"><div class="zone-name"><i class="fas fa-map-pin me-2" style="color:#4f46e5"></i>Zone D — Hardware</div><span class="badge-wms success"><span class="badge-dot"></span>Active</span></div>
-      <div class="row g-3 mb-3"><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Capacity Used</div><div class="zone-capacity">54%</div></div><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Area</div><div class="zone-capacity" style="font-size:18px">9,200</div><div class="zone-sub">sq ft</div></div></div>
-      <div class="progress-wms mb-2"><div class="progress-bar-wms info" style="width:54%"></div></div>
-      <div class="d-flex justify-content-between mb-3" style="font-size:12px;color:#64748b"><span>432 pallets used</span><span>368 available</span></div>
-      <div class="d-flex gap-2"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Zone D details loaded','info')"><i class="fas fa-eye me-1"></i>Details</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Managing Zone D','info')"><i class="fas fa-pen me-1"></i>Manage</button></div>
-    </div>
-  </div>
-
-  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-5">
-    <div class="zone-card">
-      <div class="zone-header"><div class="zone-name"><i class="fas fa-map-pin me-2" style="color:#4f46e5"></i>Zone E — Food &amp; Bev</div><span class="badge-wms danger"><span class="badge-dot"></span>Full</span></div>
-      <div class="row g-3 mb-3"><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Capacity Used</div><div class="zone-capacity">98%</div></div><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Area</div><div class="zone-capacity" style="font-size:18px">11,500</div><div class="zone-sub">sq ft</div></div></div>
-      <div class="progress-wms mb-2"><div class="progress-bar-wms danger" style="width:98%"></div></div>
-      <div class="d-flex justify-content-between mb-3" style="font-size:12px;color:#64748b"><span>1,127 pallets used</span><span>23 available</span></div>
-      <div class="d-flex gap-2"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Zone E details loaded','info')"><i class="fas fa-eye me-1"></i>Details</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Managing Zone E','info')"><i class="fas fa-pen me-1"></i>Manage</button></div>
-    </div>
-  </div>
-
-  <div class="col-xl-4 col-md-6 animate-in animate-in-delay-6">
-    <div class="zone-card">
-      <div class="zone-header"><div class="zone-name"><i class="fas fa-map-pin me-2" style="color:#4f46e5"></i>Zone F — Mixed</div><span class="badge-wms info"><span class="badge-dot"></span>Active</span></div>
-      <div class="row g-3 mb-3"><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Capacity Used</div><div class="zone-capacity">71%</div></div><div class="col-6"><div style="font-size:12px;color:#94a3b8;margin-bottom:4px">Area</div><div class="zone-capacity" style="font-size:18px">8,800</div><div class="zone-sub">sq ft</div></div></div>
-      <div class="progress-wms mb-2"><div class="progress-bar-wms cyan" style="width:71%"></div></div>
-      <div class="d-flex justify-content-between mb-3" style="font-size:12px;color:#64748b"><span>625 pallets used</span><span>255 available</span></div>
-      <div class="d-flex gap-2"><button class="btn-wms ghost sm flex-fill" onclick="showToast('Zone F details loaded','info')"><i class="fas fa-eye me-1"></i>Details</button><button class="btn-wms outline sm flex-fill" onclick="showToast('Managing Zone F','info')"><i class="fas fa-pen me-1"></i>Manage</button></div>
-    </div>
-  </div>
-
 </div>
 
-<!-- Utilization + Temperature Map -->
-<div class="row g-3">
-  <div class="col-xl-8 animate-in animate-in-delay-2">
-    <div class="wms-card">
-      <div class="card-header-wms">
-        <div class="card-title-wms"><i class="fas fa-chart-bar"></i> Zone Utilization (Monthly)</div>
-      </div>
-      <div class="card-body-wms">
-        <div id="warehouseChart"></div>
+<!-- Card View -->
+<div id="cardView" style="display:none">
+  <div class="row g-3 mb-4" id="warehouseCardGrid"></div>
+</div>
+
+<!-- Table View -->
+<div id="tableView">
+  <div class="wms-card animate-in">
+    <div class="card-header-wms">
+      <div class="card-title-wms"><i class="fas fa-warehouse"></i> All Warehouse Units</div>
+    </div>
+    <div class="card-body-wms p-0">
+      <div class="table-responsive">
+        <table class="table-wms">
+          <thead>
+            <tr>
+              <th>Unit ID</th><th>Unit No.</th><th>Block</th><th>Floor</th>
+              <th>Size (sqft)</th><th>Type</th><th>Monthly Rent</th>
+              <th>Tenant</th><th>Assigned Date</th><th>Status</th><th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="warehouseTableBody"></tbody>
+        </table>
       </div>
     </div>
   </div>
-  <div class="col-xl-4 animate-in animate-in-delay-3">
-    <div class="wms-card h-100">
-      <div class="card-header-wms">
-        <div class="card-title-wms"><i class="fas fa-thermometer-half"></i> Conditions</div>
+</div>
+
+<!-- Add/Edit Unit Modal -->
+<div class="modal fade" id="unitModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="border-radius:16px;border:none">
+      <div class="modal-header" style="border-bottom:1px solid #e2e8f0;padding:20px 24px">
+        <h5 class="modal-title fw-700" id="unitModalTitle"><i class="fas fa-warehouse me-2"></i>Add Warehouse Unit</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
-      <div class="card-body-wms">
-        <div class="d-flex align-items-center justify-content-between mb-3 p-2 rounded-3" style="background:#f8fafc"><div style="font-weight:600;font-size:13px">Zone A</div><div class="d-flex gap-3"><span style="font-size:12px;color:#64748b"><i class="fas fa-temperature-half me-1" style="color:#ef4444"></i>18°C</span><span style="font-size:12px;color:#64748b"><i class="fas fa-droplet me-1" style="color:#3b82f6"></i>45%</span><span class="badge-wms success">OK</span></div></div>
-        <div class="d-flex align-items-center justify-content-between mb-3 p-2 rounded-3" style="background:#f8fafc"><div style="font-weight:600;font-size:13px">Zone B</div><div class="d-flex gap-3"><span style="font-size:12px;color:#64748b"><i class="fas fa-temperature-half me-1" style="color:#ef4444"></i>20°C</span><span style="font-size:12px;color:#64748b"><i class="fas fa-droplet me-1" style="color:#3b82f6"></i>52%</span><span class="badge-wms success">OK</span></div></div>
-        <div class="d-flex align-items-center justify-content-between mb-3 p-2 rounded-3" style="background:#f8fafc"><div style="font-weight:600;font-size:13px">Zone C</div><div class="d-flex gap-3"><span style="font-size:12px;color:#64748b"><i class="fas fa-temperature-half me-1" style="color:#ef4444"></i>22°C</span><span style="font-size:12px;color:#64748b"><i class="fas fa-droplet me-1" style="color:#3b82f6"></i>48%</span><span class="badge-wms success">OK</span></div></div>
-        <div class="d-flex align-items-center justify-content-between mb-3 p-2 rounded-3" style="background:#f8fafc"><div style="font-weight:600;font-size:13px">Zone D</div><div class="d-flex gap-3"><span style="font-size:12px;color:#64748b"><i class="fas fa-temperature-half me-1" style="color:#ef4444"></i>15°C</span><span style="font-size:12px;color:#64748b"><i class="fas fa-droplet me-1" style="color:#3b82f6"></i>40%</span><span class="badge-wms warning">High Hum</span></div></div>
-        <div class="d-flex align-items-center justify-content-between mb-3 p-2 rounded-3" style="background:#f8fafc"><div style="font-weight:600;font-size:13px">Zone E</div><div class="d-flex gap-3"><span style="font-size:12px;color:#64748b"><i class="fas fa-temperature-half me-1" style="color:#ef4444"></i>21°C</span><span style="font-size:12px;color:#64748b"><i class="fas fa-droplet me-1" style="color:#3b82f6"></i>55%</span><span class="badge-wms success">OK</span></div></div>
-        <div class="d-flex align-items-center justify-content-between p-2 rounded-3" style="background:#f8fafc"><div style="font-weight:600;font-size:13px">Zone F</div><div class="d-flex gap-3"><span style="font-size:12px;color:#64748b"><i class="fas fa-temperature-half me-1" style="color:#ef4444"></i>19°C</span><span style="font-size:12px;color:#64748b"><i class="fas fa-droplet me-1" style="color:#3b82f6"></i>50%</span><span class="badge-wms success">OK</span></div></div>
+      <div class="modal-body" style="padding:24px">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label-wms">Unit Number *</label>
+            <input type="text" class="form-control-wms" id="uUnit" placeholder="e.g. A-101">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label-wms">Block *</label>
+            <select class="form-control-wms" id="uBlock">
+              <option>Block A</option><option>Block B</option><option>Block C</option><option>Block D</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label-wms">Floor *</label>
+            <select class="form-control-wms" id="uFloor">
+              <option>Ground</option><option>First</option><option>Second</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label-wms">Size (sqft) *</label>
+            <input type="number" class="form-control-wms" id="uSize" placeholder="e.g. 1200">
+          </div>
+          <div class="col-md-4">
+            <label class="form-label-wms">Type *</label>
+            <select class="form-control-wms" id="uType">
+              <option>Small</option><option>Standard</option><option>Large</option><option>Extra Large</option>
+            </select>
+          </div>
+          <div class="col-md-4">
+            <label class="form-label-wms">Monthly Rent (₹) *</label>
+            <input type="number" class="form-control-wms" id="uRent" placeholder="e.g. 18000">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-wms">Status</label>
+            <select class="form-control-wms" id="uStatus">
+              <option>Vacant</option><option>Occupied</option><option>Under Maintenance</option>
+            </select>
+          </div>
+        </div>
       </div>
+      <div class="modal-footer" style="border-top:1px solid #e2e8f0;padding:16px 24px">
+        <button class="btn-wms ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-wms primary" onclick="saveUnit()"><i class="fas fa-save me-1"></i>Save Unit</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Occupancy History Modal -->
+<div class="modal fade" id="historyModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="border-radius:16px;border:none">
+      <div class="modal-header" style="border-bottom:1px solid #e2e8f0;padding:20px 24px">
+        <h5 class="modal-title fw-700"><i class="fas fa-history me-2"></i>Occupancy History</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:24px" id="historyBody"></div>
     </div>
   </div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
-<script src="{% static 'js/charts.js' %}"></script>
+<script>
+var editingUnitId = null;
+var currentView = 'table';
+
+function getFiltered() {
+  var block = document.getElementById('unitBlockFilter').value;
+  var status = document.getElementById('unitStatusFilter').value;
+  var type = document.getElementById('unitTypeFilter').value;
+  return WMS.warehouses.filter(function(w){
+    return (!block||w.block===block) && (!status||w.status===status) && (!type||w.type===type);
+  });
+}
+
+function renderStats() {
+  var all = WMS.warehouses;
+  document.getElementById('totalUnitsCount').textContent = all.length;
+  document.getElementById('occupiedCount').textContent = all.filter(function(w){return w.status==='Occupied';}).length;
+  document.getElementById('vacantCount').textContent = all.filter(function(w){return w.status==='Vacant';}).length;
+  document.getElementById('maintenanceCount').textContent = all.filter(function(w){return w.status==='Under Maintenance';}).length;
+  var sqft = all.reduce(function(s,w){return s+w.size;},0);
+  document.getElementById('totalSqft').textContent = (sqft/1000).toFixed(1)+'K';
+  var occ = all.filter(function(w){return w.status==='Occupied';}).length;
+  document.getElementById('occupancyRate').textContent = Math.round(occ/all.length*100)+'%';
+}
+
+function renderTable() {
+  var data = getFiltered();
+  var html = '';
+  data.forEach(function(w) {
+    var stCls = w.status==='Occupied'?'success':w.status==='Vacant'?'info':'secondary';
+    html += '<tr>';
+    html += '<td><strong>'+w.id+'</strong></td>';
+    html += '<td><strong>'+w.unit+'</strong></td>';
+    html += '<td>'+w.block+'</td><td>'+w.floor+'</td>';
+    html += '<td>'+w.size.toLocaleString()+' sqft</td>';
+    html += '<td>'+w.type+'</td>';
+    html += '<td><strong>'+WMS.formatCurrency(w.rent)+'</strong></td>';
+    html += '<td>'+(w.tenant||'<span class="text-muted">—</span>')+'</td>';
+    html += '<td>'+(w.assignedDate||'—')+'</td>';
+    html += '<td><span class="badge-wms '+stCls+'"><span class="badge-dot"></span>'+w.status+'</span></td>';
+    html += '<td><div class="d-flex gap-1">';
+    html += '<a href="#" class="btn-wms ghost sm icon-only" title="History" onclick="viewHistory(\''+w.id+'\');return false;"><i class="fas fa-history"></i></a>';
+    html += '<a href="#" class="btn-wms ghost sm icon-only" title="Edit" onclick="editUnit(\''+w.id+'\');return false;"><i class="fas fa-pen"></i></a>';
+    html += '<a href="#" class="btn-wms ghost sm icon-only" title="Deactivate" onclick="deactivateUnit(\''+w.id+'\');return false;"><i class="fas fa-ban"></i></a>';
+    html += '</div></td></tr>';
+  });
+  document.getElementById('warehouseTableBody').innerHTML = html;
+}
+
+function renderCards() {
+  var data = getFiltered();
+  var html = '';
+  data.forEach(function(w) {
+    var stCls = w.status==='Occupied'?'success':w.status==='Vacant'?'info':'warning';
+    var stColor = w.status==='Occupied'?'#10b981':w.status==='Vacant'?'#4f46e5':'#f59e0b';
+    html += '<div class="col-xl-3 col-md-4 col-6">';
+    html += '<div class="wms-card" style="cursor:pointer"><div class="card-body-wms" style="display:flex;flex-direction:column;height:100%">';
+    html += '<div class="d-flex justify-content-between align-items-start mb-3">';
+    html += '<div><div style="font-size:22px;font-weight:800;color:#0f172a">'+w.unit+'</div><div style="font-size:12px;color:#64748b">'+w.block+' · '+w.floor+' Floor</div></div>';
+    html += '<span class="badge-wms '+stCls+'"><span class="badge-dot"></span>'+w.status+'</span></div>';
+    html += '<div class="d-flex gap-3 mb-2"><div><div style="font-size:11px;color:#94a3b8">Size</div><div style="font-weight:600">'+w.size.toLocaleString()+' sqft</div></div>';
+    html += '<div><div style="font-size:11px;color:#94a3b8">Type</div><div style="font-weight:600">'+w.type+'</div></div>';
+    html += '<div><div style="font-size:11px;color:#94a3b8">Rent</div><div style="font-weight:600">'+WMS.formatCurrency(w.rent)+'</div></div></div>';
+    html += '<div style="flex:1"></div>';
+    html += '<div style="font-size:12px;color:#64748b;border-top:1px solid #f1f5f9;padding-top:10px;margin-top:10px">';
+    if(w.tenant) html += '<i class="fas fa-user me-1"></i>'+w.tenant;
+    else html += '<i class="fas fa-door-open me-1"></i>Available for rent';
+    html += '</div></div></div></div>';
+  });
+  document.getElementById('warehouseCardGrid').innerHTML = html;
+}
+
+function setView(view) {
+  currentView = view;
+  document.getElementById('cardView').style.display = view==='card' ? '' : 'none';
+  document.getElementById('tableView').style.display = view==='table' ? '' : 'none';
+  document.getElementById('cardViewBtn').classList.toggle('active', view==='card');
+  document.getElementById('tableViewBtn').classList.toggle('active', view==='table');
+  if(view==='card') renderCards(); else renderTable();
+}
+
+function openAddUnitModal() {
+  editingUnitId = null;
+  document.getElementById('unitModalTitle').innerHTML = '<i class="fas fa-warehouse me-2"></i>Add Warehouse Unit';
+  ['uUnit','uSize','uRent'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('uStatus').value = 'Vacant';
+  new bootstrap.Modal(document.getElementById('unitModal')).show();
+}
+
+function editUnit(id) {
+  editingUnitId = id;
+  var w = WMS.warehouses.find(function(x){return x.id===id;});
+  if(!w) return;
+  document.getElementById('unitModalTitle').innerHTML = '<i class="fas fa-pen me-2"></i>Edit Unit '+w.unit;
+  document.getElementById('uUnit').value = w.unit;
+  document.getElementById('uBlock').value = w.block;
+  document.getElementById('uFloor').value = w.floor;
+  document.getElementById('uSize').value = w.size;
+  document.getElementById('uType').value = w.type;
+  document.getElementById('uRent').value = w.rent;
+  document.getElementById('uStatus').value = w.status;
+  new bootstrap.Modal(document.getElementById('unitModal')).show();
+}
+
+function saveUnit() {
+  var unit = document.getElementById('uUnit').value.trim();
+  var size = document.getElementById('uSize').value;
+  var rent = document.getElementById('uRent').value;
+  if(!unit||!size||!rent){ showToast('Fill all required fields.','error'); return; }
+  if(editingUnitId) {
+    var w = WMS.warehouses.find(function(x){return x.id===editingUnitId;});
+    if(w){ w.unit=unit; w.block=document.getElementById('uBlock').value; w.floor=document.getElementById('uFloor').value; w.size=parseInt(size); w.type=document.getElementById('uType').value; w.rent=parseInt(rent); w.status=document.getElementById('uStatus').value; }
+    WMS.logAction('Admin User','Updated Warehouse','Warehouses','Updated unit '+unit);
+    showToast('Unit updated!','success');
+  } else {
+    var newW = { id:WMS.nextId('WH',WMS.warehouses,'id'), unit:unit, block:document.getElementById('uBlock').value, floor:document.getElementById('uFloor').value, size:parseInt(size), type:document.getElementById('uType').value, rent:parseInt(rent), status:'Vacant', tenant:'', tenantId:'', assignedDate:'' };
+    WMS.warehouses.push(newW);
+    WMS.logAction('Admin User','Added Warehouse','Warehouses','Added unit '+unit);
+    showToast('Unit added!','success');
+  }
+  bootstrap.Modal.getInstance(document.getElementById('unitModal')).hide();
+  renderStats(); renderTable();
+}
+
+function deactivateUnit(id) {
+  var w = WMS.warehouses.find(function(x){return x.id===id;});
+  if(!w) return;
+  if(confirm('Set '+w.unit+' to Under Maintenance?')){ w.status='Under Maintenance'; WMS.logAction('Admin User','Updated Warehouse','Warehouses','Set '+w.unit+' to Under Maintenance'); showToast('Unit status updated.','success'); renderStats(); renderTable(); }
+}
+
+function viewHistory(id) {
+  var w = WMS.warehouses.find(function(x){return x.id===id;});
+  if(!w) return;
+  var html = '<div class="mb-3"><strong>Unit:</strong> '+w.unit+' | <strong>Block:</strong> '+w.block+' | <strong>Size:</strong> '+w.size+' sqft</div>';
+  if(w.tenant) {
+    html += '<table class="table-wms"><thead><tr><th>Tenant</th><th>Assigned Date</th><th>Status</th></tr></thead><tbody>';
+    html += '<tr><td>'+w.tenant+'</td><td>'+w.assignedDate+'</td><td>'+WMS.statusBadge('Occupied')+'</td></tr>';
+    html += '</tbody></table>';
+  } else {
+    html += '<div class="text-muted text-center py-3">No occupancy history available.</div>';
+  }
+  document.getElementById('historyBody').innerHTML = html;
+  new bootstrap.Modal(document.getElementById('historyModal')).show();
+}
+
+['unitBlockFilter','unitStatusFilter','unitTypeFilter'].forEach(function(id){
+  document.getElementById(id).addEventListener('change', function(){ renderTable(); renderCards(); });
+});
+document.addEventListener('DOMContentLoaded', function(){ renderStats(); renderTable(); });
+</script>
 {% endblock %}

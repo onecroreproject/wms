@@ -4,38 +4,26 @@ from django.shortcuts import render
 def dashboard(request):
     return render(request, 'dashboard/home.html', {'page_title': 'Dashboard', 'active_page': 'dashboard'})
 
-def inventory(request):
-    return render(request, 'dashboard/inventory.html', {'page_title': 'Inventory Management', 'active_page': 'inventory'})
-
 def warehouse(request):
-    return render(request, 'dashboard/warehouse.html', {'page_title': 'Warehouse Overview', 'active_page': 'warehouse'})
+    return render(request, 'dashboard/warehouse.html', {'page_title': 'Warehouse Units', 'active_page': 'warehouse'})
 
-def products(request):
-    return render(request, 'dashboard/products.html', {'page_title': 'Products', 'active_page': 'products'})
+def tenants(request):
+    return render(request, 'dashboard/tenants.html', {'page_title': 'Tenant Management', 'active_page': 'tenants'})
 
-def orders(request):
-    return render(request, 'dashboard/orders.html', {'page_title': 'Orders', 'active_page': 'orders'})
+def leases(request):
+    return render(request, 'dashboard/leases.html', {'page_title': 'Lease Management', 'active_page': 'leases'})
 
-def dispatch(request):
-    return render(request, 'dashboard/dispatch.html', {'page_title': 'Dispatch Management', 'active_page': 'dispatch'})
-
-def incoming_shipments(request):
-    return render(request, 'dashboard/incoming_shipments.html', {'page_title': 'Incoming Shipments', 'active_page': 'incoming'})
-
-def outgoing_shipments(request):
-    return render(request, 'dashboard/outgoing_shipments.html', {'page_title': 'Outgoing Shipments', 'active_page': 'outgoing'})
+def rent_payments(request):
+    return render(request, 'dashboard/rent_payments.html', {'page_title': 'Rent & Payments', 'active_page': 'rent_payments'})
 
 def reports(request):
     return render(request, 'dashboard/reports.html', {'page_title': 'Reports & Analytics', 'active_page': 'reports'})
 
-def sales_analytics(request):
-    return render(request, 'dashboard/sales_analytics.html', {'page_title': 'Sales Analytics', 'active_page': 'sales'})
+def tickets(request):
+    return render(request, 'dashboard/tickets.html', {'page_title': 'Support Tickets', 'active_page': 'tickets'})
 
 def staff(request):
     return render(request, 'dashboard/staff.html', {'page_title': 'Staff Management', 'active_page': 'staff'})
-
-def customers(request):
-    return render(request, 'dashboard/customers.html', {'page_title': 'Customer Management', 'active_page': 'customers'})
 
 def notifications(request):
     return render(request, 'dashboard/notifications.html', {'page_title': 'Notifications', 'active_page': 'notifications'})

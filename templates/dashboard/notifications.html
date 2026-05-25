@@ -1,152 +1,272 @@
 {% extends 'base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<style>
+.notif-feed-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--border-color);
+  transition: background 0.15s ease;
+  position: relative;
+}
+.notif-feed-item:last-child { border-bottom: none; }
+.notif-feed-item:hover { background: var(--bg-body); }
+.notif-feed-item.unread { background: rgba(79,70,229,0.03); }
+.notif-feed-icon {
+  width: 40px; height: 40px; border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 15px; flex-shrink: 0;
+}
+.notif-feed-icon.danger  { background: linear-gradient(135deg,#ef4444,#dc2626); }
+.notif-feed-icon.warning { background: linear-gradient(135deg,#f59e0b,#d97706); }
+.notif-feed-icon.info    { background: linear-gradient(135deg,#4f46e5,#7c3aed); }
+.notif-feed-icon.success { background: linear-gradient(135deg,#10b981,#059669); }
+.notif-feed-body { flex: 1; min-width: 0; }
+.notif-feed-title { font-size: 13.5px; font-weight: 600; color: var(--text-primary); margin-bottom: 2px; }
+.notif-feed-msg   { font-size: 12.5px; color: var(--text-secondary); line-height: 1.5; }
+.notif-feed-time  { font-size: 11.5px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 4px; }
+.notif-unread-pip {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--primary); flex-shrink: 0; margin-top: 6px;
+  cursor: pointer; transition: transform 0.2s;
+}
+.notif-unread-pip:hover { transform: scale(1.4); }
+.pref-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 13px 0; border-bottom: 1px solid var(--border-color);
+}
+.pref-row:last-child { border-bottom: none; }
+.pref-label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+.pref-desc  { font-size: 11.5px; color: var(--text-muted); margin-top: 1px; }
+.upcoming-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 11px 0; border-bottom: 1px solid var(--border-color);
+}
+.upcoming-row:last-child { border-bottom: none; }
+.upcoming-dot {
+  width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+}
+.upcoming-dot.warning { background: var(--warning); }
+.upcoming-dot.primary { background: var(--primary); }
+.upcoming-dot.danger  { background: var(--danger); }
+.upcoming-text { font-size: 13px; color: var(--text-primary); }
+.upcoming-sub  { font-size: 11.5px; color: var(--text-muted); margin-top: 1px; }
+</style>
+{% endblock %}
+
 {% block content %}
-<div id="notificationsPage">
 <div class="page-header animate-in">
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
     <div>
-      <h1 class="page-title">Notifications</h1>
-      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><a href="{% url 'dashboard' %}">Dashboard</a><span class="breadcrumb-sep">/</span><span>Notifications</span></div>
+      <h1 class="page-title">Notifications &amp; Alerts</h1>
+      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><span>Notifications</span></div>
     </div>
-    <div class="d-flex gap-2">
-      <button class="btn-wms ghost" id="markAllReadBtn"><i class="fas fa-check-double"></i> Mark All Read</button>
-      <button class="btn-wms ghost" id="clearAllNotifBtn"><i class="fas fa-trash"></i> Clear All</button>
+    <div class="d-flex gap-2 flex-wrap">
+      <button class="btn-wms ghost" onclick="markAllRead()"><i class="fas fa-check-double"></i> Mark All Read</button>
+      <button class="btn-wms primary" onclick="showToast('Bulk reminders sent!','success')">
+        <i class="fas fa-paper-plane"></i> Send Rent Reminders
+      </button>
     </div>
   </div>
 </div>
 
+<!-- Summary Stat Cards -->
 <div class="row g-3 mb-4">
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-1">
-    <div class="stat-card primary"><div class="stat-card-header"><div class="stat-icon primary"><i class="fas fa-bell"></i></div></div><div class="stat-value"><span class="counter-value" data-target="24">24</span></div><div class="stat-label">Total Notifications</div></div>
+    <div class="stat-card danger" data-href="{% url 'rent_payments' %}">
+      <div class="stat-card-header"><div class="stat-icon danger"><i class="fas fa-triangle-exclamation"></i></div></div>
+      <div class="stat-value" id="overdueAlerts">2</div>
+      <div class="stat-label">Overdue Rent Alerts</div>
+    </div>
   </div>
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-2">
-    <div class="stat-card danger"><div class="stat-card-header"><div class="stat-icon danger"><i class="fas fa-circle-exclamation"></i></div></div><div class="stat-value"><span class="counter-value" data-target="7">7</span></div><div class="stat-label">Unread</div></div>
+    <div class="stat-card warning" data-href="{% url 'leases' %}">
+      <div class="stat-card-header"><div class="stat-icon warning"><i class="fas fa-file-contract"></i></div></div>
+      <div class="stat-value" id="leaseAlerts">2</div>
+      <div class="stat-label">Lease Expiry Alerts</div>
+    </div>
   </div>
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-3">
-    <div class="stat-card warning"><div class="stat-card-header"><div class="stat-icon warning"><i class="fas fa-triangle-exclamation"></i></div></div><div class="stat-value"><span class="counter-value" data-target="3">3</span></div><div class="stat-label">Critical Alerts</div></div>
+    <div class="stat-card info" data-href="{% url 'tickets' %}">
+      <div class="stat-card-header"><div class="stat-icon info"><i class="fas fa-ticket"></i></div></div>
+      <div class="stat-value" id="ticketAlerts">2</div>
+      <div class="stat-label">Ticket Alerts</div>
+    </div>
   </div>
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-4">
-    <div class="stat-card success"><div class="stat-card-header"><div class="stat-icon success"><i class="fas fa-check-circle"></i></div></div><div class="stat-value"><span class="counter-value" data-target="17">17</span></div><div class="stat-label">Read</div></div>
+    <div class="stat-card primary" data-href="{% url 'notifications' %}">
+      <div class="stat-card-header"><div class="stat-icon primary"><i class="fas fa-bell"></i></div></div>
+      <div class="stat-value" id="unreadCount">3</div>
+      <div class="stat-label">Unread Notifications</div>
+    </div>
   </div>
 </div>
 
+<!-- Main Content Row -->
 <div class="row g-3">
+
+  <!-- Notification Feed -->
   <div class="col-xl-8 animate-in animate-in-delay-2">
     <div class="wms-card">
       <div class="card-header-wms">
         <div class="card-title-wms"><i class="fas fa-bell"></i> All Notifications</div>
-        <div class="card-actions">
-          <select class="form-control-wms form-select-wms" style="width:auto;font-size:12px">
-            <option>All Types</option><option>Alerts</option><option>Orders</option><option>Shipments</option><option>System</option>
+        <div class="card-actions gap-2">
+          <select class="form-control-wms form-select-wms" id="notifTypeFilter" style="width:auto;font-size:13px">
+            <option value="">All Types</option>
+            <option value="danger">Overdue / Critical</option>
+            <option value="warning">Warnings</option>
+            <option value="info">Info</option>
+            <option value="success">Success</option>
           </select>
         </div>
       </div>
-      <div class="card-body-wms p-0">
-
-        <!-- Unread Notifications -->
-        <div style="padding:12px 20px;background:#fafafa;border-bottom:1px solid #e2e8f0;font-size:12px;font-weight:600;color:#64748b;letter-spacing:.5px">UNREAD (<span id="unreadNotifCount">7</span>)</div>
-        <div id="unreadNotifList">
-
-        <div class="notif-item unread" style="border-left:3px solid #ef4444">
-          <div class="notif-icon" style="background:linear-gradient(135deg,#ef4444,#dc2626)"><i class="fas fa-exclamation-triangle"></i></div>
-          <div class="notif-content" style="flex:1">
-            <div class="notif-msg"><strong>Critical: Low Stock Alert</strong> — Product SKU-4521 (USB-C Hub) has only 18 units remaining. Reorder threshold is 50.</div>
-            <div class="notif-time"><i class="fas fa-clock me-1"></i>2 minutes ago &nbsp;•&nbsp; <span class="badge-wms danger" style="font-size:10px">Critical</span></div>
-          </div>
-          <button class="btn-wms ghost sm icon-only" onclick="showToast('Marked as read','success')"><i class="fas fa-check"></i></button>
-        </div>
-
-        <div class="notif-item unread" style="border-left:3px solid #10b981">
-          <div class="notif-icon" style="background:linear-gradient(135deg,#10b981,#059669)"><i class="fas fa-truck"></i></div>
-          <div class="notif-content" style="flex:1">
-            <div class="notif-msg"><strong>Shipment #SH-2847 Delivered</strong> — All 24 items received by TechCorp Inc. at Mumbai facility. Delivery confirmed by driver Mike Ross.</div>
-            <div class="notif-time"><i class="fas fa-clock me-1"></i>18 minutes ago &nbsp;•&nbsp; <span class="badge-wms success" style="font-size:10px">Shipment</span></div>
-          </div>
-          <button class="btn-wms ghost sm icon-only" onclick="showToast('Marked as read','success')"><i class="fas fa-check"></i></button>
-        </div>
-
-        <div class="notif-item unread" style="border-left:3px solid #4f46e5">
-          <div class="notif-icon" style="background:linear-gradient(135deg,#4f46e5,#7c3aed)"><i class="fas fa-shopping-cart"></i></div>
-          <div class="notif-content" style="flex:1">
-            <div class="notif-msg"><strong>New Order #ORD-9921</strong> — Order received from TechCorp Inc. Value: $4,850 for 24 items. Requires processing.</div>
-            <div class="notif-time"><i class="fas fa-clock me-1"></i>45 minutes ago &nbsp;•&nbsp; <span class="badge-wms primary" style="font-size:10px">Order</span></div>
-          </div>
-          <button class="btn-wms ghost sm icon-only" onclick="showToast('Marked as read','success')"><i class="fas fa-check"></i></button>
-        </div>
-
-        <div class="notif-item unread" style="border-left:3px solid #f59e0b">
-          <div class="notif-icon" style="background:linear-gradient(135deg,#f59e0b,#d97706)"><i class="fas fa-clock"></i></div>
-          <div class="notif-content" style="flex:1">
-            <div class="notif-msg"><strong>Dispatch Delay Warning</strong> — Order #ORD-8845 dispatch is delayed by 2 hours due to vehicle breakdown. Driver notified.</div>
-            <div class="notif-time"><i class="fas fa-clock me-1"></i>2 hours ago &nbsp;•&nbsp; <span class="badge-wms warning" style="font-size:10px">Alert</span></div>
-          </div>
-          <button class="btn-wms ghost sm icon-only" onclick="showToast('Marked as read','success')"><i class="fas fa-check"></i></button>
-        </div>
-
-        </div><!-- /unreadNotifList -->
-        <!-- Read Notifications -->
-        <div style="padding:12px 20px;background:#fafafa;border-top:1px solid #e2e8f0;border-bottom:1px solid #e2e8f0;font-size:12px;font-weight:600;color:#64748b;letter-spacing:.5px">READ</div>
-        <div id="readNotifList">
-
-        <div class="notif-item">
-          <div class="notif-icon" style="background:linear-gradient(135deg,#3b82f6,#2563eb)"><i class="fas fa-user-plus"></i></div>
-          <div class="notif-content" style="flex:1">
-            <div class="notif-msg" style="opacity:.7"><strong>New Staff Member</strong> — Sarah K. joined as Inventory Analyst. Access credentials sent.</div>
-            <div class="notif-time"><i class="fas fa-clock me-1"></i>5 hours ago &nbsp;•&nbsp; <span class="badge-wms info" style="font-size:10px">System</span></div>
-          </div>
-        </div>
-
-        <div class="notif-item">
-          <div class="notif-icon" style="background:linear-gradient(135deg,#10b981,#059669)"><i class="fas fa-chart-bar"></i></div>
-          <div class="notif-content" style="flex:1">
-            <div class="notif-msg" style="opacity:.7"><strong>Monthly Report Generated</strong> — April 2024 performance report is available for download.</div>
-            <div class="notif-time"><i class="fas fa-clock me-1"></i>1 day ago &nbsp;•&nbsp; <span class="badge-wms success" style="font-size:10px">Report</span></div>
-          </div>
-        </div>
-
-        <div class="notif-item">
-          <div class="notif-icon" style="background:linear-gradient(135deg,#94a3b8,#64748b)"><i class="fas fa-gear"></i></div>
-          <div class="notif-content" style="flex:1">
-            <div class="notif-msg" style="opacity:.7"><strong>System Maintenance Completed</strong> — Scheduled maintenance finished successfully. All systems operational.</div>
-            <div class="notif-time"><i class="fas fa-clock me-1"></i>2 days ago &nbsp;•&nbsp; <span class="badge-wms secondary" style="font-size:10px">System</span></div>
-          </div>
-        </div>
-
-        </div><!-- /readNotifList -->
-      </div>
+      <div id="notifListBody"></div>
     </div>
   </div>
 
-  <div class="col-xl-4 animate-in animate-in-delay-3">
-    <div class="wms-card mb-3">
-      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-sliders"></i> Notification Preferences</div></div>
+  <!-- Right Panel -->
+  <div class="col-xl-4">
+
+    <!-- Alert Preferences -->
+    <div class="wms-card mb-3 animate-in animate-in-delay-3">
+      <div class="card-header-wms">
+        <div class="card-title-wms"><i class="fas fa-sliders"></i> Alert Preferences</div>
+      </div>
       <div class="card-body-wms">
-        <div class="d-flex flex-column gap-3">
-          <div class="d-flex align-items-center justify-content-between">
-            <div><div style="font-size:13.5px;font-weight:600">Low Stock Alerts</div><div style="font-size:12px;color:#64748b">When stock drops below threshold</div></div>
-            <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" checked style="width:40px;height:20px;cursor:pointer"></div>
+
+        <div class="pref-row">
+          <div>
+            <div class="pref-label">Rent Due Reminder</div>
+            <div class="pref-desc">5 days before due date</div>
           </div>
-          <div class="d-flex align-items-center justify-content-between">
-            <div><div style="font-size:13.5px;font-weight:600">New Orders</div><div style="font-size:12px;color:#64748b">Notify on every new order</div></div>
-            <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" checked style="width:40px;height:20px;cursor:pointer"></div>
-          </div>
-          <div class="d-flex align-items-center justify-content-between">
-            <div><div style="font-size:13.5px;font-weight:600">Shipment Updates</div><div style="font-size:12px;color:#64748b">Delivery status changes</div></div>
-            <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" checked style="width:40px;height:20px;cursor:pointer"></div>
-          </div>
-          <div class="d-flex align-items-center justify-content-between">
-            <div><div style="font-size:13.5px;font-weight:600">System Alerts</div><div style="font-size:12px;color:#64748b">Maintenance & updates</div></div>
-            <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" style="width:40px;height:20px;cursor:pointer"></div>
-          </div>
-          <div class="d-flex align-items-center justify-content-between">
-            <div><div style="font-size:13.5px;font-weight:600">Email Digest</div><div style="font-size:12px;color:#64748b">Daily summary via email</div></div>
-            <div class="form-check form-switch m-0"><input class="form-check-input" type="checkbox" checked style="width:40px;height:20px;cursor:pointer"></div>
-          </div>
+          <label class="wms-toggle"><input type="checkbox" checked><span class="wms-toggle-slider"></span></label>
         </div>
-        <button class="btn-wms primary w-100 mt-3" onclick="showToast('Preferences saved','success')"><i class="fas fa-save me-1"></i>Save Preferences</button>
+        <div class="pref-row">
+          <div>
+            <div class="pref-label">Overdue Alerts</div>
+            <div class="pref-desc">After due date passes</div>
+          </div>
+          <label class="wms-toggle"><input type="checkbox" checked><span class="wms-toggle-slider"></span></label>
+        </div>
+        <div class="pref-row">
+          <div>
+            <div class="pref-label">Lease Expiry Alerts</div>
+            <div class="pref-desc">30 / 15 / 7 days before</div>
+          </div>
+          <label class="wms-toggle"><input type="checkbox" checked><span class="wms-toggle-slider"></span></label>
+        </div>
+        <div class="pref-row">
+          <div>
+            <div class="pref-label">Ticket Updates</div>
+            <div class="pref-desc">Status changes &amp; assignments</div>
+          </div>
+          <label class="wms-toggle"><input type="checkbox" checked><span class="wms-toggle-slider"></span></label>
+        </div>
+        <div class="pref-row">
+          <div>
+            <div class="pref-label">Payment Confirmations</div>
+            <div class="pref-desc">On every payment received</div>
+          </div>
+          <label class="wms-toggle"><input type="checkbox" checked><span class="wms-toggle-slider"></span></label>
+        </div>
+        <div class="pref-row">
+          <div>
+            <div class="pref-label">SLA Breach Alerts</div>
+            <div class="pref-desc">When ticket SLA is breached</div>
+          </div>
+          <label class="wms-toggle"><input type="checkbox" checked><span class="wms-toggle-slider"></span></label>
+        </div>
+
+        <button class="btn-wms primary w-100 mt-3" onclick="showToast('Alert preferences saved!','success')">
+          <i class="fas fa-save me-1"></i> Save Preferences
+        </button>
       </div>
     </div>
+
+    <!-- Upcoming Alerts -->
+    <div class="wms-card animate-in animate-in-delay-4">
+      <div class="card-header-wms">
+        <div class="card-title-wms"><i class="fas fa-calendar-exclamation"></i> Upcoming Alerts</div>
+      </div>
+      <div class="card-body-wms">
+        <div class="upcoming-row">
+          <div class="upcoming-dot warning"></div>
+          <div>
+            <div class="upcoming-text">Lease expiry — <strong>Arjun Sharma</strong></div>
+            <div class="upcoming-sub">In 3 days (30-day alert)</div>
+          </div>
+        </div>
+        <div class="upcoming-row">
+          <div class="upcoming-dot warning"></div>
+          <div>
+            <div class="upcoming-text">Lease expiry — <strong>Anita Roy</strong></div>
+            <div class="upcoming-sub">In 9 days (30-day alert)</div>
+          </div>
+        </div>
+        <div class="upcoming-row">
+          <div class="upcoming-dot primary"></div>
+          <div>
+            <div class="upcoming-text">Rent due reminder — <strong>All Tenants</strong></div>
+            <div class="upcoming-sub">Jun 1, 2026 (5 days before)</div>
+          </div>
+        </div>
+        <div class="upcoming-row">
+          <div class="upcoming-dot warning"></div>
+          <div>
+            <div class="upcoming-text">15-day lease alert — <strong>Arjun Sharma</strong></div>
+            <div class="upcoming-sub">In 3 days</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var typeIcons = { danger:'fa-triangle-exclamation', warning:'fa-triangle-exclamation', info:'fa-circle-info', success:'fa-circle-check' };
+
+function renderNotifs() {
+  var filter = document.getElementById('notifTypeFilter').value;
+  var data = WMS.notifications.filter(function(n){ return !filter || n.type === filter; });
+  var unread = WMS.notifications.filter(function(n){ return !n.read; }).length;
+  document.getElementById('unreadCount').textContent = unread;
+  var html = '';
+  data.forEach(function(n) {
+    var ico = typeIcons[n.type] || 'fa-bell';
+    html += '<div class="notif-feed-item' + (n.read ? '' : ' unread') + '">';
+    html += '<div class="notif-feed-icon ' + (n.type||'info') + '"><i class="fas ' + ico + '"></i></div>';
+    html += '<div class="notif-feed-body">';
+    html += '<div class="notif-feed-title">' + n.title + '</div>';
+    html += '<div class="notif-feed-msg">' + n.msg + '</div>';
+    html += '<div class="notif-feed-time"><i class="fas fa-clock"></i>' + n.time + '</div>';
+    html += '</div>';
+    if (!n.read) {
+      html += '<div class="notif-unread-pip" title="Mark as read" onclick="markRead(' + n.id + ')"></div>';
+    }
+    html += '</div>';
+  });
+  document.getElementById('notifListBody').innerHTML = html ||
+    '<div style="text-align:center;padding:40px 20px;color:var(--text-muted)"><i class="fas fa-bell-slash" style="font-size:32px;margin-bottom:10px;display:block;opacity:0.35"></i>No notifications found.</div>';
+}
+
+function markRead(id) {
+  var n = WMS.notifications.find(function(x){ return x.id === id; });
+  if (n) { n.read = true; renderNotifs(); }
+}
+
+function markAllRead() {
+  WMS.notifications.forEach(function(n){ n.read = true; });
+  showToast('All notifications marked as read.', 'success');
+  renderNotifs();
+}
+
+document.getElementById('notifTypeFilter').addEventListener('change', renderNotifs);
+document.addEventListener('DOMContentLoaded', renderNotifs);
+</script>
 {% endblock %}

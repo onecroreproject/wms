@@ -1,0 +1,233 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-header animate-in">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+      <h1 class="page-title">Support Tickets</h1>
+      <div class="breadcrumb-wms">
+        <i class="fas fa-home"></i><span class="breadcrumb-sep">/</span>
+        <span>Support Tickets</span>
+      </div>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn-wms ghost" onclick="showToast('Exported!','success')">
+        <i class="fas fa-download"></i> Export
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-1">
+    <div class="stat-card warning" data-href="{% url 'tickets' %}">
+      <div class="stat-card-header"><div class="stat-icon warning"><i class="fas fa-folder-open"></i></div></div>
+      <div class="stat-value" id="openCount">0</div>
+      <div class="stat-label">Open Tickets</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-2">
+    <div class="stat-card primary" data-href="{% url 'tickets' %}">
+      <div class="stat-card-header"><div class="stat-icon primary"><i class="fas fa-spinner"></i></div></div>
+      <div class="stat-value" id="inProgressCount">0</div>
+      <div class="stat-label">In Progress</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-3">
+    <div class="stat-card success" data-href="{% url 'tickets' %}">
+      <div class="stat-card-header"><div class="stat-icon success"><i class="fas fa-circle-check"></i></div></div>
+      <div class="stat-value" id="resolvedCount">0</div>
+      <div class="stat-label">Resolved / Closed</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-4">
+    <div class="stat-card danger" data-href="{% url 'tickets' %}">
+      <div class="stat-card-header"><div class="stat-icon danger"><i class="fas fa-clock"></i></div></div>
+      <div class="stat-value" id="slaBreachCount">0</div>
+      <div class="stat-label">SLA Breaches</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLA Breach Alert -->
+<div id="slaAlertBanner" class="wms-card mb-4 animate-in animate-in-delay-2" style="border-left:4px solid #ef4444;display:none">
+  <div class="card-body-wms d-flex align-items-center gap-3" style="padding:16px 20px">
+    <div style="width:40px;height:40px;background:#fef2f2;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#ef4444;font-size:18px;flex-shrink:0">
+      <i class="fas fa-clock"></i>
+    </div>
+    <div>
+      <div class="fw-600" style="color:#ef4444">SLA Breach Alert</div>
+      <div style="color:#64748b;font-size:13px" id="slaAlertText"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Ticket Table -->
+<div class="wms-card animate-in animate-in-delay-2">
+  <div class="card-header-wms">
+    <div class="card-title-wms"><i class="fas fa-ticket"></i> All Tickets</div>
+    <div class="card-actions gap-2">
+      <select class="form-control-wms form-select-wms" id="ticketCatFilter" style="width:auto">
+        <option value="">All Categories</option>
+        <option>Maintenance</option><option>Billing</option>
+        <option>Access Issue</option><option>General Inquiry</option><option>Other</option>
+      </select>
+      <select class="form-control-wms form-select-wms" id="ticketStatusFilter" style="width:auto">
+        <option value="">All Status</option>
+        <option>Open</option><option>In Progress</option>
+        <option>Resolved</option><option>Closed</option>
+      </select>
+    </div>
+  </div>
+  <div class="card-body-wms p-0">
+    <div class="table-responsive">
+      <table class="table-wms" id="ticketTable">
+        <thead>
+          <tr>
+            <th>Ticket ID</th><th>Tenant</th><th>Unit</th><th>Category</th>
+            <th>Subject</th><th>Priority</th><th>Assigned To</th>
+            <th>Created</th><th>Status</th><th>SLA</th><th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="ticketTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- View/Manage Ticket Modal -->
+<div class="modal fade" id="ticketDetailModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="border-radius:16px;border:none">
+      <div class="modal-header" style="border-bottom:1px solid #e2e8f0;padding:20px 24px">
+        <h5 class="modal-title fw-700" id="ticketDetailTitle"><i class="fas fa-ticket me-2"></i>Ticket Details</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:24px" id="ticketDetailBody"></div>
+      <div class="modal-footer" style="border-top:1px solid #e2e8f0;padding:16px 24px" id="ticketDetailFooter"></div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function renderTickets() {
+  var catFilter = document.getElementById('ticketCatFilter').value;
+  var statusFilter = document.getElementById('ticketStatusFilter').value;
+  var data = WMS.tickets.filter(function(t){
+    return (!catFilter||t.category===catFilter) && (!statusFilter||t.status===statusFilter);
+  });
+
+  var open=0, inProg=0, resolved=0, sla=0, slaBreaches=[];
+  WMS.tickets.forEach(function(t){
+    if(t.status==='Open') open++;
+    if(t.status==='In Progress') inProg++;
+    if(t.status==='Resolved'||t.status==='Closed') resolved++;
+    if(t.slaBreach){ sla++; slaBreaches.push(t.id+' ('+t.tenant+')'); }
+  });
+  document.getElementById('openCount').textContent = open;
+  document.getElementById('inProgressCount').textContent = inProg;
+  document.getElementById('resolvedCount').textContent = resolved;
+  document.getElementById('slaBreachCount').textContent = sla;
+
+  var banner = document.getElementById('slaAlertBanner');
+  if(slaBreaches.length) {
+    banner.style.display='';
+    document.getElementById('slaAlertText').textContent = 'Tickets breaching SLA: ' + slaBreaches.join(', ');
+  } else { banner.style.display='none'; }
+
+  var html = '';
+  data.forEach(function(t) {
+    var priCls = t.priority==='High'?'danger':t.priority==='Medium'?'warning':'info';
+    var stCls = t.status==='Open'?'info':t.status==='In Progress'?'warning':t.status==='Resolved'?'success':'secondary';
+    html += '<tr>';
+    html += '<td><strong>'+t.id+'</strong></td>';
+    html += '<td>'+t.tenant+'</td>';
+    html += '<td><strong>'+t.unit+'</strong></td>';
+    html += '<td>'+t.category+'</td>';
+    html += '<td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">'+t.subject+'</td>';
+    html += '<td><span class="badge-wms '+priCls+'"><span class="badge-dot"></span>'+t.priority+'</span></td>';
+    html += '<td>'+(t.assignedTo||'<span class="text-muted">Unassigned</span>')+'</td>';
+    html += '<td>'+t.created+'</td>';
+    html += '<td><span class="badge-wms '+stCls+'"><span class="badge-dot"></span>'+t.status+'</span></td>';
+    html += '<td>'+(t.slaBreach?'<span class="badge-wms danger"><span class="badge-dot"></span>Breached</span>':'<span class="badge-wms success"><span class="badge-dot"></span>OK</span>')+'</td>';
+    html += '<td><div class="d-flex gap-1">';
+    html += '<a href="#" class="btn-wms ghost sm icon-only" title="View" onclick="viewTicket(\''+t.id+'\');return false;"><i class="fas fa-eye"></i></a>';
+    if(t.status==='Open') html += '<a href="#" class="btn-wms ghost sm icon-only" title="Assign" onclick="assignTicket(\''+t.id+'\');return false;"><i class="fas fa-user-check"></i></a>';
+    if(t.status!=='Resolved'&&t.status!=='Closed') html += '<a href="#" class="btn-wms ghost sm icon-only" title="Mark Resolved" onclick="resolveTicket(\''+t.id+'\');return false;"><i class="fas fa-circle-check"></i></a>';
+    if(t.status==='Resolved') html += '<a href="#" class="btn-wms ghost sm icon-only" title="Close" onclick="closeTicket(\''+t.id+'\');return false;"><i class="fas fa-xmark"></i></a>';
+    html += '</div></td></tr>';
+  });
+  document.getElementById('ticketTableBody').innerHTML = html;
+}
+
+function viewTicket(id) {
+  var t = WMS.tickets.find(function(x){return x.id===id;});
+  if(!t) return;
+  var priCls = t.priority==='High'?'danger':t.priority==='Medium'?'warning':'info';
+  var stCls = t.status==='Open'?'info':t.status==='In Progress'?'warning':t.status==='Resolved'?'success':'secondary';
+  document.getElementById('ticketDetailTitle').innerHTML = '<i class="fas fa-ticket me-2"></i>'+t.id+' — '+t.subject;
+  document.getElementById('ticketDetailBody').innerHTML = `
+    <div class="row g-3 mb-3">
+      <div class="col-md-6"><div class="wms-info-row"><span class="info-label">Tenant</span><span><strong>${t.tenant}</strong></span></div></div>
+      <div class="col-md-6"><div class="wms-info-row"><span class="info-label">Unit</span><span>${t.unit}</span></div></div>
+      <div class="col-md-6"><div class="wms-info-row"><span class="info-label">Category</span><span>${t.category}</span></div></div>
+      <div class="col-md-6"><div class="wms-info-row"><span class="info-label">Priority</span><span><span class="badge-wms ${priCls}"><span class="badge-dot"></span>${t.priority}</span></span></div></div>
+      <div class="col-md-6"><div class="wms-info-row"><span class="info-label">Status</span><span><span class="badge-wms ${stCls}"><span class="badge-dot"></span>${t.status}</span></span></div></div>
+      <div class="col-md-6"><div class="wms-info-row"><span class="info-label">Assigned To</span><span>${t.assignedTo||'Unassigned'}</span></div></div>
+      <div class="col-md-6"><div class="wms-info-row"><span class="info-label">Created</span><span>${t.created}</span></div></div>
+      <div class="col-md-6"><div class="wms-info-row"><span class="info-label">SLA (hours)</span><span>${t.slaHours} hrs ${t.slaBreach?'<span class="badge-wms danger ms-1">Breached</span>':''}</span></div></div>
+    </div>
+    <div class="mb-3">
+      <div class="form-label-wms">Description</div>
+      <div style="background:#f8fafc;border-radius:10px;padding:14px;color:#334155">${t.description}</div>
+    </div>
+    <div class="mb-3">
+      <div class="form-label-wms">Add Internal Note (Staff Only)</div>
+      <textarea class="form-control-wms" id="internalNote_${t.id}" rows="3" placeholder="Add a note visible only to staff..."></textarea>
+    </div>
+  `;
+  var footHtml = '<button class="btn-wms ghost" data-bs-dismiss="modal">Close</button>';
+  if(t.status !== 'Resolved' && t.status !== 'Closed') {
+    footHtml += '<button class="btn-wms primary" onclick="resolveTicket(\''+t.id+'\');bootstrap.Modal.getInstance(document.getElementById(\'ticketDetailModal\')).hide();">Mark Resolved</button>';
+  }
+  document.getElementById('ticketDetailFooter').innerHTML = footHtml;
+  new bootstrap.Modal(document.getElementById('ticketDetailModal')).show();
+}
+
+function assignTicket(id) {
+  var t = WMS.tickets.find(function(x){return x.id===id;});
+  if(!t) return;
+  var staff = WMS.staff.filter(function(s){return s.role==='Support Agent';}).map(function(s){return s.name;});
+  var assigned = prompt('Assign ticket '+id+' to:\n'+staff.join('\n'));
+  if(assigned && staff.indexOf(assigned) > -1) {
+    t.assignedTo = assigned; t.status = 'In Progress';
+    WMS.logAction('Admin User','Assigned Ticket','Tickets',id+' assigned to '+assigned);
+    showToast('Ticket assigned to '+assigned,'success'); renderTickets();
+  } else if(assigned) { showToast('Invalid staff name. Choose from list.','error'); }
+}
+
+function resolveTicket(id) {
+  var t = WMS.tickets.find(function(x){return x.id===id;});
+  if(!t) return;
+  t.status = 'Resolved'; t.updated = new Date().toISOString().slice(0,10);
+  WMS.logAction('Admin User','Resolved Ticket','Tickets','Resolved ticket '+id);
+  showToast('Ticket marked as resolved!','success'); renderTickets();
+}
+
+function closeTicket(id) {
+  var t = WMS.tickets.find(function(x){return x.id===id;});
+  if(!t) return;
+  t.status = 'Closed'; t.updated = new Date().toISOString().slice(0,10);
+  WMS.logAction('Admin User','Closed Ticket','Tickets','Closed ticket '+id);
+  showToast('Ticket closed.','success'); renderTickets();
+}
+
+document.getElementById('ticketCatFilter').addEventListener('change', renderTickets);
+document.getElementById('ticketStatusFilter').addEventListener('change', renderTickets);
+document.addEventListener('DOMContentLoaded', renderTickets);
+</script>
+{% endblock %}

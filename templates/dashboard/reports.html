@@ -2,108 +2,167 @@
 {% load static %}
 
 {% block content %}
-<div id="reportsPage">
 <div class="page-header animate-in">
   <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
     <div>
       <h1 class="page-title">Reports & Analytics</h1>
-      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><a href="{% url 'dashboard' %}">Dashboard</a><span class="breadcrumb-sep">/</span><span>Reports</span></div>
+      <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><span>Reports</span></div>
     </div>
     <div class="d-flex gap-2">
-      <select class="form-control-wms form-select-wms" style="width:auto"><option>Last 12 Months</option><option>This Quarter</option><option>This Month</option></select>
-      <button class="btn-wms ghost export-report-btn"><i class="fas fa-download"></i> Export PDF</button>
-      <button class="btn-wms primary generate-report-btn"><i class="fas fa-chart-bar"></i> Generate Report</button>
+      <select class="form-control-wms form-select-wms" id="reportPeriod" style="width:auto">
+        <option>May 2026</option><option>Q1 2026</option><option>Annual 2026</option>
+      </select>
+      <button class="btn-wms primary" onclick="showToast('Report exported as PDF!','success')"><i class="fas fa-file-pdf"></i> Export PDF</button>
+      <button class="btn-wms ghost" onclick="showToast('Report exported as Excel!','success')"><i class="fas fa-file-excel"></i> Export Excel</button>
     </div>
   </div>
 </div>
 
-<!-- KPI Cards -->
+<!-- KPI Summary -->
 <div class="row g-3 mb-4">
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-1">
-    <div class="stat-card primary"><div class="stat-card-header"><div class="stat-icon primary"><i class="fas fa-dollar-sign"></i></div><span class="stat-change up"><i class="fas fa-arrow-up"></i>+18.4%</span></div><div class="stat-value">$1.24M</div><div class="stat-label">Annual Revenue</div></div>
+    <div class="stat-card success" data-href="{% url 'rent_payments' %}">
+      <div class="stat-card-header"><div class="stat-icon success"><i class="fas fa-indian-rupee-sign"></i></div><span class="stat-change up"><i class="fas fa-arrow-up"></i>+8.3%</span></div>
+      <div class="stat-value">₹89,000</div>
+      <div class="stat-label">Revenue Collected</div>
+      <div class="stat-footer"><span>vs last month: ₹82,100</span></div>
+    </div>
   </div>
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-2">
-    <div class="stat-card success"><div class="stat-card-header"><div class="stat-icon success"><i class="fas fa-shopping-bag"></i></div><span class="stat-change up"><i class="fas fa-arrow-up"></i>+12.1%</span></div><div class="stat-value"><span class="counter-value" data-target="18420">18,420</span></div><div class="stat-label">Total Orders YTD</div></div>
+    <div class="stat-card danger" data-href="{% url 'rent_payments' %}">
+      <div class="stat-card-header"><div class="stat-icon danger"><i class="fas fa-triangle-exclamation"></i></div></div>
+      <div class="stat-value">₹29,700</div>
+      <div class="stat-label">Total Outstanding Dues</div>
+      <div class="stat-footer"><span>2 overdue tenants</span></div>
+    </div>
   </div>
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-3">
-    <div class="stat-card warning"><div class="stat-card-header"><div class="stat-icon warning"><i class="fas fa-percent"></i></div><span class="stat-change up"><i class="fas fa-arrow-up"></i>+2.3%</span></div><div class="stat-value">94.2%</div><div class="stat-label">Fulfillment Rate</div></div>
+    <div class="stat-card primary" data-href="{% url 'warehouse' %}">
+      <div class="stat-card-header"><div class="stat-icon primary"><i class="fas fa-warehouse"></i></div></div>
+      <div class="stat-value">67%</div>
+      <div class="stat-label">Occupancy Rate</div>
+      <div class="stat-footer"><span>8 of 12 units occupied</span></div>
+    </div>
   </div>
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-4">
-    <div class="stat-card info"><div class="stat-card-header"><div class="stat-icon info"><i class="fas fa-rotate"></i></div><span class="stat-change up"><i class="fas fa-arrow-up"></i>+0.8x</span></div><div class="stat-value">8.4x</div><div class="stat-label">Inventory Turnover</div></div>
+    <div class="stat-card warning" data-href="{% url 'tickets' %}">
+      <div class="stat-card-header"><div class="stat-icon warning"><i class="fas fa-ticket"></i></div></div>
+      <div class="stat-value">6</div>
+      <div class="stat-label">Total Tickets (Month)</div>
+      <div class="stat-footer"><span>Avg resolution: 2.1 days</span></div>
+    </div>
   </div>
 </div>
 
-<!-- Main Charts Row -->
+<!-- Charts Row -->
 <div class="row g-3 mb-4">
   <div class="col-xl-8 animate-in animate-in-delay-2">
     <div class="wms-card">
-      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-chart-bar"></i> Orders, Shipments & Returns</div></div>
-      <div class="card-body-wms"><div id="reportsBarChart"></div></div>
+      <div class="card-header-wms">
+        <div class="card-title-wms"><i class="fas fa-chart-area"></i> Monthly Revenue Trend</div>
+        <div class="card-actions">
+          <div class="wms-tabs" style="margin-bottom:0">
+            <button class="wms-tab active">Monthly</button>
+            <button class="wms-tab">Quarterly</button>
+            <button class="wms-tab">Annual</button>
+          </div>
+        </div>
+      </div>
+      <div class="card-body-wms"><div id="revenueChart"></div></div>
     </div>
   </div>
   <div class="col-xl-4 animate-in animate-in-delay-3">
     <div class="wms-card h-100">
-      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-chart-line"></i> Revenue Trend</div></div>
-      <div class="card-body-wms"><div id="revenueChart"></div></div>
+      <div class="card-header-wms">
+        <div class="card-title-wms"><i class="fas fa-chart-pie"></i> Ticket Category Breakdown</div>
+      </div>
+      <div class="card-body-wms">
+        <div id="orderStatusChart"></div>
+        <div class="row g-2 mt-2">
+          <div class="col-6"><div class="p-2 rounded-3" style="background:#fef2f2"><div class="fs-12 fw-700" style="color:#dc2626">2</div><div class="fs-12" style="color:#64748b">Maintenance</div></div></div>
+          <div class="col-6"><div class="p-2 rounded-3" style="background:#fffbeb"><div class="fs-12 fw-700" style="color:#d97706">2</div><div class="fs-12" style="color:#64748b">Billing</div></div></div>
+          <div class="col-6"><div class="p-2 rounded-3" style="background:#eff6ff"><div class="fs-12 fw-700" style="color:#4f46e5">1</div><div class="fs-12" style="color:#64748b">Access Issue</div></div></div>
+          <div class="col-6"><div class="p-2 rounded-3" style="background:#f0fdf4"><div class="fs-12 text-success fw-700">1</div><div class="fs-12" style="color:#64748b">General Inquiry</div></div></div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- Report Cards -->
+<!-- Outstanding Dues Aging + Occupancy History -->
 <div class="row g-3 mb-4">
-  <div class="col-xl-4 animate-in animate-in-delay-1">
+  <div class="col-xl-6 animate-in animate-in-delay-2">
     <div class="wms-card">
-      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-trophy"></i> Top Performing Zones</div></div>
-      <div class="card-body-wms">
-        <div class="d-flex align-items-center gap-3 mb-3 p-2 rounded-3" style="background:#f8fafc">
-          <div style="width:36px;height:36px;background:linear-gradient(135deg,#4f46e5,#7c3aed);border-radius:9px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">A</div>
-          <div style="flex:1"><div style="font-size:13.5px;font-weight:600">Zone A — Electronics</div><div style="font-size:12px;color:#64748b">4,820 orders processed</div></div>
-          <div class="badge-wms success">98%</div>
-        </div>
-        <div class="d-flex align-items-center gap-3 mb-3 p-2 rounded-3" style="background:#f8fafc">
-          <div style="width:36px;height:36px;background:linear-gradient(135deg,#10b981,#059669);border-radius:9px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">C</div>
-          <div style="flex:1"><div style="font-size:13.5px;font-weight:600">Zone C — Apparel</div><div style="font-size:12px;color:#64748b">3,210 orders processed</div></div>
-          <div class="badge-wms success">95%</div>
-        </div>
-        <div class="d-flex align-items-center gap-3 mb-3 p-2 rounded-3" style="background:#f8fafc">
-          <div style="width:36px;height:36px;background:linear-gradient(135deg,#f59e0b,#d97706);border-radius:9px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">B</div>
-          <div style="flex:1"><div style="font-size:13.5px;font-weight:600">Zone B — Furniture</div><div style="font-size:12px;color:#64748b">1,840 orders processed</div></div>
-          <div class="badge-wms warning">87%</div>
-        </div>
-        <div class="d-flex align-items-center gap-3 p-2 rounded-3" style="background:#f8fafc">
-          <div style="width:36px;height:36px;background:linear-gradient(135deg,#3b82f6,#2563eb);border-radius:9px;display:flex;align-items:center;justify-content:center;color:white;font-weight:700;font-size:14px">D</div>
-          <div style="flex:1"><div style="font-size:13.5px;font-weight:600">Zone D — Hardware</div><div style="font-size:12px;color:#64748b">1,520 orders processed</div></div>
-          <div class="badge-wms primary">84%</div>
+      <div class="card-header-wms">
+        <div class="card-title-wms"><i class="fas fa-clock-rotate-left"></i> Outstanding Dues — Aging Report</div>
+        <button class="btn-wms ghost sm" onclick="showToast('Exported!','success')"><i class="fas fa-download"></i></button>
+      </div>
+      <div class="card-body-wms p-0">
+        <div class="table-responsive">
+          <table class="table-wms">
+            <thead><tr><th>Tenant</th><th>Unit</th><th>Amount</th><th>Overdue By</th><th>Aging</th></tr></thead>
+            <tbody>
+              <tr>
+                <td><strong>Rahul Mehta</strong></td><td>B-101</td><td>₹9,900</td>
+                <td><span style="color:#ef4444;font-weight:700">24 days</span></td>
+                <td><span class="badge-wms warning"><span class="badge-dot"></span>30 days</span></td>
+              </tr>
+              <tr>
+                <td><strong>Anita Roy</strong></td><td>C-201</td><td>₹19,800</td>
+                <td><span style="color:#ef4444;font-weight:700">24 days</span></td>
+                <td><span class="badge-wms warning"><span class="badge-dot"></span>30 days</span></td>
+              </tr>
+              <tr>
+                <td><strong>Sneha Kapoor</strong></td><td>B-201</td><td>₹15,000</td>
+                <td><span style="color:#d97706;font-weight:700">Pending</span></td>
+                <td><span class="badge-wms info"><span class="badge-dot"></span>&lt;30 days</span></td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
-  <div class="col-xl-4 animate-in animate-in-delay-2">
+  <div class="col-xl-6 animate-in animate-in-delay-3">
     <div class="wms-card">
-      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-file-chart-pie"></i> Report Templates</div></div>
-      <div class="card-body-wms">
-        <div class="d-flex flex-column gap-2">
-          <button class="btn-wms ghost" style="justify-content:flex-start;width:100%" onclick="showToast('Inventory report downloading...','info')"><i class="fas fa-boxes-stacked text-primary-color me-2"></i> Inventory Summary Report</button>
-          <button class="btn-wms ghost" style="justify-content:flex-start;width:100%" onclick="showToast('Sales report downloading...','info')"><i class="fas fa-chart-line text-success-color me-2"></i> Sales Performance Report</button>
-          <button class="btn-wms ghost" style="justify-content:flex-start;width:100%" onclick="showToast('Shipment report downloading...','info')"><i class="fas fa-truck text-warning-color me-2"></i> Shipment Status Report</button>
-          <button class="btn-wms ghost" style="justify-content:flex-start;width:100%" onclick="showToast('Staff report downloading...','info')"><i class="fas fa-users text-info-color me-2"></i> Staff Productivity Report</button>
-          <button class="btn-wms ghost" style="justify-content:flex-start;width:100%" onclick="showToast('Financial report downloading...','info')"><i class="fas fa-dollar-sign text-danger-color me-2"></i> Financial Overview Report</button>
-          <button class="btn-wms ghost" style="justify-content:flex-start;width:100%" onclick="showToast('Customer report downloading...','info')"><i class="fas fa-users-gear me-2" style="color:#7c3aed"></i> Customer Analytics Report</button>
+      <div class="card-header-wms">
+        <div class="card-title-wms"><i class="fas fa-chart-bar"></i> Occupancy Rate (Last 6 Months)</div>
+      </div>
+      <div class="card-body-wms"><div id="warehouseChart"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- Lease Renewal Forecast + Tenant-wise Dues -->
+<div class="row g-3">
+  <div class="col-xl-6 animate-in animate-in-delay-2">
+    <div class="wms-card">
+      <div class="card-header-wms">
+        <div class="card-title-wms"><i class="fas fa-rotate"></i> Lease Renewal Forecast</div>
+        <button class="btn-wms ghost sm" onclick="showToast('Exported!','success')"><i class="fas fa-download"></i></button>
+      </div>
+      <div class="card-body-wms p-0">
+        <div class="table-responsive">
+          <table class="table-wms">
+            <thead><tr><th>Tenant</th><th>Unit</th><th>Lease End</th><th>Days Left</th><th>Renewal Status</th></tr></thead>
+            <tbody id="renewalForecastBody"></tbody>
+          </table>
         </div>
       </div>
     </div>
   </div>
-  <div class="col-xl-4 animate-in animate-in-delay-3">
+  <div class="col-xl-6 animate-in animate-in-delay-3">
     <div class="wms-card">
-      <div class="card-header-wms"><div class="card-title-wms"><i class="fas fa-chart-simple"></i> Quick Metrics</div></div>
-      <div class="card-body-wms">
-        <div class="row g-3">
-          <div class="col-6"><div style="padding:12px;background:#f8fafc;border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#4f46e5;font-family:'Poppins',sans-serif">2.4 days</div><div style="font-size:11px;color:#64748b;margin-top:2px">Avg Order Cycle</div></div></div>
-          <div class="col-6"><div style="padding:12px;background:#f8fafc;border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#10b981;font-family:'Poppins',sans-serif">99.1%</div><div style="font-size:11px;color:#64748b;margin-top:2px">Order Accuracy</div></div></div>
-          <div class="col-6"><div style="padding:12px;background:#f8fafc;border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#f59e0b;font-family:'Poppins',sans-serif">$67.40</div><div style="font-size:11px;color:#64748b;margin-top:2px">Avg Order Value</div></div></div>
-          <div class="col-6"><div style="padding:12px;background:#f8fafc;border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#06b6d4;font-family:'Poppins',sans-serif">3.2%</div><div style="font-size:11px;color:#64748b;margin-top:2px">Return Rate</div></div></div>
-          <div class="col-6"><div style="padding:12px;background:#f8fafc;border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#7c3aed;font-family:'Poppins',sans-serif">8.4x</div><div style="font-size:11px;color:#64748b;margin-top:2px">Inventory Turns</div></div></div>
-          <div class="col-6"><div style="padding:12px;background:#f8fafc;border-radius:10px;text-align:center"><div style="font-size:20px;font-weight:800;color:#ef4444;font-family:'Poppins',sans-serif">1.8%</div><div style="font-size:11px;color:#64748b;margin-top:2px">Damage Rate</div></div></div>
+      <div class="card-header-wms">
+        <div class="card-title-wms"><i class="fas fa-users"></i> Tenant-wise Dues Report</div>
+        <button class="btn-wms ghost sm" onclick="showToast('Exported!','success')"><i class="fas fa-download"></i></button>
+      </div>
+      <div class="card-body-wms p-0">
+        <div class="table-responsive">
+          <table class="table-wms">
+            <thead><tr><th>Tenant</th><th>Unit</th><th>Monthly Rent</th><th>May Status</th><th>Outstanding</th></tr></thead>
+            <tbody id="tenantDuesBody"></tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -113,4 +172,24 @@
 
 {% block extra_js %}
 <script src="{% static 'js/charts.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var rfHtml = '';
+  WMS.leases.filter(function(l){ return l.daysLeft <= 90 || l.status === 'Expired'; }).forEach(function(l) {
+    var daysCell = l.status==='Expired' ? '<span class="badge-wms danger">Expired</span>' : '<span style="color:#d97706;font-weight:700">'+l.daysLeft+' days</span>';
+    rfHtml += '<tr><td>'+l.tenant+'</td><td>'+l.unit+'</td><td>'+l.endDate+'</td><td>'+daysCell+'</td><td>'+WMS.statusBadge(l.renewalStatus)+'</td></tr>';
+  });
+  document.getElementById('renewalForecastBody').innerHTML = rfHtml || '<tr><td colspan="5" class="text-center text-muted">No upcoming renewals</td></tr>';
+
+  var tdHtml = '';
+  WMS.tenants.forEach(function(t) {
+    var pay = WMS.payments.find(function(p){ return p.tenantId===t.id && p.month==='May 2026'; });
+    var status = pay ? pay.status : 'No Record';
+    var outstanding = (status==='Overdue'||status==='Pending') ? WMS.formatCurrency(pay.total) : '—';
+    var cls = status==='Paid'?'success':status==='Overdue'?'danger':'warning';
+    tdHtml += '<tr><td>'+t.name+'</td><td>'+t.unit+'</td><td>'+WMS.formatCurrency(t.rent)+'</td><td><span class="badge-wms '+cls+'"><span class="badge-dot"></span>'+status+'</span></td><td>'+(status!=='Paid'?'<strong style="color:#ef4444">'+outstanding+'</strong>':'—')+'</td></tr>';
+  });
+  document.getElementById('tenantDuesBody').innerHTML = tdHtml;
+});
+</script>
 {% endblock %}

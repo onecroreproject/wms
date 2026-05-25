@@ -9,7 +9,7 @@
       <div class="breadcrumb-wms"><i class="fas fa-home"></i><span class="breadcrumb-sep">/</span><a href="{% url 'dashboard' %}">Dashboard</a><span class="breadcrumb-sep">/</span><span>Activity Logs</span></div>
     </div>
     <div class="d-flex gap-2">
-      <select class="form-control-wms form-select-wms" style="width:auto"><option>All Users</option><option>John Doe</option><option>Sarah Kim</option><option>Mike Ross</option></select>
+      <select class="form-control-wms form-select-wms" style="width:auto"><option>All Users</option><option>Admin User</option><option>Ravi Kumar</option><option>Meera Singh</option><option>Suresh Iyer</option></select>
       <button class="btn-wms ghost"><i class="fas fa-download"></i> Export</button>
     </div>
   </div>
@@ -17,16 +17,16 @@
 
 <div class="row g-3 mb-4">
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-1">
-    <div class="stat-card primary"><div class="stat-card-header"><div class="stat-icon primary"><i class="fas fa-clock-rotate-left"></i></div></div><div class="stat-value"><span class="counter-value" data-target="4820">4,820</span></div><div class="stat-label">Total Activities</div></div>
+    <div class="stat-card primary" data-href="{% url 'activity_logs' %}"><div class="stat-card-header"><div class="stat-icon primary"><i class="fas fa-clock-rotate-left"></i></div></div><div class="stat-value"><span class="counter-value" data-target="4820">4,820</span></div><div class="stat-label">Total Activities</div></div>
   </div>
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-2">
-    <div class="stat-card success"><div class="stat-card-header"><div class="stat-icon success"><i class="fas fa-calendar-day"></i></div></div><div class="stat-value"><span class="counter-value" data-target="142">142</span></div><div class="stat-label">Today's Actions</div></div>
+    <div class="stat-card success" data-href="{% url 'activity_logs' %}"><div class="stat-card-header"><div class="stat-icon success"><i class="fas fa-calendar-day"></i></div></div><div class="stat-value"><span class="counter-value" data-target="142">142</span></div><div class="stat-label">Today's Actions</div></div>
   </div>
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-3">
-    <div class="stat-card warning"><div class="stat-card-header"><div class="stat-icon warning"><i class="fas fa-users"></i></div></div><div class="stat-value"><span class="counter-value" data-target="72">72</span></div><div class="stat-label">Active Users Today</div></div>
+    <div class="stat-card warning" data-href="{% url 'staff' %}"><div class="stat-card-header"><div class="stat-icon warning"><i class="fas fa-users"></i></div></div><div class="stat-value"><span class="counter-value" data-target="72">72</span></div><div class="stat-label">Active Users Today</div></div>
   </div>
   <div class="col-xl-3 col-md-6 animate-in animate-in-delay-4">
-    <div class="stat-card danger"><div class="stat-card-header"><div class="stat-icon danger"><i class="fas fa-shield-exclamation"></i></div></div><div class="stat-value"><span class="counter-value" data-target="3">3</span></div><div class="stat-label">Security Events</div></div>
+    <div class="stat-card danger" data-href="{% url 'settings' %}"><div class="stat-card-header"><div class="stat-icon danger"><i class="fas fa-shield-exclamation"></i></div></div><div class="stat-value"><span class="counter-value" data-target="3">3</span></div><div class="stat-label">Security Events</div></div>
   </div>
 </div>
 
@@ -37,7 +37,7 @@
         <div class="card-title-wms"><i class="fas fa-table"></i> System Activity Log</div>
         <div class="card-actions">
           <select class="form-control-wms form-select-wms" style="width:auto;font-size:12px">
-            <option>All Types</option><option>Login</option><option>Order</option><option>Inventory</option><option>System</option>
+            <option>All Types</option><option>Login</option><option>Tenants</option><option>Payments</option><option>Tickets</option><option>Leases</option><option>Warehouses</option><option>System</option>
           </select>
         </div>
       </div>
@@ -46,14 +46,13 @@
           <table class="table-wms wms-datatable" id="logsTable">
             <thead><tr><th>Log ID</th><th>User</th><th>Action</th><th>Module</th><th>IP Address</th><th>Timestamp</th><th>Status</th></tr></thead>
             <tbody>
-              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8821</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm">JD</div>John Doe</div></td><td>Created new order #ORD-9921</td><td><span class="tag-chip">Orders</span></td><td>192.168.1.42</td><td>May 23, 14:22:10</td><td><span class="badge-wms success">Success</span></td></tr>
-              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8820</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-success">SK</div>Sarah Kim</div></td><td>Updated stock for SKU-001</td><td><span class="tag-chip">Inventory</span></td><td>192.168.1.55</td><td>May 23, 13:48:32</td><td><span class="badge-wms success">Success</span></td></tr>
-              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8819</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-warning">MR</div>Mike Ross</div></td><td>Marked shipment #SH-2847 delivered</td><td><span class="tag-chip">Shipments</span></td><td>192.168.1.71</td><td>May 23, 12:15:44</td><td><span class="badge-wms success">Success</span></td></tr>
-              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8818</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-info">RK</div>Raj Kumar</div></td><td>Login from new device</td><td><span class="tag-chip">Auth</span></td><td>122.45.78.92</td><td>May 23, 11:02:18</td><td><span class="badge-wms warning">Warning</span></td></tr>
-              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8817</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm">JD</div>John Doe</div></td><td>Exported inventory report</td><td><span class="tag-chip">Reports</span></td><td>192.168.1.42</td><td>May 23, 10:30:55</td><td><span class="badge-wms success">Success</span></td></tr>
-              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8816</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-danger">SY</div>System</div></td><td>Auto-backup completed</td><td><span class="tag-chip">System</span></td><td>127.0.0.1</td><td>May 23, 02:00:00</td><td><span class="badge-wms success">Success</span></td></tr>
-              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8815</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-danger">UK</div>Unknown</div></td><td>Failed login attempt (3x)</td><td><span class="tag-chip">Auth</span></td><td>45.123.56.89</td><td>May 22, 23:44:11</td><td><span class="badge-wms danger">Failed</span></td></tr>
-              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">LOG-8814</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-success">JS</div>Jane Smith</div></td><td>Added new staff member Sarah Kim</td><td><span class="tag-chip">Staff</span></td><td>192.168.1.88</td><td>May 22, 15:20:30</td><td><span class="badge-wms success">Success</span></td></tr>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">ACT-001</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm">AD</div>Admin User</div></td><td>Added new tenant Sneha Kapoor (TNT-004)</td><td><span class="tag-chip">Tenants</span></td><td>192.168.1.10</td><td>May 23, 17:15:00</td><td><span class="badge-wms success">Success</span></td></tr>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">ACT-002</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-info">SI</div>Suresh Iyer</div></td><td>Marked PAY-001 paid — Arjun Sharma, May 2026</td><td><span class="tag-chip">Payments</span></td><td>192.168.1.11</td><td>May 23, 16:45:00</td><td><span class="badge-wms success">Success</span></td></tr>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">ACT-003</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-warning">MS</div>Meera Singh</div></td><td>Closed TKT-006 — Receipt copy request</td><td><span class="tag-chip">Tickets</span></td><td>192.168.1.12</td><td>May 23, 15:30:00</td><td><span class="badge-wms success">Success</span></td></tr>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">ACT-004</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm">AD</div>Admin User</div></td><td>Set WH-008 (C-102) to Under Maintenance</td><td><span class="tag-chip">Warehouses</span></td><td>192.168.1.10</td><td>May 23, 14:00:00</td><td><span class="badge-wms success">Success</span></td></tr>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">ACT-005</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm">AD</div>Admin User</div></td><td>Added staff member Amit Patel (EMP-006)</td><td><span class="tag-chip">Staff</span></td><td>192.168.1.10</td><td>May 22, 11:20:00</td><td><span class="badge-wms success">Success</span></td></tr>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">ACT-006</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-success">RK</div>Ravi Kumar</div></td><td>Resolved TKT-003 — Vikram Singh access issue</td><td><span class="tag-chip">Tickets</span></td><td>192.168.1.11</td><td>May 23, 10:00:00</td><td><span class="badge-wms success">Success</span></td></tr>
+              <tr><td><code style="font-size:11px;background:#f1f5f9;padding:2px 5px;border-radius:4px">ACT-007</code></td><td><div class="d-flex align-items-center gap-2"><div class="avatar sm avatar-info">SI</div>Suresh Iyer</div></td><td>Bulk invoices generated for May 2026 — 7 tenants</td><td><span class="tag-chip">Payments</span></td><td>192.168.1.11</td><td>May 1, 09:00:00</td><td><span class="badge-wms success">Success</span></td></tr>
             </tbody>
           </table>
         </div>
@@ -103,23 +102,23 @@
       <div class="card-body-wms">
         <div class="d-flex flex-column gap-3">
           <div class="d-flex align-items-center gap-3">
-            <div class="avatar sm">JD</div>
-            <div style="flex:1"><div style="font-size:13px;font-weight:600">John Doe</div><div style="font-size:11px;color:#64748b">192.168.1.42 · Chrome · Windows</div></div>
+            <div class="avatar sm">AD</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">Admin User</div><div style="font-size:11px;color:#64748b">192.168.1.10 · Chrome · Windows</div></div>
             <span class="badge-wms success"><span class="badge-dot"></span>Online</span>
           </div>
           <div class="d-flex align-items-center gap-3">
-            <div class="avatar sm avatar-success">SK</div>
-            <div style="flex:1"><div style="font-size:13px;font-weight:600">Sarah Kim</div><div style="font-size:11px;color:#64748b">192.168.1.55 · Firefox · Mac</div></div>
+            <div class="avatar sm avatar-success">RK</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">Ravi Kumar</div><div style="font-size:11px;color:#64748b">192.168.1.11 · Firefox · Windows</div></div>
             <span class="badge-wms success"><span class="badge-dot"></span>Online</span>
           </div>
           <div class="d-flex align-items-center gap-3">
-            <div class="avatar sm avatar-warning">MR</div>
-            <div style="flex:1"><div style="font-size:13px;font-weight:600">Mike Ross</div><div style="font-size:11px;color:#64748b">192.168.1.71 · Mobile · Android</div></div>
+            <div class="avatar sm avatar-warning">MS</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">Meera Singh</div><div style="font-size:11px;color:#64748b">192.168.1.12 · Mobile · Android</div></div>
             <span class="badge-wms secondary"><span class="badge-dot"></span>Away</span>
           </div>
           <div class="d-flex align-items-center gap-3">
-            <div class="avatar sm avatar-info">JS</div>
-            <div style="flex:1"><div style="font-size:13px;font-weight:600">Jane Smith</div><div style="font-size:11px;color:#64748b">192.168.1.88 · Chrome · Mac</div></div>
+            <div class="avatar sm avatar-info">SI</div>
+            <div style="flex:1"><div style="font-size:13px;font-weight:600">Suresh Iyer</div><div style="font-size:11px;color:#64748b">192.168.1.11 · Chrome · Mac</div></div>
             <span class="badge-wms warning"><span class="badge-dot"></span>Idle</span>
           </div>
         </div>

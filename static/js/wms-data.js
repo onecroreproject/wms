@@ -1,108 +1,103 @@
 /* ============================================================
-   WMS PRO — Global Mock Data Store
-   All data lives here; pages mutate this store, DataTables re-render.
+   WareHub — Warehouse Rent Management Data Store
+   All mock data lives here; pages mutate this store.
    ============================================================ */
 'use strict';
 
 window.WMS = window.WMS || {};
 
-/* ─── PRODUCTS ─────────────────────────────────────────────── */
-WMS.products = [
-  {id:'PRD-001',name:'Laptop Pro 15',sku:'SKU-001',category:'Electronics',price:1200,stock:245,sales:4820,rating:4.8,status:'Active',image:''},
-  {id:'PRD-002',name:'Wireless Mouse X',sku:'SKU-002',category:'Electronics',price:25,stock:1820,sales:8210,rating:4.6,status:'Active',image:''},
-  {id:'PRD-003',name:'Office Chair Pro',sku:'SKU-003',category:'Furniture',price:180,stock:94,sales:2140,rating:4.7,status:'Active',image:''},
-  {id:'PRD-004',name:'Safety Helmet Pro',sku:'SKU-004',category:'Hardware',price:35,stock:0,sales:540,rating:4.3,status:'Out of Stock',image:''},
-  {id:'PRD-005',name:'Running Shoes',sku:'SKU-005',category:'Apparel',price:65,stock:450,sales:5670,rating:4.9,status:'Active',image:''},
-  {id:'PRD-006',name:'USB-C Hub 7P',sku:'SKU-006',category:'Electronics',price:45,stock:38,sales:3890,rating:4.5,status:'Low Stock',image:''},
-  {id:'PRD-007',name:'Steel Cabinet',sku:'SKU-007',category:'Furniture',price:280,stock:72,sales:1420,rating:4.4,status:'Active',image:''},
-  {id:'PRD-008',name:'Mechanical Keyboard',sku:'SKU-008',category:'Electronics',price:120,stock:215,sales:6540,rating:4.7,status:'Active',image:''},
-  {id:'PRD-009',name:'Ergonomic Desk',sku:'SKU-009',category:'Furniture',price:350,stock:30,sales:980,rating:4.6,status:'Low Stock',image:''},
-  {id:'PRD-010',name:'Work Boots XL',sku:'SKU-010',category:'Apparel',price:90,stock:320,sales:2300,rating:4.5,status:'Active',image:''},
+/* ─── WAREHOUSE UNITS ───────────────────────────────────────── */
+WMS.warehouses = [
+  {id:'WH-001',unit:'A-101',block:'Block A',floor:'Ground',size:1200,type:'Standard',rent:18000,status:'Occupied',tenant:'Arjun Sharma',tenantId:'TNT-001',assignedDate:'2024-03-15'},
+  {id:'WH-002',unit:'A-102',block:'Block A',floor:'Ground',size:800,type:'Standard',rent:12000,status:'Occupied',tenant:'Priya Nair',tenantId:'TNT-002',assignedDate:'2024-06-01'},
+  {id:'WH-003',unit:'A-201',block:'Block A',floor:'First',size:1500,type:'Large',rent:24000,status:'Vacant',tenant:'',tenantId:'',assignedDate:''},
+  {id:'WH-004',unit:'B-101',block:'Block B',floor:'Ground',size:600,type:'Small',rent:9000,status:'Occupied',tenant:'Rahul Mehta',tenantId:'TNT-003',assignedDate:'2023-11-10'},
+  {id:'WH-005',unit:'B-102',block:'Block B',floor:'Ground',size:600,type:'Small',rent:9000,status:'Vacant',tenant:'',tenantId:'',assignedDate:''},
+  {id:'WH-006',unit:'B-201',block:'Block B',floor:'First',size:1000,type:'Standard',rent:15000,status:'Occupied',tenant:'Sneha Kapoor',tenantId:'TNT-004',assignedDate:'2025-01-20'},
+  {id:'WH-007',unit:'C-101',block:'Block C',floor:'Ground',size:2000,type:'Extra Large',rent:32000,status:'Occupied',tenant:'Vikram Singh',tenantId:'TNT-005',assignedDate:'2023-08-30'},
+  {id:'WH-008',unit:'C-102',block:'Block C',floor:'Ground',size:2000,type:'Extra Large',rent:32000,status:'Under Maintenance',tenant:'',tenantId:'',assignedDate:''},
+  {id:'WH-009',unit:'C-201',block:'Block C',floor:'First',size:1200,type:'Standard',rent:18000,status:'Occupied',tenant:'Anita Roy',tenantId:'TNT-006',assignedDate:'2024-08-05'},
+  {id:'WH-010',unit:'D-101',block:'Block D',floor:'Ground',size:800,type:'Standard',rent:12000,status:'Vacant',tenant:'',tenantId:'',assignedDate:''},
+  {id:'WH-011',unit:'D-102',block:'Block D',floor:'Ground',size:800,type:'Standard',rent:12000,status:'Occupied',tenant:'Kiran Patel',tenantId:'TNT-007',assignedDate:'2025-02-20'},
+  {id:'WH-012',unit:'D-201',block:'Block D',floor:'First',size:1000,type:'Standard',rent:15000,status:'Vacant',tenant:'',tenantId:'',assignedDate:''},
 ];
 
-/* ─── INVENTORY ─────────────────────────────────────────────── */
-WMS.inventory = [
-  {id:'INV-001',product:'Laptop Pro 15',sku:'SKU-001',warehouse:'Zone A',qty:245,minQty:50,maxQty:500,location:'A-01-03',lastUpdated:'2026-05-20',status:'In Stock'},
-  {id:'INV-002',product:'Wireless Mouse X',sku:'SKU-002',warehouse:'Zone A',qty:1820,minQty:100,maxQty:2000,location:'A-02-05',lastUpdated:'2026-05-21',status:'In Stock'},
-  {id:'INV-003',product:'Office Chair Pro',sku:'SKU-003',warehouse:'Zone B',qty:94,minQty:20,maxQty:200,location:'B-01-02',lastUpdated:'2026-05-19',status:'Low Stock'},
-  {id:'INV-004',product:'Safety Helmet Pro',sku:'SKU-004',warehouse:'Zone D',qty:0,minQty:50,maxQty:300,location:'D-03-01',lastUpdated:'2026-05-15',status:'Out of Stock'},
-  {id:'INV-005',product:'Running Shoes',sku:'SKU-005',warehouse:'Zone C',qty:450,minQty:80,maxQty:600,location:'C-02-04',lastUpdated:'2026-05-22',status:'In Stock'},
-  {id:'INV-006',product:'USB-C Hub 7P',sku:'SKU-006',warehouse:'Zone A',qty:38,minQty:50,maxQty:400,location:'A-04-02',lastUpdated:'2026-05-18',status:'Low Stock'},
-  {id:'INV-007',product:'Steel Cabinet',sku:'SKU-007',warehouse:'Zone B',qty:72,minQty:15,maxQty:150,location:'B-03-01',lastUpdated:'2026-05-17',status:'In Stock'},
-  {id:'INV-008',product:'Mechanical Keyboard',sku:'SKU-008',warehouse:'Zone A',qty:215,minQty:50,maxQty:400,location:'A-03-06',lastUpdated:'2026-05-22',status:'In Stock'},
+/* ─── TENANTS ───────────────────────────────────────────────── */
+WMS.tenants = [
+  {id:'TNT-001',name:'Arjun Sharma',email:'arjun@techcorp.com',phone:'+91-9811234567',company:'TechCorp Pvt Ltd',city:'Mumbai',unit:'A-101',leaseStart:'2024-03-15',leaseEnd:'2025-03-14',rent:18000,status:'Active',documents:'ID Proof, Agreement',initials:'AS',gradient:'135deg,#4f46e5,#7c3aed'},
+  {id:'TNT-002',name:'Priya Nair',email:'priya@nairenterprises.com',phone:'+91-9822345678',company:'Nair Enterprises',city:'Bangalore',unit:'A-102',leaseStart:'2024-06-01',leaseEnd:'2025-05-31',rent:12000,status:'Active',documents:'ID Proof, Agreement',initials:'PN',gradient:'135deg,#10b981,#059669'},
+  {id:'TNT-003',name:'Rahul Mehta',email:'rahul@mehtalogistics.com',phone:'+91-9833456789',company:'Mehta Logistics',city:'Delhi',unit:'B-101',leaseStart:'2023-11-10',leaseEnd:'2024-11-09',rent:9000,status:'Active',documents:'ID Proof, Agreement, GST',initials:'RM',gradient:'135deg,#f59e0b,#d97706'},
+  {id:'TNT-004',name:'Sneha Kapoor',email:'sneha@kapoorretail.com',phone:'+91-9844567890',company:'Kapoor Retail',city:'Pune',unit:'B-201',leaseStart:'2025-01-20',leaseEnd:'2026-01-19',rent:15000,status:'Active',documents:'ID Proof, Agreement',initials:'SK',gradient:'135deg,#3b82f6,#2563eb'},
+  {id:'TNT-005',name:'Vikram Singh',email:'vikram@singhdist.com',phone:'+91-9855678901',company:'Singh Distributors',city:'Chennai',unit:'C-101',leaseStart:'2023-08-30',leaseEnd:'2025-08-29',rent:32000,status:'Active',documents:'ID Proof, Agreement, GST, PAN',initials:'VS',gradient:'135deg,#ef4444,#dc2626'},
+  {id:'TNT-006',name:'Anita Roy',email:'anita@roywholesale.com',phone:'+91-9866789012',company:'Roy Wholesale',city:'Kolkata',unit:'C-201',leaseStart:'2024-08-05',leaseEnd:'2025-08-04',rent:18000,status:'Active',documents:'ID Proof, Agreement',initials:'AR',gradient:'135deg,#06b6d4,#0891b2'},
+  {id:'TNT-007',name:'Kiran Patel',email:'kiran@pateltrading.com',phone:'+91-9877890123',company:'Patel Trading',city:'Surat',unit:'D-102',leaseStart:'2025-02-20',leaseEnd:'2026-02-19',rent:12000,status:'Active',documents:'ID Proof, Agreement',initials:'KP',gradient:'135deg,#8b5cf6,#7c3aed'},
 ];
 
-/* ─── ORDERS ─────────────────────────────────────────────────── */
-WMS.orders = [
-  {id:'ORD-2001',customer:'Arjun Sharma',email:'arjun@example.com',product:'Laptop Pro 15',qty:2,amount:2400,date:'2026-05-22',status:'Processing',priority:'High',zone:'Zone A'},
-  {id:'ORD-2002',customer:'Priya Nair',email:'priya@example.com',product:'Wireless Mouse X',qty:10,amount:250,date:'2026-05-21',status:'Shipped',priority:'Normal',zone:'Zone A'},
-  {id:'ORD-2003',customer:'Rahul Mehta',email:'rahul@example.com',product:'Office Chair Pro',qty:5,amount:900,date:'2026-05-21',status:'Delivered',priority:'Normal',zone:'Zone B'},
-  {id:'ORD-2004',customer:'Sneha Kapoor',email:'sneha@example.com',product:'Running Shoes',qty:8,amount:520,date:'2026-05-20',status:'Pending',priority:'High',zone:'Zone C'},
-  {id:'ORD-2005',customer:'Vikram Singh',email:'vikram@example.com',product:'USB-C Hub 7P',qty:15,amount:675,date:'2026-05-20',status:'Processing',priority:'Normal',zone:'Zone A'},
-  {id:'ORD-2006',customer:'Anita Roy',email:'anita@example.com',product:'Mechanical Keyboard',qty:3,amount:360,date:'2026-05-19',status:'Delivered',priority:'Low',zone:'Zone A'},
-  {id:'ORD-2007',customer:'Kiran Patel',email:'kiran@example.com',product:'Steel Cabinet',qty:2,amount:560,date:'2026-05-18',status:'Cancelled',priority:'Normal',zone:'Zone B'},
-  {id:'ORD-2008',customer:'Deepa Menon',email:'deepa@example.com',product:'Ergonomic Desk',qty:1,amount:350,date:'2026-05-17',status:'Shipped',priority:'High',zone:'Zone B'},
-  {id:'ORD-2009',customer:'Suresh Iyer',email:'suresh@example.com',product:'Work Boots XL',qty:6,amount:540,date:'2026-05-16',status:'Delivered',priority:'Normal',zone:'Zone C'},
-  {id:'ORD-2010',customer:'Meena Pillai',email:'meena@example.com',product:'Safety Helmet Pro',qty:20,amount:700,date:'2026-05-15',status:'Pending',priority:'High',zone:'Zone D'},
+/* ─── LEASES ────────────────────────────────────────────────── */
+WMS.leases = [
+  {id:'LSE-001',tenant:'Arjun Sharma',tenantId:'TNT-001',unit:'A-101',startDate:'2024-03-15',endDate:'2025-03-14',tenure:12,rent:18000,status:'Expiring Soon',renewalStatus:'Renewal Requested',daysLeft:18},
+  {id:'LSE-002',tenant:'Priya Nair',tenantId:'TNT-002',unit:'A-102',startDate:'2024-06-01',endDate:'2025-05-31',tenure:12,rent:12000,status:'Active',renewalStatus:'None',daysLeft:98},
+  {id:'LSE-003',tenant:'Rahul Mehta',tenantId:'TNT-003',unit:'B-101',startDate:'2023-11-10',endDate:'2024-11-09',tenure:12,rent:9000,status:'Expired',renewalStatus:'Pending Renewal',daysLeft:0},
+  {id:'LSE-004',tenant:'Sneha Kapoor',tenantId:'TNT-004',unit:'B-201',startDate:'2025-01-20',endDate:'2026-01-19',tenure:12,rent:15000,status:'Active',renewalStatus:'None',daysLeft:239},
+  {id:'LSE-005',tenant:'Vikram Singh',tenantId:'TNT-005',unit:'C-101',startDate:'2023-08-30',endDate:'2025-08-29',tenure:24,rent:32000,status:'Active',renewalStatus:'None',daysLeft:281},
+  {id:'LSE-006',tenant:'Anita Roy',tenantId:'TNT-006',unit:'C-201',startDate:'2024-08-05',endDate:'2025-08-04',tenure:12,rent:18000,status:'Expiring Soon',renewalStatus:'None',daysLeft:24},
+  {id:'LSE-007',tenant:'Kiran Patel',tenantId:'TNT-007',unit:'D-102',startDate:'2025-02-20',endDate:'2026-02-19',tenure:12,rent:12000,status:'Active',renewalStatus:'None',daysLeft:270},
 ];
 
-/* ─── CUSTOMERS ─────────────────────────────────────────────── */
-WMS.customers = [
-  {id:'CUS-001',name:'Arjun Sharma',email:'arjun@example.com',phone:'+91-9811234567',company:'TechCorp Pvt Ltd',city:'Mumbai',orders:24,spent:48200,status:'Active',joined:'2024-03-15'},
-  {id:'CUS-002',name:'Priya Nair',email:'priya@example.com',phone:'+91-9822345678',company:'Nair Enterprises',city:'Bangalore',orders:18,spent:32400,status:'Active',joined:'2024-05-20'},
-  {id:'CUS-003',name:'Rahul Mehta',email:'rahul@example.com',phone:'+91-9833456789',company:'Mehta Logistics',city:'Delhi',orders:31,spent:61800,status:'Active',joined:'2023-11-08'},
-  {id:'CUS-004',name:'Sneha Kapoor',email:'sneha@example.com',phone:'+91-9844567890',company:'Kapoor Retail',city:'Pune',orders:9,spent:12500,status:'Inactive',joined:'2025-01-12'},
-  {id:'CUS-005',name:'Vikram Singh',email:'vikram@example.com',phone:'+91-9855678901',company:'Singh Distributors',city:'Chennai',orders:42,spent:89600,status:'Active',joined:'2023-08-25'},
-  {id:'CUS-006',name:'Anita Roy',email:'anita@example.com',phone:'+91-9866789012',company:'Roy Wholesale',city:'Kolkata',orders:15,spent:27300,status:'Active',joined:'2024-07-30'},
-  {id:'CUS-007',name:'Kiran Patel',email:'kiran@example.com',phone:'+91-9877890123',company:'Patel Trading',city:'Surat',orders:7,spent:9800,status:'Inactive',joined:'2025-02-14'},
-  {id:'CUS-008',name:'Deepa Menon',email:'deepa@example.com',phone:'+91-9888901234',company:'Menon Industries',city:'Hyderabad',orders:28,spent:54100,status:'Active',joined:'2024-01-05'},
+/* ─── RENT PAYMENTS ─────────────────────────────────────────── */
+WMS.payments = [
+  {id:'PAY-001',tenant:'Arjun Sharma',tenantId:'TNT-001',unit:'A-101',month:'May 2026',amount:18000,lateFee:0,total:18000,dueDate:'2026-05-01',paidDate:'2026-05-02',method:'NEFT',reference:'NEFT202605021',status:'Paid',receipt:'RCP-001'},
+  {id:'PAY-002',tenant:'Priya Nair',tenantId:'TNT-002',unit:'A-102',month:'May 2026',amount:12000,lateFee:0,total:12000,dueDate:'2026-05-01',paidDate:'2026-05-01',method:'IMPS',reference:'IMPS202605011',status:'Paid',receipt:'RCP-002'},
+  {id:'PAY-003',tenant:'Rahul Mehta',tenantId:'TNT-003',unit:'B-101',month:'May 2026',amount:9000,lateFee:900,total:9900,dueDate:'2026-05-01',paidDate:'',method:'',reference:'',status:'Overdue',receipt:''},
+  {id:'PAY-004',tenant:'Sneha Kapoor',tenantId:'TNT-004',unit:'B-201',month:'May 2026',amount:15000,lateFee:0,total:15000,dueDate:'2026-05-01',paidDate:'',method:'',reference:'',status:'Pending',receipt:''},
+  {id:'PAY-005',tenant:'Vikram Singh',tenantId:'TNT-005',unit:'C-101',month:'May 2026',amount:32000,lateFee:0,total:32000,dueDate:'2026-05-01',paidDate:'2026-05-03',method:'RTGS',reference:'RTGS202605031',status:'Paid',receipt:'RCP-005'},
+  {id:'PAY-006',tenant:'Anita Roy',tenantId:'TNT-006',unit:'C-201',month:'May 2026',amount:18000,lateFee:1800,total:19800,dueDate:'2026-05-01',paidDate:'',method:'',reference:'',status:'Overdue',receipt:''},
+  {id:'PAY-007',tenant:'Kiran Patel',tenantId:'TNT-007',unit:'D-102',month:'May 2026',amount:12000,lateFee:0,total:12000,dueDate:'2026-05-01',paidDate:'2026-05-01',method:'NEFT',reference:'NEFT202605012',status:'Paid',receipt:'RCP-007'},
+  {id:'PAY-008',tenant:'Arjun Sharma',tenantId:'TNT-001',unit:'A-101',month:'Apr 2026',amount:18000,lateFee:0,total:18000,dueDate:'2026-04-01',paidDate:'2026-04-01',method:'NEFT',reference:'NEFT202604011',status:'Paid',receipt:'RCP-008'},
+  {id:'PAY-009',tenant:'Priya Nair',tenantId:'TNT-002',unit:'A-102',month:'Apr 2026',amount:12000,lateFee:0,total:12000,dueDate:'2026-04-01',paidDate:'2026-04-02',method:'IMPS',reference:'IMPS202604012',status:'Paid',receipt:'RCP-009'},
+  {id:'PAY-010',tenant:'Rahul Mehta',tenantId:'TNT-003',unit:'B-101',month:'Apr 2026',amount:9000,lateFee:0,total:9000,dueDate:'2026-04-01',paidDate:'2026-04-05',method:'Manual',reference:'CASH202604051',status:'Paid',receipt:'RCP-010'},
+];
+
+/* ─── SUPPORT TICKETS ───────────────────────────────────────── */
+WMS.tickets = [
+  {id:'TKT-001',tenant:'Arjun Sharma',tenantId:'TNT-001',unit:'A-101',category:'Maintenance',subject:'Broken shutter door latch',description:'The latch on the main shutter door is broken and needs urgent replacement.',created:'2026-05-20',updated:'2026-05-22',assignedTo:'Ravi Kumar',status:'In Progress',priority:'High',slaHours:48,slaBreach:false},
+  {id:'TKT-002',tenant:'Priya Nair',tenantId:'TNT-002',unit:'A-102',category:'Billing',subject:'Invoice amount discrepancy for April',description:'The April invoice shows ₹12,500 but my agreement says ₹12,000.',created:'2026-05-21',updated:'2026-05-21',assignedTo:'Meera Singh',status:'Open',priority:'Medium',slaHours:48,slaBreach:false},
+  {id:'TKT-003',tenant:'Vikram Singh',tenantId:'TNT-005',unit:'C-101',category:'Access Issue',subject:'Access card not working at main gate',description:'My access card stopped working since yesterday morning.',created:'2026-05-18',updated:'2026-05-23',assignedTo:'Ravi Kumar',status:'Resolved',priority:'High',slaHours:24,slaBreach:false},
+  {id:'TKT-004',tenant:'Rahul Mehta',tenantId:'TNT-003',unit:'B-101',category:'Maintenance',subject:'Water leakage from ceiling',description:'There is a water leakage from the ceiling near the north wall.',created:'2026-05-15',updated:'2026-05-16',assignedTo:'',status:'Open',priority:'High',slaHours:24,slaBreach:true},
+  {id:'TKT-005',tenant:'Anita Roy',tenantId:'TNT-006',unit:'C-201',category:'General Inquiry',subject:'Parking bay allocation query',description:'I need to know which parking bays are allotted to my unit.',created:'2026-05-22',updated:'2026-05-22',assignedTo:'Meera Singh',status:'Open',priority:'Low',slaHours:72,slaBreach:false},
+  {id:'TKT-006',tenant:'Sneha Kapoor',tenantId:'TNT-004',unit:'B-201',category:'Billing',subject:'Request for payment receipt copy',description:'Please share a copy of the payment receipt for March 2026.',created:'2026-05-23',updated:'2026-05-23',assignedTo:'Meera Singh',status:'Closed',priority:'Low',slaHours:72,slaBreach:false},
 ];
 
 /* ─── STAFF ─────────────────────────────────────────────────── */
 WMS.staff = [
-  {id:'EMP-001',name:'John Doe',role:'Warehouse Manager',dept:'Operations',email:'john@wms.com',phone:'+91-9876543210',joined:'2022-04-01',status:'Active',initials:'JD',gradient:'135deg,#4f46e5,#7c3aed'},
-  {id:'EMP-002',name:'Sarah Kim',role:'Inventory Analyst',dept:'Inventory',email:'sarah@wms.com',phone:'+91-9876543211',joined:'2023-01-15',status:'Active',initials:'SK',gradient:'135deg,#10b981,#059669'},
-  {id:'EMP-003',name:'Mike Ross',role:'Dispatch Coordinator',dept:'Logistics',email:'mike@wms.com',phone:'+91-9876543212',joined:'2022-09-10',status:'On Leave',initials:'MR',gradient:'135deg,#f59e0b,#d97706'},
-  {id:'EMP-004',name:'Raj Kumar',role:'Driver',dept:'Logistics',email:'raj@wms.com',phone:'+91-9876543213',joined:'2023-06-20',status:'Active',initials:'RK',gradient:'135deg,#3b82f6,#2563eb'},
-  {id:'EMP-005',name:'Jane Smith',role:'HR Manager',dept:'Human Resources',email:'jane@wms.com',phone:'+91-9876543214',joined:'2021-11-05',status:'Active',initials:'JS',gradient:'135deg,#ef4444,#dc2626'},
-  {id:'EMP-006',name:'Amit Patel',role:'Security Guard',dept:'Security',email:'amit@wms.com',phone:'+91-9876543215',joined:'2024-02-28',status:'Active',initials:'AP',gradient:'135deg,#06b6d4,#0891b2'},
-];
-
-/* ─── SHIPMENTS ─────────────────────────────────────────────── */
-WMS.incoming = [
-  {id:'INC-001',supplier:'Tech Supply Co',product:'Laptop Pro 15',qty:100,expected:'2026-05-25',status:'In Transit',tracking:'TRK-7821'},
-  {id:'INC-002',supplier:'Office World',product:'Office Chair Pro',qty:50,expected:'2026-05-24',status:'Scheduled',tracking:'TRK-7822'},
-  {id:'INC-003',supplier:'Apparel Plus',product:'Running Shoes',qty:200,expected:'2026-05-23',status:'Arrived',tracking:'TRK-7823'},
-  {id:'INC-004',supplier:'Hardware Hub',product:'Safety Helmet Pro',qty:150,expected:'2026-05-26',status:'In Transit',tracking:'TRK-7824'},
-  {id:'INC-005',supplier:'Electronics Park',product:'USB-C Hub 7P',qty:300,expected:'2026-05-27',status:'Scheduled',tracking:'TRK-7825'},
-];
-
-WMS.outgoing = [
-  {id:'OUT-001',customer:'Arjun Sharma',product:'Laptop Pro 15',qty:2,dispatched:'2026-05-22',eta:'2026-05-24',status:'In Transit',carrier:'FedEx'},
-  {id:'OUT-002',customer:'Priya Nair',product:'Wireless Mouse X',qty:10,dispatched:'2026-05-21',eta:'2026-05-23',status:'Delivered',carrier:'DHL'},
-  {id:'OUT-003',customer:'Rahul Mehta',product:'Office Chair Pro',qty:5,dispatched:'2026-05-20',eta:'2026-05-22',status:'Delivered',carrier:'BlueDart'},
-  {id:'OUT-004',customer:'Sneha Kapoor',product:'Running Shoes',qty:8,dispatched:'2026-05-22',eta:'2026-05-25',status:'Processing',carrier:'DTDC'},
-  {id:'OUT-005',customer:'Vikram Singh',product:'USB-C Hub 7P',qty:15,dispatched:'2026-05-21',eta:'2026-05-24',status:'In Transit',carrier:'FedEx'},
+  {id:'EMP-001',name:'Admin User',role:'Property Manager',dept:'Management',email:'admin@warehub.com',phone:'+91-9876543210',joined:'2022-04-01',status:'Active',initials:'AD',gradient:'135deg,#4f46e5,#7c3aed'},
+  {id:'EMP-002',name:'Ravi Kumar',role:'Support Agent',dept:'Operations',email:'ravi@warehub.com',phone:'+91-9876543211',joined:'2023-01-15',status:'Active',initials:'RK',gradient:'135deg,#10b981,#059669'},
+  {id:'EMP-003',name:'Meera Singh',role:'Support Agent',dept:'Operations',email:'meera@warehub.com',phone:'+91-9876543212',joined:'2022-09-10',status:'Active',initials:'MS',gradient:'135deg,#f59e0b,#d97706'},
+  {id:'EMP-004',name:'Suresh Iyer',role:'Finance Officer',dept:'Finance',email:'suresh@warehub.com',phone:'+91-9876543213',joined:'2023-06-20',status:'Active',initials:'SI',gradient:'135deg,#3b82f6,#2563eb'},
+  {id:'EMP-005',name:'Deepa Menon',role:'HR Manager',dept:'Human Resources',email:'deepa@warehub.com',phone:'+91-9876543214',joined:'2021-11-05',status:'Active',initials:'DM',gradient:'135deg,#ef4444,#dc2626'},
+  {id:'EMP-006',name:'Amit Patel',role:'Security Supervisor',dept:'Security',email:'amit@warehub.com',phone:'+91-9876543215',joined:'2024-02-28',status:'Active',initials:'AP',gradient:'135deg,#06b6d4,#0891b2'},
 ];
 
 /* ─── NOTIFICATIONS ─────────────────────────────────────────── */
 WMS.notifications = [
-  {id:1,type:'warning',icon:'fa-triangle-exclamation',title:'Low Stock Alert',msg:'USB-C Hub 7P has only 38 units left.',time:'5 min ago',read:false},
-  {id:2,type:'danger',icon:'fa-circle-xmark',title:'Out of Stock',msg:'Safety Helmet Pro is completely out of stock.',time:'18 min ago',read:false},
-  {id:3,type:'success',icon:'fa-circle-check',title:'Shipment Arrived',msg:'INC-003 (Running Shoes) arrived at dock.',time:'1 hr ago',read:false},
-  {id:4,type:'info',icon:'fa-box-open',title:'New Order',msg:'ORD-2001 placed by Arjun Sharma.',time:'2 hr ago',read:true},
-  {id:5,type:'warning',icon:'fa-temperature-high',title:'Temperature Alert',msg:'Zone D temp exceeded threshold (25°C).',time:'3 hr ago',read:true},
-  {id:6,type:'success',icon:'fa-truck',title:'Order Shipped',msg:'ORD-2002 dispatched via FedEx.',time:'5 hr ago',read:true},
-  {id:7,type:'info',icon:'fa-user-plus',title:'New Customer',msg:'Deepa Menon registered as a new customer.',time:'1 day ago',read:true},
+  {id:1,type:'danger',icon:'fa-triangle-exclamation',title:'Rent Overdue',msg:'Rahul Mehta (B-101) — May rent overdue by 24 days.',time:'2 hr ago',read:false},
+  {id:2,type:'danger',icon:'fa-triangle-exclamation',title:'Rent Overdue',msg:'Anita Roy (C-201) — May rent overdue by 24 days.',time:'2 hr ago',read:false},
+  {id:3,type:'warning',icon:'fa-file-contract',title:'Lease Expiring',msg:'Arjun Sharma (A-101) — Lease expires in 18 days.',time:'5 hr ago',read:false},
+  {id:4,type:'warning',icon:'fa-file-contract',title:'Lease Expiring',msg:'Anita Roy (C-201) — Lease expires in 24 days.',time:'5 hr ago',read:true},
+  {id:5,type:'info',icon:'fa-ticket',title:'New Support Ticket',msg:'TKT-005 raised by Anita Roy — Parking bay query.',time:'1 day ago',read:true},
+  {id:6,type:'success',icon:'fa-money-bill-wave',title:'Payment Received',msg:'Vikram Singh paid ₹32,000 for May 2026.',time:'2 days ago',read:true},
+  {id:7,type:'warning',icon:'fa-clock',title:'SLA Breach Alert',msg:'TKT-004 (Rahul Mehta) has breached 24-hr SLA.',time:'3 days ago',read:true},
 ];
 
 /* ─── ACTIVITY LOGS ──────────────────────────────────────────── */
 WMS.activityLogs = [
-  {id:'ACT-001',user:'John Doe',action:'Added Product',module:'Products',details:'Added Laptop Pro 15 (PRD-001)',ip:'192.168.1.10',time:'2026-05-23 17:15:00',type:'create'},
-  {id:'ACT-002',user:'Sarah Kim',action:'Updated Inventory',module:'Inventory',details:'Updated stock for Wireless Mouse X',ip:'192.168.1.11',time:'2026-05-23 16:45:00',type:'update'},
-  {id:'ACT-003',user:'Mike Ross',action:'Dispatched Order',module:'Dispatch',details:'ORD-2002 dispatched via FedEx',ip:'192.168.1.12',time:'2026-05-23 15:30:00',type:'create'},
-  {id:'ACT-004',user:'John Doe',action:'Deleted Product',module:'Products',details:'Removed obsolete item SKU-099',ip:'192.168.1.10',time:'2026-05-23 14:00:00',type:'delete'},
-  {id:'ACT-005',user:'Jane Smith',action:'Added Staff',module:'Staff',details:'New employee Amit Patel added',ip:'192.168.1.14',time:'2026-05-23 11:20:00',type:'create'},
+  {id:'ACT-001',user:'Admin User',action:'Added Tenant',module:'Tenants',details:'Added new tenant Sneha Kapoor (TNT-004)',ip:'192.168.1.10',time:'2026-05-23 17:15:00',type:'create'},
+  {id:'ACT-002',user:'Suresh Iyer',action:'Marked Payment',module:'Payments',details:'Marked PAY-001 paid — Arjun Sharma, May 2026',ip:'192.168.1.11',time:'2026-05-23 16:45:00',type:'update'},
+  {id:'ACT-003',user:'Meera Singh',action:'Closed Ticket',module:'Tickets',details:'Closed TKT-006 — Receipt copy request by Sneha Kapoor',ip:'192.168.1.12',time:'2026-05-23 15:30:00',type:'update'},
+  {id:'ACT-004',user:'Admin User',action:'Updated Warehouse',module:'Warehouses',details:'Set WH-008 (C-102) to Under Maintenance',ip:'192.168.1.10',time:'2026-05-23 14:00:00',type:'update'},
+  {id:'ACT-005',user:'Admin User',action:'Added Staff',module:'Staff',details:'New staff member Amit Patel added (EMP-006)',ip:'192.168.1.10',time:'2026-05-22 11:20:00',type:'create'},
+  {id:'ACT-006',user:'Ravi Kumar',action:'Resolved Ticket',module:'Tickets',details:'Resolved TKT-003 — Access card issue for Vikram Singh',ip:'192.168.1.11',time:'2026-05-23 10:00:00',type:'update'},
+  {id:'ACT-007',user:'Suresh Iyer',action:'Generated Invoice',module:'Payments',details:'Bulk invoices generated for May 2026 — 7 tenants',ip:'192.168.1.11',time:'2026-05-01 09:00:00',type:'create'},
 ];
 
 /* ─── HELPER UTILITIES ─────────────────────────────────────── */
@@ -115,19 +110,25 @@ WMS.nextId = function(prefix, arr, field) {
 
 WMS.statusBadge = function(status) {
   const map = {
-    'Active':'success','In Stock':'success','Delivered':'success','Arrived':'success',
-    'Low Stock':'warning','On Leave':'warning','Processing':'warning','In Transit':'warning','Scheduled':'info',
-    'Out of Stock':'danger','Cancelled':'danger','Inactive':'secondary',
-    'Pending':'info','Shipped':'primary'
+    'Active':'success','Paid':'success','Resolved':'success','Closed':'secondary',
+    'Expiring Soon':'warning','In Progress':'warning','Pending':'warning','Pending Renewal':'warning',
+    'Overdue':'danger','Expired':'danger','SLA Breach':'danger','Inactive':'secondary',
+    'Vacant':'info','Open':'info','Under Maintenance':'secondary','Occupied':'success',
+    'Renewal Requested':'primary','None':''
   };
   const cls = map[status] || 'secondary';
+  if(!cls) return '<span class="text-muted">—</span>';
   return '<span class="badge-wms '+cls+'"><span class="badge-dot"></span>'+status+'</span>';
+};
+
+WMS.formatCurrency = function(amount) {
+  return '₹' + Number(amount).toLocaleString('en-IN');
 };
 
 WMS.logAction = function(user, action, module, details) {
   WMS.activityLogs.unshift({
     id: WMS.nextId('ACT', WMS.activityLogs, 'id'),
-    user: user || 'John Doe',
+    user: user || 'Admin User',
     action: action,
     module: module,
     details: details,

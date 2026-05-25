@@ -1,0 +1,344 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="page-header animate-in">
+  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+    <div>
+      <h1 class="page-title">Tenant Management</h1>
+      <div class="breadcrumb-wms">
+        <i class="fas fa-home"></i><span class="breadcrumb-sep">/</span>
+        <span>Tenants</span>
+      </div>
+    </div>
+    <div class="d-flex gap-2">
+      <button class="btn-wms primary" onclick="openAddTenantModal()">
+        <i class="fas fa-plus"></i> Add Tenant
+      </button>
+      <button class="btn-wms ghost" onclick="showToast('Exported!','success')">
+        <i class="fas fa-download"></i> Export
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Summary Cards -->
+<div class="row g-3 mb-4">
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-1">
+    <div class="stat-card success" data-href="{% url 'tenants' %}">
+      <div class="stat-card-header"><div class="stat-icon success"><i class="fas fa-users"></i></div></div>
+      <div class="stat-value" id="totalTenantsCount">7</div>
+      <div class="stat-label">Total Active Tenants</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-2">
+    <div class="stat-card primary" data-href="{% url 'rent_payments' %}">
+      <div class="stat-card-header"><div class="stat-icon primary"><i class="fas fa-indian-rupee-sign"></i></div></div>
+      <div class="stat-value">₹1,16,000</div>
+      <div class="stat-label">Monthly Rent Roll</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-3">
+    <div class="stat-card danger" data-href="{% url 'rent_payments' %}">
+      <div class="stat-card-header"><div class="stat-icon danger"><i class="fas fa-triangle-exclamation"></i></div></div>
+      <div class="stat-value">2</div>
+      <div class="stat-label">Overdue Rent</div>
+    </div>
+  </div>
+  <div class="col-xl-3 col-md-6 animate-in animate-in-delay-4">
+    <div class="stat-card warning" data-href="{% url 'leases' %}">
+      <div class="stat-card-header"><div class="stat-icon warning"><i class="fas fa-file-contract"></i></div></div>
+      <div class="stat-value">2</div>
+      <div class="stat-label">Leases Expiring (30 days)</div>
+    </div>
+  </div>
+</div>
+
+<!-- Tenant Table -->
+<div class="wms-card animate-in animate-in-delay-2">
+  <div class="card-header-wms">
+    <div class="card-title-wms"><i class="fas fa-user-group"></i> All Tenants</div>
+    <div class="card-actions gap-2">
+      <select class="form-control-wms form-select-wms" id="tenantStatusFilter" style="width:auto">
+        <option value="">All Status</option>
+        <option value="Active">Active</option>
+        <option value="Inactive">Inactive</option>
+      </select>
+    </div>
+  </div>
+  <div class="card-body-wms p-0">
+    <div class="table-responsive">
+      <table class="table-wms" id="tenantTable">
+        <thead>
+          <tr>
+            <th>Tenant ID</th>
+            <th>Tenant</th>
+            <th>Company</th>
+            <th>Unit</th>
+            <th>Monthly Rent</th>
+            <th>Lease End</th>
+            <th>Rent Status</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="tenantTableBody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Tenant Modal -->
+<div class="modal fade" id="tenantModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="border-radius:16px;border:none">
+      <div class="modal-header" style="border-bottom:1px solid #e2e8f0;padding:20px 24px">
+        <h5 class="modal-title fw-700" id="tenantModalTitle"><i class="fas fa-user-plus me-2"></i>Add New Tenant</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:24px">
+        <div class="row g-3">
+          <div class="col-md-6">
+            <label class="form-label-wms">Full Name *</label>
+            <input type="text" class="form-control-wms" id="tName" placeholder="e.g. Arjun Sharma">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-wms">Company Name</label>
+            <input type="text" class="form-control-wms" id="tCompany" placeholder="e.g. TechCorp Pvt Ltd">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-wms">Email *</label>
+            <input type="email" class="form-control-wms" id="tEmail" placeholder="tenant@company.com">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-wms">Phone *</label>
+            <input type="text" class="form-control-wms" id="tPhone" placeholder="+91-98XXXXXXXX">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-wms">City</label>
+            <input type="text" class="form-control-wms" id="tCity" placeholder="e.g. Mumbai">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-wms">Assign Warehouse Unit *</label>
+            <select class="form-control-wms" id="tUnit">
+              <option value="">-- Select Unit --</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-wms">Lease Start Date *</label>
+            <input type="date" class="form-control-wms" id="tLeaseStart">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-wms">Lease End Date *</label>
+            <input type="date" class="form-control-wms" id="tLeaseEnd">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-wms">Monthly Rent (₹) *</label>
+            <input type="number" class="form-control-wms" id="tRent" placeholder="e.g. 18000">
+          </div>
+          <div class="col-md-6">
+            <label class="form-label-wms">Documents Uploaded</label>
+            <input type="text" class="form-control-wms" id="tDocs" placeholder="e.g. ID Proof, Agreement">
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #e2e8f0;padding:16px 24px">
+        <button class="btn-wms ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-wms primary" onclick="saveTenant()"><i class="fas fa-save me-1"></i>Save Tenant</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- View Tenant Modal -->
+<div class="modal fade" id="viewTenantModal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content" style="border-radius:16px;border:none">
+      <div class="modal-header" style="border-bottom:1px solid #e2e8f0;padding:20px 24px">
+        <h5 class="modal-title fw-700"><i class="fas fa-user me-2"></i>Tenant Profile</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:24px" id="viewTenantBody"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Send Notification Modal -->
+<div class="modal fade" id="sendNotifModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content" style="border-radius:16px;border:none">
+      <div class="modal-header" style="border-bottom:1px solid #e2e8f0;padding:20px 24px">
+        <h5 class="modal-title fw-700"><i class="fas fa-paper-plane me-2"></i>Send Notification</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" style="padding:24px">
+        <div class="mb-3">
+          <label class="form-label-wms">To</label>
+          <input type="text" class="form-control-wms" id="notifTo" readonly>
+        </div>
+        <div class="mb-3">
+          <label class="form-label-wms">Message</label>
+          <textarea class="form-control-wms" id="notifMsg" rows="4" placeholder="Type your message..."></textarea>
+        </div>
+      </div>
+      <div class="modal-footer" style="border-top:1px solid #e2e8f0;padding:16px 24px">
+        <button class="btn-wms ghost" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn-wms primary" onclick="sendNotification()"><i class="fas fa-paper-plane me-1"></i>Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+var editingTenantId = null;
+
+function renderTenants() {
+  var filter = document.getElementById('tenantStatusFilter').value;
+  var data = WMS.tenants.filter(function(t){ return !filter || t.status === filter; });
+  var html = '';
+  data.forEach(function(t) {
+    var payStatus = 'Paid';
+    var payBadge = 'success';
+    var mayPay = WMS.payments.find(function(p){ return p.tenantId === t.id && p.month === 'May 2026'; });
+    if(mayPay){ payStatus = mayPay.status; payBadge = mayPay.status==='Paid'?'success':mayPay.status==='Overdue'?'danger':'warning'; }
+    html += '<tr>';
+    html += '<td><strong>'+t.id+'</strong></td>';
+    html += '<td><div class="d-flex align-items-center gap-2"><div class="avatar sm" style="background:linear-gradient('+t.gradient+')">'+t.initials+'</div><div><div class="fw-600">'+t.name+'</div><div class="fs-12" style="color:#64748b">'+t.email+'</div></div></div></td>';
+    html += '<td>'+t.company+'</td>';
+    html += '<td><strong>'+t.unit+'</strong></td>';
+    html += '<td><strong>'+WMS.formatCurrency(t.rent)+'</strong></td>';
+    html += '<td>'+t.leaseEnd+'</td>';
+    html += '<td><span class="badge-wms '+payBadge+'"><span class="badge-dot"></span>'+payStatus+'</span></td>';
+    html += '<td>'+WMS.statusBadge(t.status)+'</td>';
+    html += '<td><div class="d-flex gap-1">';
+    html += '<a href="#" class="btn-wms ghost sm icon-only" title="View" onclick="viewTenant(\''+t.id+'\');return false;"><i class="fas fa-eye"></i></a>';
+    html += '<a href="#" class="btn-wms ghost sm icon-only" title="Edit" onclick="editTenant(\''+t.id+'\');return false;"><i class="fas fa-pen"></i></a>';
+    html += '<a href="#" class="btn-wms ghost sm icon-only" title="Send Notification" onclick="openSendNotif(\''+t.id+'\');return false;"><i class="fas fa-paper-plane"></i></a>';
+    html += '<a href="#" class="btn-wms ghost sm icon-only" title="Deactivate" onclick="deactivateTenant(\''+t.id+'\');return false;"><i class="fas fa-ban"></i></a>';
+    html += '</div></td></tr>';
+  });
+  document.getElementById('tenantTableBody').innerHTML = html;
+  document.getElementById('totalTenantsCount').textContent = WMS.tenants.filter(function(t){return t.status==='Active';}).length;
+}
+
+function openAddTenantModal() {
+  editingTenantId = null;
+  document.getElementById('tenantModalTitle').innerHTML = '<i class="fas fa-user-plus me-2"></i>Add New Tenant';
+  ['tName','tCompany','tEmail','tPhone','tCity','tLeaseStart','tLeaseEnd','tRent','tDocs'].forEach(function(id){ document.getElementById(id).value=''; });
+  var sel = document.getElementById('tUnit');
+  sel.innerHTML = '<option value="">-- Select Vacant Unit --</option>';
+  WMS.warehouses.filter(function(w){return w.status==='Vacant';}).forEach(function(w){
+    sel.innerHTML += '<option value="'+w.unit+'">'+w.unit+' ('+w.block+', '+w.floor+' Floor — '+w.size+' sqft)</option>';
+  });
+  new bootstrap.Modal(document.getElementById('tenantModal')).show();
+}
+
+function editTenant(id) {
+  editingTenantId = id;
+  var t = WMS.tenants.find(function(x){return x.id===id;});
+  if(!t) return;
+  document.getElementById('tenantModalTitle').innerHTML = '<i class="fas fa-pen me-2"></i>Edit Tenant';
+  document.getElementById('tName').value = t.name;
+  document.getElementById('tCompany').value = t.company;
+  document.getElementById('tEmail').value = t.email;
+  document.getElementById('tPhone').value = t.phone;
+  document.getElementById('tCity').value = t.city;
+  document.getElementById('tLeaseStart').value = t.leaseStart;
+  document.getElementById('tLeaseEnd').value = t.leaseEnd;
+  document.getElementById('tRent').value = t.rent;
+  document.getElementById('tDocs').value = t.documents;
+  var sel = document.getElementById('tUnit');
+  sel.innerHTML = '<option value="'+t.unit+'">'+t.unit+'</option>';
+  WMS.warehouses.filter(function(w){return w.status==='Vacant';}).forEach(function(w){
+    sel.innerHTML += '<option value="'+w.unit+'">'+w.unit+' ('+w.block+')</option>';
+  });
+  sel.value = t.unit;
+  new bootstrap.Modal(document.getElementById('tenantModal')).show();
+}
+
+function saveTenant() {
+  var name = document.getElementById('tName').value.trim();
+  var email = document.getElementById('tEmail').value.trim();
+  var phone = document.getElementById('tPhone').value.trim();
+  var unit = document.getElementById('tUnit').value;
+  var rent = document.getElementById('tRent').value;
+  var leaseStart = document.getElementById('tLeaseStart').value;
+  var leaseEnd = document.getElementById('tLeaseEnd').value;
+  if(!name||!email||!unit||!rent||!leaseStart||!leaseEnd){ showToast('Please fill all required fields.','error'); return; }
+  if(editingTenantId) {
+    var t = WMS.tenants.find(function(x){return x.id===editingTenantId;});
+    if(t){ t.name=name; t.company=document.getElementById('tCompany').value; t.email=email; t.phone=phone; t.city=document.getElementById('tCity').value; t.unit=unit; t.leaseStart=leaseStart; t.leaseEnd=leaseEnd; t.rent=parseInt(rent); t.documents=document.getElementById('tDocs').value; }
+    WMS.logAction('Admin User','Updated Tenant','Tenants','Updated tenant '+name);
+    showToast('Tenant updated successfully!','success');
+  } else {
+    var initials = name.split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);
+    var newT = { id:WMS.nextId('TNT',WMS.tenants,'id'), name:name, company:document.getElementById('tCompany').value, email:email, phone:phone, city:document.getElementById('tCity').value, unit:unit, leaseStart:leaseStart, leaseEnd:leaseEnd, rent:parseInt(rent), status:'Active', documents:document.getElementById('tDocs').value, initials:initials, gradient:'135deg,#4f46e5,#7c3aed' };
+    WMS.tenants.push(newT);
+    var wh = WMS.warehouses.find(function(w){return w.unit===unit;});
+    if(wh){ wh.status='Occupied'; wh.tenant=name; wh.tenantId=newT.id; wh.assignedDate=leaseStart; }
+    WMS.logAction('Admin User','Added Tenant','Tenants','Added new tenant '+name+' ('+newT.id+')');
+    showToast('Tenant added successfully!','success');
+  }
+  bootstrap.Modal.getInstance(document.getElementById('tenantModal')).hide();
+  renderTenants();
+}
+
+function viewTenant(id) {
+  var t = WMS.tenants.find(function(x){return x.id===id;});
+  if(!t) return;
+  var payments = WMS.payments.filter(function(p){return p.tenantId===id;});
+  var payHtml = payments.map(function(p){
+    return '<tr><td>'+p.month+'</td><td>'+WMS.formatCurrency(p.total)+'</td><td>'+WMS.statusBadge(p.status)+'</td><td>'+(p.paidDate||'—')+'</td></tr>';
+  }).join('');
+  document.getElementById('viewTenantBody').innerHTML = `
+    <div class="d-flex align-items-center gap-3 mb-4">
+      <div class="avatar" style="width:56px;height:56px;font-size:20px;background:linear-gradient(${t.gradient})">${t.initials}</div>
+      <div><h5 class="fw-700 mb-0">${t.name}</h5><div style="color:#64748b">${t.company} &bull; ${t.city}</div></div>
+    </div>
+    <div class="row g-3 mb-4">
+      <div class="col-md-6"><div class="wms-info-row"><span class="info-label">Email</span><span>${t.email}</span></div></div>
+      <div class="col-md-6"><div class="wms-info-row"><span class="info-label">Phone</span><span>${t.phone}</span></div></div>
+      <div class="col-md-6"><div class="wms-info-row"><span class="info-label">Unit</span><span><strong>${t.unit}</strong></span></div></div>
+      <div class="col-md-6"><div class="wms-info-row"><span class="info-label">Monthly Rent</span><span><strong>${WMS.formatCurrency(t.rent)}</strong></span></div></div>
+      <div class="col-md-6"><div class="wms-info-row"><span class="info-label">Lease Start</span><span>${t.leaseStart}</span></div></div>
+      <div class="col-md-6"><div class="wms-info-row"><span class="info-label">Lease End</span><span>${t.leaseEnd}</span></div></div>
+      <div class="col-md-12"><div class="wms-info-row"><span class="info-label">Documents</span><span>${t.documents}</span></div></div>
+    </div>
+    <div class="card-title-wms mb-2"><i class="fas fa-history me-2"></i>Payment History</div>
+    <table class="table-wms"><thead><tr><th>Month</th><th>Amount</th><th>Status</th><th>Paid On</th></tr></thead><tbody>${payHtml||'<tr><td colspan="4" class="text-center text-muted">No payments recorded</td></tr>'}</tbody></table>
+  `;
+  new bootstrap.Modal(document.getElementById('viewTenantModal')).show();
+}
+
+function openSendNotif(id) {
+  var t = WMS.tenants.find(function(x){return x.id===id;});
+  if(!t) return;
+  document.getElementById('notifTo').value = t.name + ' <' + t.email + '>';
+  document.getElementById('notifMsg').value = '';
+  new bootstrap.Modal(document.getElementById('sendNotifModal')).show();
+}
+
+function sendNotification() {
+  var msg = document.getElementById('notifMsg').value.trim();
+  if(!msg){ showToast('Please enter a message.','error'); return; }
+  bootstrap.Modal.getInstance(document.getElementById('sendNotifModal')).hide();
+  showToast('Notification sent successfully!','success');
+}
+
+function deactivateTenant(id) {
+  var t = WMS.tenants.find(function(x){return x.id===id;});
+  if(!t) return;
+  if(confirm('Deactivate tenant ' + t.name + '?')) {
+    t.status = 'Inactive';
+    WMS.logAction('Admin User','Deactivated Tenant','Tenants','Deactivated tenant '+t.name);
+    showToast('Tenant deactivated.','success');
+    renderTenants();
+  }
+}
+
+document.getElementById('tenantStatusFilter').addEventListener('change', renderTenants);
+document.addEventListener('DOMContentLoaded', renderTenants);
+</script>
+{% endblock %}
